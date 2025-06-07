@@ -14,7 +14,7 @@ model User {
   emailVerified DateTime?
   image         String?
   hashPassword  String?
-  role          Role
+  role          Role @default(USER)
   accounts      Account[]
   sessions      Session[]
   // Optional for WebAuthn support

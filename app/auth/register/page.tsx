@@ -14,14 +14,14 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Card, CardContent } from '@/components/ui/card';
-import { signInSchema } from '@/lib/zod';
+import { registerSchema, RegisterSchema } from '@/lib/zod';
+import { useFormState } from 'react-dom';
+import { signupCredentials } from '@/action/authAction';
 // import { FcGoogle } from 'react-icons/fc';
-
-type RegisterSchema = z.infer<typeof signInSchema>;
 
 export default function RegisterPage() {
   const form = useForm<RegisterSchema>({
-    resolver: zodResolver(signInSchema),
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       name: '',
       email: '',
@@ -32,6 +32,7 @@ export default function RegisterPage() {
 
   const onSubmit = (data: RegisterSchema) => {
     console.log('Form Data:', data);
+    signupCredentials({ data });
     // TODO: submit to backend
   };
 
@@ -49,6 +50,7 @@ export default function RegisterPage() {
           </h2>
 
           <Form {...form}>
+            {/* <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4"> */}
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
