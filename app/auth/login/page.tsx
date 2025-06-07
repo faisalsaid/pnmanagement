@@ -19,6 +19,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
+import Link from 'next/link';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }),
@@ -112,6 +113,12 @@ export default function LoginPage() {
               <Button type="submit" className="w-full">
                 Sign In
               </Button>
+              <p className="text-xs text-center text-muted-foreground">
+                <span>{`Don't have an account yet? `}</span>
+                <Link href="/auth/register" className="text-sky-400 underline">
+                  Register here
+                </Link>
+              </p>
             </form>
           </Form>
 

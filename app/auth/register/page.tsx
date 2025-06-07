@@ -19,6 +19,7 @@ import { useFormState } from 'react-dom';
 import { signupCredentials } from '@/action/authAction';
 import { Separator } from '@/components/ui/separator';
 import { FaGoogle } from 'react-icons/fa';
+import Link from 'next/link';
 // import { FcGoogle } from 'react-icons/fc';
 
 export default function RegisterPage() {
@@ -120,6 +121,12 @@ export default function RegisterPage() {
               <Button type="submit" className="w-full">
                 Sign Up
               </Button>
+              <p className="text-xs text-center text-muted-foreground">
+                Already have an account?{' '}
+                <Link href="/auth/login" className="text-sky-500 underline">
+                  Login here
+                </Link>
+              </p>
             </form>
           </Form>
 
