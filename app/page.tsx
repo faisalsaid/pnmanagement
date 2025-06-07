@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
-   <div className="p-4">
-    <Button  variant={'default'}>Halo</Button>
+   <div className="flex items-center justify-center flex-col min-h-lvh">
+    <h1 className="text-2xl font-semibold text-slate-600">Website under construction.</h1>
    </div>
   );
 }
