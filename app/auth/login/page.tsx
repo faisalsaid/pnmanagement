@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { FcGoogle } from 'react-icons/fc';
+import { FaGoogle } from 'react-icons/fa';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -126,7 +126,7 @@ export default function LoginPage() {
             className="w-full flex items-center justify-center gap-2"
             onClick={handleGoogleLogin}
           >
-            <FcGoogle size={20} />
+            <FaGoogle size={20} />
             Sign in with Google
           </Button>
         </CardContent>

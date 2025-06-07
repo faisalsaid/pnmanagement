@@ -17,6 +17,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { registerSchema, RegisterSchema } from '@/lib/zod';
 import { useFormState } from 'react-dom';
 import { signupCredentials } from '@/action/authAction';
+import { Separator } from '@/components/ui/separator';
+import { FaGoogle } from 'react-icons/fa';
 // import { FcGoogle } from 'react-icons/fc';
 
 export default function RegisterPage() {
@@ -42,9 +44,9 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <Card className="w-full max-w-md p-6 shadow-xl">
-        <CardContent>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+      <Card className="w-full max-w-md rounded-2xl shadow-md">
+        <CardContent className="p-6 space-y-6">
           <h2 className="text-2xl font-bold mb-4 text-center">
             Create Account
           </h2>
@@ -121,14 +123,18 @@ export default function RegisterPage() {
             </form>
           </Form>
 
-          <div className="my-4 text-center text-sm text-gray-500">or</div>
+          <div className="flex items-center space-x-2">
+            <Separator className="flex-1" />
+            <span className="text-xs text-muted-foreground">or</span>
+            <Separator className="flex-1" />
+          </div>
 
           <Button
             variant="outline"
             className="w-full flex items-center justify-center gap-2"
             onClick={handleGoogleSignup}
           >
-            {/* <FcGoogle className="text-xl" /> */}
+            <FaGoogle size={20} />
             Sign up with Google
           </Button>
         </CardContent>
