@@ -88,7 +88,9 @@ export default function LoginPage() {
                         <Input
                           {...field}
                           type={showPassword ? 'text' : 'password'}
-                          placeholder="••••••••"
+                          placeholder={
+                            showPassword ? 'Type a password' : '••••••••'
+                          }
                           className="pr-10"
                         />
                         <button
