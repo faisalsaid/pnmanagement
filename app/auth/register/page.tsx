@@ -1,6 +1,6 @@
 'use client';
 
-import { z } from 'zod';
+// import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/form';
 import { Card, CardContent } from '@/components/ui/card';
 import { registerSchema, RegisterSchema } from '@/lib/zod';
-import { useFormState } from 'react-dom';
+// import { useFormState } from 'react-dom';
 import { signupCredentials } from '@/action/authAction';
 import { Separator } from '@/components/ui/separator';
 import { FaGoogle } from 'react-icons/fa';
