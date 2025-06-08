@@ -60,5 +60,47 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       session.user.role = token.role;
       return session;
     },
+
+    authorized({ auth, request: { nextUrl } }) {
+      const user = auth?.user;
+      const isLoggedIn = !!user;
+
+      const protectedRoutes = [
+        { prefix: '/dashboard', roles: ['ADMIN', 'USER'] },
+        { prefix: '/posts', roles: ['ADMIN'] },
+        { prefix: '/asset', roles: ['ADMIN', 'ADMIN'] },
+      ];
+
+      const blockedWhenLoggedIn = ['/auth'];
+
+      // Verify if the route is protected and determine which role is required.
+      const matchedRoute = protectedRoutes.find((route) =>
+        nextUrl.pathname.startsWith(route.prefix),
+      );
+
+      const isBlockedRoute = blockedWhenLoggedIn.some((prefix) =>
+        nextUrl.pathname.startsWith(prefix),
+      );
+
+      // 🔒 Not logged in, but the route is protected.
+      if (!isLoggedIn && matchedRoute) {
+        return Response.redirect(new URL('/auth/login', nextUrl));
+      }
+
+      // ✅ Logged in, but the role is not authorized.
+      if (matchedRoute && isLoggedIn) {
+        const allowedRoles = matchedRoute.roles;
+        if (!allowedRoles.includes(user.role)) {
+          return new Response('Forbidden: Insufficient role', { status: 403 });
+        }
+      }
+
+      // 🚫 Already logged in but redirected to /auth.
+      if (isLoggedIn && isBlockedRoute) {
+        return Response.redirect(new URL('/dashboard', nextUrl));
+      }
+
+      return true;
+    },
   },
 });
