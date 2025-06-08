@@ -10,7 +10,7 @@ generator client {
 model User {
   id            String          @id @default(cuid())
   name          String?
-  email         String          @unique
+  email         String         @unique
   emailVerified DateTime?
   image         String?
   hashPassword  String?
@@ -19,9 +19,16 @@ model User {
   sessions      Session[]
   // Optional for WebAuthn support
   Authenticator Authenticator[]
+
+  // relasi articel
+  articles     Article[]      @relation("AuthorArticles")
+  comments     Comment[]
+  uploadedMedia MediaAsset[] 
+  revisions Revision[]  // relasi balik, opsional
  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
 }
  
 model Account {
@@ -80,10 +87,131 @@ model Authenticator {
 }
 
 
+
+
+// ---------- CATEGORY ----------
+model Category {
+  id        String      @id @default(cuid())
+  name      String      @unique
+  slug      String      @unique
+  articles  Article[]   @relation("CategoryArticles")
+}
+
+
+
+// ---------- TAG ----------
+model Tag {
+  id        String      @id @default(cuid())
+  name      String      @unique
+  slug      String      @unique
+  articles  ArticleTag[]
+}
+
+model ArticleTag {
+  articleId String
+  tagId     String
+
+  article   Article @relation(fields: [articleId], references: [id],  onDelete: Cascade)
+  tag       Tag     @relation(fields: [tagId], references: [id])
+
+  @@id([articleId, tagId])
+}
+
+// ---------- MEDIA ASSET ----------
+model MediaAsset {
+  id            String    @id @default(cuid())
+  title         String?
+  caption       String?
+  url           String
+  public_id     String?
+  secure_url    String?
+  thumbnail_url String?
+  resource_type String
+  format        String?
+  width         Int?
+  height        Int?
+  uploadedBy    String
+  uploadedAt    DateTime  @default(now())
+
+  uploader    User      @relation(fields: [uploadedBy], references: [id])
+  usages      ArticleMedia[]
+}
+
+model ArticleMedia {
+  articleId   String
+  mediaAssetId String
+  role         String 
+  article      Article     @relation(fields: [articleId], references: [id])
+  mediaAsset   MediaAsset  @relation(fields: [mediaAssetId], references: [id])
+
+  @@id([articleId, mediaAssetId, role])
+}
+
+// ---------- ARTICLE / POSTINGAN BERITA ----------
+model Article {
+  id            String          @id @default(cuid())
+  title         String
+  slug          String          @unique
+  summary       String?
+  content       String          // HTML / Markdown
+  status        ArticleStatus   @default(DRAFT)
+  authorId      String
+  categoryId    String
+  publishedAt   DateTime?
+  wordCount     Int?
+  viewCount     Int             @default(0)
+
+  author        User            @relation("AuthorArticles", fields: [authorId], references: [id])
+  category      Category        @relation("CategoryArticles", fields: [categoryId], references: [id])
+  tags          ArticleTag[]
+  media         ArticleMedia[]
+  comments      Comment[]
+  revisions     Revision[]
+
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  deletedAt     DateTime?
+}
+
+// ---------- KOMENTAR (OPTIONAL) ----------
+model Comment {
+  id         String    @id @default(cuid())
+  articleId  String
+  userId     String?
+  content    String
+  isPrivate  Boolean   @default(false)  // untuk catatan internal/editorial
+  postedAt   DateTime  @default(now())
+
+  article    Article   @relation(fields: [articleId], references: [id])
+  user       User?     @relation(fields: [userId], references: [id])
+}
+
+// ---------- REVISION / AUDIT LOG ----------
+model Revision {
+  id           String    @id @default(cuid())
+  articleId    String
+  editorId     String
+  summary      String     // ringkasan perubahan
+  diff         String     // bisa JSON, patch, atau markdown
+  createdAt    DateTime   @default(now())
+
+  article      Article    @relation(fields: [articleId], references: [id])
+  editor       User       @relation(fields: [editorId], references: [id])
+}
+
+
 enum Role {
   ADMIN
   PEMRED
   REDAKTUR
   REPORTER
   USER
+}
+
+
+enum ArticleStatus {
+  DRAFT
+  REVIEW
+  PUBLISHED
+  ARCHIVED
 }
