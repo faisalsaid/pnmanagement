@@ -66,9 +66,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       const isLoggedIn = !!user;
 
       const protectedRoutes = [
-        { prefix: '/dashboard', roles: ['ADMIN', 'USER'] },
+        { prefix: '/dashboard', roles: ['ADMIN'] },
         { prefix: '/posts', roles: ['ADMIN'] },
-        { prefix: '/asset', roles: ['ADMIN', 'ADMIN'] },
+        { prefix: '/asset', roles: ['ADMIN'] },
+        { prefix: '/profile', roles: ['ADMIN', 'USER'] },
       ];
 
       const blockedWhenLoggedIn = ['/auth'];
@@ -91,7 +92,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (matchedRoute && isLoggedIn) {
         const allowedRoles = matchedRoute.roles;
         if (!allowedRoles.includes(user.role)) {
-          return new Response('Forbidden: Insufficient role', { status: 403 });
+          return Response.redirect(new URL('/', nextUrl));
+          // return new Response('Forbidden: Insufficient role', { status: 403 });
         }
       }
 
