@@ -43,3 +43,12 @@ export const postFormSchema = z.object({
   ),
   media: z.array(z.object({ id: z.string(), role: z.string() })),
 });
+
+// CATEGORY SCHEMA
+
+export const CreateCategorySchema = z.object({
+  name: z
+    .string()
+    .min(3, { message: 'Category must be more than 3 character' }),
+  slug: z.string(),
+});
