@@ -8,6 +8,7 @@ import {
   HandCoins,
   Mail,
   GalleryThumbnails,
+  UserRound,
 } from 'lucide-react';
 
 export const adminMenuList = [
@@ -57,9 +58,9 @@ export const adminMenuList = [
   },
 
   {
-    title: 'Search',
-    url: '/users/2',
-    icon: Search,
+    title: 'Profile',
+    url: '/profile',
+    icon: UserRound,
   },
   {
     title: 'Settings',
