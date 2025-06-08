@@ -65,11 +65,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       const user = auth?.user;
       const isLoggedIn = !!user;
 
+      const roleRedaksi = ['ADMIN', 'PEMRED', 'REDAKTUR', 'REPORTER'];
+
       const protectedRoutes = [
-        { prefix: '/dashboard', roles: ['ADMIN'] },
-        { prefix: '/posts', roles: ['ADMIN'] },
-        { prefix: '/asset', roles: ['ADMIN'] },
-        { prefix: '/profile', roles: ['ADMIN', 'USER'] },
+        { prefix: '/dashboard', roles: roleRedaksi },
+        { prefix: '/posts', roles: roleRedaksi },
+        { prefix: '/asset', roles: roleRedaksi },
+        { prefix: '/profile', roles: roleRedaksi },
       ];
 
       const blockedWhenLoggedIn = ['/auth'];
