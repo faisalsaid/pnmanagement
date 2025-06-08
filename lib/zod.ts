@@ -28,3 +28,18 @@ export const registerSchema = z
   });
 
 export type RegisterSchema = z.infer<typeof registerSchema>;
+
+// POST SCEMA
+export const postFormSchema = z.object({
+  authorId: z.string().min(1),
+  title: z.string().min(3, 'Title must be most then 3 character'),
+  slug: z.string().min(1),
+  summary: z.string().optional(),
+  content: z.string().min(1),
+  categoryId: z.string().min(1),
+  status: z.enum(['DRAFT', 'PUBLISHED', 'REVIEW', 'ARCHIVED']),
+  tags: z.array(
+    z.object({ id: z.string(), name: z.string(), slug: z.string() }),
+  ),
+  media: z.array(z.object({ id: z.string(), role: z.string() })),
+});
