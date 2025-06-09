@@ -25,7 +25,7 @@ export const PostsTablePagination = ({
   onLimitChange,
 }: Props) => {
   return (
-    <div className="flex items-center justify-between gap-4 mt-4 px-2">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4 px-2">
       <div className="flex items-center gap-2">
         <Button
           variant="outline"
@@ -34,7 +34,7 @@ export const PostsTablePagination = ({
         >
           Previous
         </Button>
-        <span>
+        <span className="text-xs sm:text-md">
           Page <strong>{page}</strong> of <strong>{totalPages}</strong>
         </span>
         <Button

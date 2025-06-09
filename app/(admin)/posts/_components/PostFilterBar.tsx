@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { CircleX, Filter, Search, XCircle } from 'lucide-react';
+import { Filter, RotateCcw, Search, XCircle } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import {
@@ -74,8 +74,8 @@ export default function PostFilterBar({
   };
 
   return (
-    <div className="flex items-center justify-between gap-4 ">
-      <div className="flex items-center gap-2 border p-2 rounded-md w-full">
+    <div className="flex flex-col md:flex-row items-center justify-between gap-4 ">
+      <div className="flex items-center gap-2 border p-2 rounded-md w-full bg-background">
         <Search />
         <input
           className="w-full p-1 focus:border-0 focus:outline-none "
@@ -101,162 +101,165 @@ export default function PostFilterBar({
           </div>
         )}
       </div>
-      <Popover open={openAuthor} onOpenChange={setOpenAuthor}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            className="min-w-fit justify-start flex items-center gap-2"
-          >
-            <Filter />
-            <span>
-              {selectedAuthor
-                ? `Author: ${author
-                    .filter((user) => user.id === selectedAuthor)
-                    .map((user) => user.name)}`
-                : 'By Author'}
-            </span>
-          </Button>
-        </PopoverTrigger>
-        {selectedAuthor && (
-          <div className="-ml-5">
-            <XCircle
-              size={16}
-              className="ml-2 cursor-pointer text-red-600"
-              onClick={(e) => {
-                e.stopPropagation();
-                updateParams((params) => params.delete('authorId'));
-              }}
-            />
-          </div>
-        )}
-        <PopoverContent className="w-[200px] p-0">
-          <Command>
-            <CommandInput placeholder="Search Author..." />
-            <CommandList>
-              {author?.map((user) => (
-                <CommandItem
-                  key={user.id}
-                  onSelect={() => {
-                    updateParams((params) => params.set('authorId', user.id));
-                    setOpenAuthor(false);
-                  }}
-                >
-                  {user.name}
-                </CommandItem>
-              ))}
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+      <div className="flex items-center gap-2 overflow-x-scroll sm:overflow-x-clip w-full pb-2 sm:pb-0">
+        <Popover open={openAuthor} onOpenChange={setOpenAuthor}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className="min-w-fit justify-start flex items-center gap-2"
+            >
+              <Filter />
+              <span>
+                {selectedAuthor
+                  ? `Author: ${author
+                      .filter((user) => user.id === selectedAuthor)
+                      .map((user) => user.name)}`
+                  : 'By Author'}
+              </span>
+            </Button>
+          </PopoverTrigger>
+          {selectedAuthor && (
+            <div className="-ml-5">
+              <XCircle
+                size={16}
+                className="ml-2 cursor-pointer text-red-600"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  updateParams((params) => params.delete('authorId'));
+                }}
+              />
+            </div>
+          )}
+          <PopoverContent className="w-[200px] p-0">
+            <Command>
+              <CommandInput placeholder="Search Author..." />
+              <CommandList>
+                {author?.map((user) => (
+                  <CommandItem
+                    key={user.id}
+                    onSelect={() => {
+                      updateParams((params) => params.set('authorId', user.id));
+                      setOpenAuthor(false);
+                    }}
+                  >
+                    {user.name}
+                  </CommandItem>
+                ))}
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
 
-      {/* Category Filter */}
-      <Popover open={openCategories} onOpenChange={setOpenCategories}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            className="min-w-fit justify-start flex items-center gap-2"
-          >
-            <Filter />
-            <span>
-              {selectedCategory
-                ? `Category: ${categories
-                    .filter((category) => category.id === selectedCategory)
-                    .map((category) => category.name)}`
-                : 'By Category'}
-            </span>
-          </Button>
-        </PopoverTrigger>
-        {selectedCategory && (
-          <div className="-ml-5">
-            <XCircle
-              size={16}
-              className="ml-2 cursor-pointer text-red-600"
-              onClick={(e) => {
-                e.stopPropagation();
-                updateParams((params) => params.delete('categoryId'));
-              }}
-            />
-          </div>
-        )}
+        {/* Category Filter */}
+        <Popover open={openCategories} onOpenChange={setOpenCategories}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className="min-w-fit justify-start flex items-center gap-2"
+            >
+              <Filter />
+              <span>
+                {selectedCategory
+                  ? `Category: ${categories
+                      .filter((category) => category.id === selectedCategory)
+                      .map((category) => category.name)}`
+                  : 'By Category'}
+              </span>
+            </Button>
+          </PopoverTrigger>
+          {selectedCategory && (
+            <div className="-ml-5">
+              <XCircle
+                size={16}
+                className="ml-2 cursor-pointer text-red-600"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  updateParams((params) => params.delete('categoryId'));
+                }}
+              />
+            </div>
+          )}
 
-        <PopoverContent className="w-[200px] p-0">
-          <Command>
-            <CommandInput placeholder="Search Category..." />
-            <CommandList>
-              {categories?.map((category) => (
-                <CommandItem
-                  key={category.id}
-                  onSelect={() => {
-                    updateParams((params) =>
-                      params.set('categoryId', category.id),
-                    );
-                    setOpenCategories(false);
-                  }}
-                >
-                  {category.name}
-                </CommandItem>
-              ))}
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+          <PopoverContent className="w-[200px] p-0">
+            <Command>
+              <CommandInput placeholder="Search Category..." />
+              <CommandList>
+                {categories?.map((category) => (
+                  <CommandItem
+                    key={category.id}
+                    onSelect={() => {
+                      updateParams((params) =>
+                        params.set('categoryId', category.id),
+                      );
+                      setOpenCategories(false);
+                    }}
+                  >
+                    {category.name}
+                  </CommandItem>
+                ))}
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
 
-      <Popover open={openStatus} onOpenChange={setOpenStatus}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            className="min-w-fit justify-start flex items-center gap-2"
-          >
-            <Filter />
-            <span>
-              {selectedStatus ? `Status: ${selectedStatus}` : 'By Status'}
-            </span>
-          </Button>
-        </PopoverTrigger>
-        {selectedStatus && (
-          <div className="-ml-5">
-            <XCircle
-              size={16}
-              className="ml-2 cursor-pointer text-red-600"
-              onClick={(e) => {
-                e.stopPropagation();
-                updateParams((params) => params.delete('status'));
-              }}
-            />
-          </div>
-        )}
-        <PopoverContent className="w-[200px] p-0">
-          <Command>
-            <CommandInput placeholder="Search status..." />
-            <CommandList>
-              {statuses.map((status) => (
-                <CommandItem
-                  key={status}
-                  onSelect={() => {
-                    updateParams((params) => params.set('status', status));
-                    setOpenStatus(false);
-                  }}
-                >
-                  {status}
-                </CommandItem>
-              ))}
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+        <Popover open={openStatus} onOpenChange={setOpenStatus}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className="min-w-fit justify-start flex items-center gap-2"
+            >
+              <Filter />
+              <span>
+                {selectedStatus ? `Status: ${selectedStatus}` : 'By Status'}
+              </span>
+            </Button>
+          </PopoverTrigger>
+          {selectedStatus && (
+            <div className="-ml-5">
+              <XCircle
+                size={16}
+                className="ml-2 cursor-pointer text-red-600"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  updateParams((params) => params.delete('status'));
+                }}
+              />
+            </div>
+          )}
+          <PopoverContent className="w-[200px] p-0">
+            <Command>
+              <CommandInput placeholder="Search status..." />
+              <CommandList>
+                {statuses.map((status) => (
+                  <CommandItem
+                    key={status}
+                    onSelect={() => {
+                      updateParams((params) => params.set('status', status));
+                      setOpenStatus(false);
+                    }}
+                  >
+                    {status}
+                  </CommandItem>
+                ))}
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
 
-      <DateRangeFilter
-        value={dateRange}
-        onChange={(range) => {
-          setDateRange(range);
-          updateParams((params) => {
-            if (range.from) params.set('createdFrom', range.from.toISOString());
-            else params.delete('createdFrom');
-            if (range.to) params.set('createdTo', range.to.toISOString());
-            else params.delete('createdTo');
-          });
-        }}
-      />
+        <DateRangeFilter
+          value={dateRange}
+          onChange={(range) => {
+            setDateRange(range);
+            updateParams((params) => {
+              if (range.from)
+                params.set('createdFrom', range.from.toISOString());
+              else params.delete('createdFrom');
+              if (range.to) params.set('createdTo', range.to.toISOString());
+              else params.delete('createdTo');
+            });
+          }}
+        />
+      </div>
 
       {/* Reset All */}
       {(search ||
@@ -268,13 +271,13 @@ export default function PostFilterBar({
         selectSortBy) && (
         <Button
           variant="ghost"
-          className="bg-red-400 text-white hover:text-white hover:bg-red-500 dark:hover:bg-red-500"
+          className="bg-red-600 text-white hover:text-white hover:bg-red-500 dark:hover:bg-red-500"
           onClick={() => {
             router.push('/posts');
             setDateRange({ from: undefined, to: undefined });
           }}
         >
-          <CircleX /> <span>Reset All Filter</span>
+          <RotateCcw /> <span>Reset All</span>
         </Button>
       )}
     </div>
