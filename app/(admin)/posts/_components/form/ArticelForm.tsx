@@ -31,9 +31,11 @@ import { Button } from '@/components/ui/button';
 import { Loader2, Upload } from 'lucide-react';
 import RitchTextEditor from '@/components/RitchTextEditor';
 import { Separator } from '@/components/ui/separator';
-import { getAllTags } from '@/action/postActions';
+import { createArticle, getAllTags } from '@/action/postActions';
 import { TagSelector } from './TagSelector';
 import AssetPicker from './AssetPicker';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 const postStatus: string[] = ['DRAFT', 'REVIEW', 'PUBLISHED', 'ARCHIVED'];
 
@@ -50,6 +52,8 @@ const ArticelForm = ({ initialData, categories }: Props) => {
   const [tags, setTags] = useState<Tag[]>([]);
   const { data: session } = useSession();
   const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   // handle roles
   const userRoleId =
@@ -62,7 +66,7 @@ const ArticelForm = ({ initialData, categories }: Props) => {
         (status) => status === 'DRAFT' || status === 'ARCHIVED',
       );
 
-  console.log('ArticelForm =>> ', userRoleId, '==>', filteredStatus);
+  // console.log('ArticelForm =>> ', userRoleId, '==>', filteredStatus);
 
   // Handle fullfield form if edit mode
   const transformedInitialData = initialData
@@ -117,45 +121,43 @@ const ArticelForm = ({ initialData, categories }: Props) => {
   const onSubmit = async (data: z.infer<typeof postFormSchema>) => {
     console.log(data);
 
-    // if (initialData) {
-    //   startTransition(() => {
-    //     updateArticle(data)
-    //       .then((res) => {
-    //         if (res?.message) {
-    //           setError(res.message);
-    //           toast.error(res.message);
-    //         } else {
-    //           toast.success('Article updated!');
-
-    //           router.push(`/posts/${data.slug}`);
-    //         }
-    //       })
-    //       .catch(() => {
-    //         setError('Something went wrong');
-    //         console.log(error);
-
-    //         toast.error('Something went wrong');
-    //       });
-    //   });
-    // } else {
-    //   startTransition(() => {
-    //     createArticle(data)
-    //       .then((res) => {
-    //         if (res?.message) {
-    //           setError(res.message);
-    //           toast.error(res.message);
-    //         } else {
-    //           toast.success('Article created!');
-    //           form.reset();
-    //           router.push('/posts');
-    //         }
-    //       })
-    //       .catch(() => {
-    //         setError('Something went wrong');
-    //         toast.error('Something went wrong');
-    //       });
-    //   });
-    // }
+    if (initialData) {
+      // startTransition(() => {
+      //   updateArticle(data)
+      //     .then((res) => {
+      //       if (res?.message) {
+      //         setError(res.message);
+      //         toast.error(res.message);
+      //       } else {
+      //         toast.success('Article updated!');
+      //         router.push(`/posts/${data.slug}`);
+      //       }
+      //     })
+      //     .catch(() => {
+      //       setError('Something went wrong');
+      //       console.log(error);
+      //       toast.error('Something went wrong');
+      //     });
+      // });
+    } else {
+      startTransition(() => {
+        createArticle(data)
+          .then((res) => {
+            if (res?.message) {
+              setError(res.message);
+              toast.error(res.message);
+            } else {
+              toast.success('Article created!');
+              form.reset();
+              router.push('/posts');
+            }
+          })
+          .catch(() => {
+            setError('Something went wrong');
+            toast.error('Something went wrong');
+          });
+      });
+    }
   };
 
   return (

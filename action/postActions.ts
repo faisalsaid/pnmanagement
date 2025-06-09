@@ -1,7 +1,9 @@
 'use server';
 import prisma from '@/lib/prisma';
-import { CreateCategorySchema } from '@/lib/zod';
+import { CreateCategorySchema, postFormSchema } from '@/lib/zod';
 import { revalidatePath } from 'next/cache';
+import slugify from 'slugify';
+import { z } from 'zod';
 
 interface InputCategory {
   name: string;
@@ -50,4 +52,73 @@ export async function getAllTags() {
   });
 
   return tags;
+}
+
+// HANDLE CREATE ARTICLE
+export async function createArticle(data: z.infer<typeof postFormSchema>) {
+  console.log('ACTION POST', data);
+
+  const validated = postFormSchema.parse(data);
+
+  const [author, category] = await Promise.all([
+    prisma.user.findUnique({ where: { id: validated.authorId } }),
+    prisma.category.findUnique({ where: { id: validated.categoryId } }),
+  ]);
+
+  if (!author) {
+    return { message: 'Invalid authorId – user not found' };
+  }
+
+  if (!category) {
+    return { message: 'Invalid categoryId – category not found' };
+  }
+
+  try {
+    await prisma.article.create({
+      data: {
+        title: validated.title,
+        slug: validated.slug,
+        summary: validated.summary,
+        content: validated.content,
+        status: validated.status,
+        categoryId: validated.categoryId,
+        authorId: validated.authorId,
+        publishedAt: validated.status === 'PUBLISHED' ? new Date() : undefined,
+
+        tags: {
+          create: validated.tags.map((tag) => ({
+            tag: {
+              connectOrCreate: {
+                where: { name: tag.name },
+                create: {
+                  name: tag.name,
+                  slug: slugify(tag.name, { lower: true }),
+                },
+              },
+            },
+          })),
+        },
+
+        media:
+          validated.media.length > 0
+            ? {
+                create: validated.media.map((media) => ({
+                  mediaAsset: {
+                    connect: { id: media.id },
+                  },
+                  role: media.role,
+                })),
+              }
+            : undefined,
+      },
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('CREATE POST ERROR:', error);
+    return {
+      message: 'Failed to create post',
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
 }
