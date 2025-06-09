@@ -34,8 +34,8 @@ export const adminMenuList = [
     ],
   },
   {
-    title: 'Asset',
-    url: '/asset',
+    title: 'Assets',
+    url: '/assets',
     icon: GalleryThumbnails,
   },
   {
