@@ -32,6 +32,8 @@ const AssetInfoForm = ({
 }: {
   asset: MediaAsset & { uploader: { name: string | null; id: string } };
 }) => {
+  // console.log('AssetInfoForm ==>', asset);
+
   const { data: session } = useSession();
   const [permsion] = useState(
     session?.user.role &&
@@ -63,6 +65,11 @@ const AssetInfoForm = ({
   };
 
   const handleDelete = async () => {
+    // alert(asset.id);
+    if (!asset.id || !asset.public_id) {
+      toast.success('Please select a asset');
+      return;
+    }
     try {
       await deleteMediaAsset({ id: asset.id, public_id: asset.public_id! });
       toast.success('Asset deleted');

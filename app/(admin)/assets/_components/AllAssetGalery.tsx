@@ -47,39 +47,6 @@ const AllAssetGalery = ({ allAsset, pagination }: AllAssetProps) => {
     [router, searchParams],
   );
 
-  // handle delete asset
-
-  interface DeleteAssetProps {
-    id: string;
-    public_id: string;
-  }
-  const handleDelete = async ({ id, public_id }: DeleteAssetProps) => {
-    if (!id && !public_id) {
-      toast.error('Please select asset to delete');
-      return;
-    }
-
-    startTransition(async () => {
-      try {
-        await deleteMediaAsset({ id, public_id });
-        router.push('/asset');
-        toast.success('Asset delete successfully!');
-      } catch (error) {
-        console.error('Failed to delete asset:', error);
-        toast.error('Asset delete failed, try again.');
-      }
-    });
-  };
-
-  const updateInfoForm = useForm<z.infer<typeof UpdateAssetInfoSchema>>({
-    resolver: zodResolver(UpdateAssetInfoSchema),
-    defaultValues: {
-      id: '',
-      title: '',
-      caption: '',
-    },
-  });
-
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">

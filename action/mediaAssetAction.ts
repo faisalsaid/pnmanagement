@@ -83,7 +83,7 @@ export const updateMediaAssetInfo = async (asset: UpdateMediaAssetProps) => {
 
 // DELETE CLOUDINARY ASSET
 
-type DelteMediaAssetPorps = {
+type DeleteMediaAssetProps = {
   public_id: string;
   id: string;
 };
@@ -91,8 +91,10 @@ type DelteMediaAssetPorps = {
 export const deleteMediaAsset = async ({
   public_id,
   id,
-}: DelteMediaAssetPorps) => {
-  if (!public_id) {
+}: DeleteMediaAssetProps) => {
+  console.log('deleteMediaAsset =>>', public_id, id);
+
+  if (!public_id || !id) {
     return { success: false, error: 'publicId is required' };
   }
 
@@ -100,12 +102,15 @@ export const deleteMediaAsset = async ({
     // Hapus dari Cloudinary
     const cloudinaryRes = await cloudinary.uploader.destroy(public_id);
 
-    if (cloudinaryRes.result !== 'ok') {
+    if (cloudinaryRes.result !== 'ok' && cloudinaryRes.result !== 'not found') {
       return {
         success: false,
         error: `Cloudinary error: ${cloudinaryRes.result}`,
       };
     }
+
+    const media = await prisma.mediaAsset.findUnique({ where: { id } });
+    console.log('Media in DB:', media);
 
     // Hapus dari DB
     const deleted = await prisma.mediaAsset.delete({
@@ -116,7 +121,7 @@ export const deleteMediaAsset = async ({
   } catch (error: any) {
     console.error('Delete error:', error);
 
-    // Tangani error Prisma
+    // handle error Prisma
     if (error.code === 'P2025') {
       return { success: false, error: 'Asset not found in database' };
     }

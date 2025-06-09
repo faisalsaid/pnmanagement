@@ -142,7 +142,7 @@ model ArticleMedia {
   mediaAssetId String
   role         String 
   article      Article     @relation(fields: [articleId], references: [id])
-  mediaAsset   MediaAsset  @relation(fields: [mediaAssetId], references: [id])
+  mediaAsset   MediaAsset  @relation(fields: [mediaAssetId], references: [id], onDelete: Cascade)
 
   @@id([articleId, mediaAssetId, role])
 }
