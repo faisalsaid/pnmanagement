@@ -41,7 +41,7 @@ const PostPage = async ({ searchParams }: PostPageProps) => {
     },
   });
 
-  console.log('POSTS PAGE ==> chec params', params);
+  // console.log('POSTS PAGE ==> chec params', params);
 
   const {
     search,
