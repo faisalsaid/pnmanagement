@@ -24,11 +24,11 @@ interface SearchParams {
 }
 
 interface PostPageProps {
-  searchParams: Promise<SearchParams>;
+  params: Promise<SearchParams>;
 }
 
-const PostPage = async ({ searchParams }: PostPageProps) => {
-  const params: any = await searchParams;
+const PostPage = async ({ params }: PostPageProps) => {
+  const { searchParams } = await params;
   const allAuthor = await prisma.user.findMany({
     select: {
       id: true,
@@ -53,9 +53,13 @@ const PostPage = async ({ searchParams }: PostPageProps) => {
     sortOrder = 'desc',
     page = '1',
     pageSize = '10',
-  } = params;
+  } = searchParams;
 
-  const status = params.status as 'DRAFT' | 'REVIEW' | 'PUBLISHED' | 'ARCHIVED';
+  const status = searchParams.status as
+    | 'DRAFT'
+    | 'REVIEW'
+    | 'PUBLISHED'
+    | 'ARCHIVED';
 
   const where = {
     ...(search && {
@@ -88,7 +92,7 @@ const PostPage = async ({ searchParams }: PostPageProps) => {
 
   const orderBy: Prisma.ArticleOrderByWithRelationInput[] = [];
 
-  sortByFields.forEach((field: any, idx: any) => {
+  sortByFields.forEach((field: string, idx: number) => {
     const order = (sortOrders[idx] || 'asc').toLowerCase();
     if (field === 'author') {
       orderBy.push({ author: { name: order as 'asc' | 'desc' } });

@@ -13,7 +13,7 @@ import {
 import { ChevronRight } from 'lucide-react';
 
 const PrintBreadcrumbs = () => {
-  const pathname = usePathname(); // contoh: '/dashboard/settings
+  const pathname = usePathname(); // example: '/dashboard/settings
   const segments = pathname.split('/').filter(Boolean); // ['dashboard', 'settings']
 
   function splitLast<T>(arr: T[]) {
