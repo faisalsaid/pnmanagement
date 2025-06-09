@@ -1,15 +1,9 @@
 'use client';
 
 import { MediaAsset } from '@prisma/client';
-import { startTransition, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import AssetPagination from './AssetPagination';
-import { deleteMediaAsset } from '@/action/mediaAssetAction';
-import { toast } from 'sonner';
-import { z } from 'zod';
-import { UpdateAssetInfoSchema } from '@/lib/zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 
 import AssetCard from './AssetCard';
 

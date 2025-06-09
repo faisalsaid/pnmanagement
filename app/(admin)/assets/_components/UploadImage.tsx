@@ -9,14 +9,12 @@ import {
   CloudinaryUploadWidgetResults,
 } from 'next-cloudinary';
 import { useRouter } from 'next/navigation';
-import { startTransition, useState } from 'react';
+import { startTransition } from 'react';
 import { toast } from 'sonner';
 
 const UploadImage = () => {
   const { data: session } = useSession();
   const router = useRouter();
-
-  // const [publicID, setPublicID] = useState<string>('/dummy-image-square.jpg');
 
   const handleUpload = (result: CloudinaryUploadWidgetResults) => {
     if (result.event !== 'success') {

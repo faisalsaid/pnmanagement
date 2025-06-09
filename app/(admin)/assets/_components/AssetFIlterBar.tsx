@@ -1,6 +1,6 @@
 'use client';
 import { Prisma } from '@prisma/client';
-import { CircleX, Filter, Search, XCircle } from 'lucide-react';
+import { Filter, Search, XCircle } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 

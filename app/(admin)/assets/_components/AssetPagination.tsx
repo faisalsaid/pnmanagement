@@ -14,13 +14,7 @@ interface Props {
   onLimitChange: (limit: number) => void;
 }
 
-const AssetPagination = ({
-  page,
-  limit,
-  totalPages,
-  onPageChange,
-  onLimitChange,
-}: Props) => {
+const AssetPagination = ({ page, totalPages, onPageChange }: Props) => {
   return (
     <Pagination>
       <PaginationContent>
