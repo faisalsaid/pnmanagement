@@ -56,7 +56,7 @@ export async function getAllTags() {
 
 // HANDLE CREATE ARTICLE
 export async function createArticle(data: z.infer<typeof postFormSchema>) {
-  console.log('ACTION POST', data);
+  // console.log('ACTION POST', data);
 
   const validated = postFormSchema.parse(data);
 

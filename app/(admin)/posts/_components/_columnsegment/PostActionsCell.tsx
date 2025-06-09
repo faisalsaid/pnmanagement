@@ -47,16 +47,18 @@ export function PostActionsCell({ post }: { post: Article }) {
   }, [isAllowed]);
 
   const handleDelete = () => {
-    // startTransition(async () => {
-    //   const res = await deleteArticle(post.id);
-    //   if (res?.success) {
-    //     toast.success('Article deleted successfully!');
-    //     router.refresh();
-    //   } else {
-    //     toast.error(res?.message || 'Failed to delete article.');
-    //   }
-    //   setOpen(false);
-    // });
+    startTransition(async () => {
+      toast.info('oke for testing');
+      router.refresh();
+      // const res = await deleteArticle(post.id);
+      // if (res?.success) {
+      //   toast.success('Article deleted successfully!');
+      //   router.refresh();
+      // } else {
+      //   toast.error(res?.message || 'Failed to delete article.');
+      // }
+      setOpen(false);
+    });
   };
 
   return (
@@ -96,10 +98,11 @@ export function PostActionsCell({ post }: { post: Article }) {
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Yakin ingin menghapus?</AlertDialogTitle>
+            <AlertDialogTitle>
+              Are you sure you want to delete?
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Artikel <strong>{post.title}</strong> akan dihapus secara
-              permanen.
+              Artikel <strong>{post.title}</strong> will be permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

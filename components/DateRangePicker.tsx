@@ -31,7 +31,7 @@ export default function DateRangeFilter({
   const searchParams = useSearchParams();
 
   const [open, setOpen] = useState(false);
-  const [date, setDate] = useState<DateRange>({
+  const [date] = useState<DateRange>({
     from: searchParams.get('createdFrom')
       ? parseISO(searchParams.get('createdFrom')!)
       : undefined,
@@ -56,15 +56,15 @@ export default function DateRangeFilter({
     }
 
     router.push(`/posts?${params.toString()}`);
-  }, [date]);
+  }, [date, router, searchParams]);
 
-  const handleReset = () => {
-    setDate({ from: undefined, to: undefined });
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete('createdFrom');
-    params.delete('createdTo');
-    router.push(`/posts?${params.toString()}`);
-  };
+  // const handleReset = () => {
+  //   setDate({ from: undefined, to: undefined });
+  //   const params = new URLSearchParams(searchParams.toString());
+  //   params.delete('createdFrom');
+  //   params.delete('createdTo');
+  //   router.push(`/posts?${params.toString()}`);
+  // };
 
   return (
     <div className="flex items-center gap-2">

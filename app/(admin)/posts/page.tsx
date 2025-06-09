@@ -8,27 +8,25 @@ import Link from 'next/link';
 import { Prisma } from '@prisma/client';
 import PostFilterBar from './_components/PostFilterBar';
 
-interface SearchParams {
-  searchParams: {
-    search?: string;
-    authorId?: string;
-    categoryId?: string;
-    status?: string;
-    createdFrom?: string;
-    createdTo?: string;
-    sortBy?: string | string[];
-    sortOrder?: string | string[];
-    page?: string;
-    pageSize?: string;
-  };
+interface ParamsProps {
+  search?: string;
+  authorId?: string;
+  categoryId?: string;
+  status?: string;
+  createdFrom?: string;
+  createdTo?: string;
+  sortBy?: string | string[];
+  sortOrder?: string | string[];
+  page?: string;
+  pageSize?: string;
 }
 
 interface PostPageProps {
-  params: Promise<SearchParams>;
+  searchParams: Promise<ParamsProps>;
 }
 
-const PostPage = async ({ params }: PostPageProps) => {
-  const { searchParams } = await params;
+const PostPage = async ({ searchParams }: PostPageProps) => {
+  const params = await searchParams;
   const allAuthor = await prisma.user.findMany({
     select: {
       id: true,
@@ -43,6 +41,8 @@ const PostPage = async ({ params }: PostPageProps) => {
     },
   });
 
+  console.log('POSTS PAGE ==> chec params', params);
+
   const {
     search,
     authorId,
@@ -53,13 +53,9 @@ const PostPage = async ({ params }: PostPageProps) => {
     sortOrder = 'desc',
     page = '1',
     pageSize = '10',
-  } = searchParams;
+  } = params;
 
-  const status = searchParams.status as
-    | 'DRAFT'
-    | 'REVIEW'
-    | 'PUBLISHED'
-    | 'ARCHIVED';
+  const status = params.status as 'DRAFT' | 'REVIEW' | 'PUBLISHED' | 'ARCHIVED';
 
   const where = {
     ...(search && {
