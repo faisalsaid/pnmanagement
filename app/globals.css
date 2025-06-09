@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -119,4 +119,35 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.ProseMirror {
+  /* min-height: 600px; */
+  /* padding: 1rem; */
+  border-radius: 0.5rem;
+  outline: none;
+  white-space: pre-wrap;
+  line-height: 1.5;
+  color: var(--foreground);
+}
+
+.ProseMirror p {
+  margin-bottom: 1rem;
+}
+
+/* Optional basic typography */
+.ProseMirror h1 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.ProseMirror h2 {
+  font-size: 1.25rem;
+  font-weight: semi-bold;
+  margin-bottom: 0.5rem;
+}
+
+.ProseMirror p {
+  margin-bottom: 1rem;
 }

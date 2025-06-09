@@ -1,7 +1,6 @@
 import {
   Home,
   Inbox,
-  Search,
   Settings,
   Plus,
   Newspaper,

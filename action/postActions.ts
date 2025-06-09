@@ -33,3 +33,21 @@ export const createCategory = async (payload: InputCategory) => {
   revalidatePath('/settings'); // agar list reload di server
   return { success: true };
 };
+
+export const getAllCategory = async () => {
+  try {
+    const categories = await prisma.category.findMany();
+    return { success: true, data: categories };
+  } catch (error) {
+    return { message: 'Can,t get categories', error };
+  }
+};
+
+// Get all Tags
+export async function getAllTags() {
+  const tags = await prisma.tag.findMany({
+    select: { id: true, name: true, slug: true },
+  });
+
+  return tags;
+}
