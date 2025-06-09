@@ -43,7 +43,7 @@ type Tag = { id: string; name: string; slug: string };
 
 type Props = {
   initialData?: z.infer<typeof postFormSchema>;
-  categories?: Prisma.CategoryGetPayload<{}>[];
+  categories?: Prisma.CategoryGetPayload<true>[];
   //   userId: string | undefined;
   //   onSubmit: (data: FormSchema) => void;
 };
@@ -144,6 +144,7 @@ const ArticelForm = ({ initialData, categories }: Props) => {
         createArticle(data)
           .then((res) => {
             if (res?.message) {
+              console.log(error);
               setError(res.message);
               toast.error(res.message);
             } else {
