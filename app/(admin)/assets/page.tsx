@@ -1,22 +1,20 @@
 import prisma from '@/lib/prisma';
 import AllAssetGalery from './_components/AllAssetGalery';
-
-import { auth } from '@/auth';
-
 import { redirect } from 'next/navigation';
 import AssetFIlterBar from './_components/AssetFIlterBar';
-
 import UploadImage from './_components/UploadImage';
 
+interface ParamsProps {
+  search?: string;
+  uploadedBy?: string;
+  sortBy?: string | string[];
+  sortOrder?: string | string[];
+  page?: string;
+  pageSize?: string;
+}
+
 interface AllAssetProps {
-  searchParams: {
-    search?: string;
-    uploadedBy?: string;
-    sortBy?: string | string[];
-    sortOrder?: string | string[];
-    page?: string;
-    pageSize?: string;
-  };
+  searchParams: Promise<ParamsProps>;
 }
 
 const AllAssetPage = async ({ searchParams }: AllAssetProps) => {
@@ -26,16 +24,8 @@ const AllAssetPage = async ({ searchParams }: AllAssetProps) => {
       name: true,
     },
   });
-  const session = await auth();
   const params = await searchParams;
-  const {
-    search,
-    uploadedBy,
-    sortBy = 'createdAt',
-    sortOrder = 'desc',
-    page = '1',
-    pageSize = '10',
-  } = params;
+  const { search, uploadedBy, page = '1', pageSize = '10' } = params;
 
   const where = {
     ...(search && {
