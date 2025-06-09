@@ -1,9 +1,11 @@
 import { getAllCategory } from '@/action/postActions';
 import ArticelForm from '../_components/form/ArticelForm';
+import { auth } from '@/auth';
 
 const CreateArticlePage = async () => {
   const { data: categories } = await getAllCategory();
-  return <ArticelForm categories={categories} />;
+  const session = await auth();
+  return <ArticelForm categories={categories} authorId={session?.user.id} />;
 };
 
 export default CreateArticlePage;

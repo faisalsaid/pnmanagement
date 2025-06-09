@@ -31,7 +31,7 @@ import { Button } from '@/components/ui/button';
 import { Loader2, Upload } from 'lucide-react';
 import RitchTextEditor from '@/components/RitchTextEditor';
 import { Separator } from '@/components/ui/separator';
-import { createArticle, getAllTags } from '@/action/postActions';
+import { createArticle, getAllTags, updateArticle } from '@/action/postActions';
 import { TagSelector } from './TagSelector';
 import AssetPicker from './AssetPicker';
 import { toast } from 'sonner';
@@ -44,11 +44,11 @@ type Tag = { id: string; name: string; slug: string };
 type Props = {
   initialData?: z.infer<typeof postFormSchema>;
   categories?: Prisma.CategoryGetPayload<true>[];
-  //   userId: string | undefined;
+  authorId: string | undefined;
   //   onSubmit: (data: FormSchema) => void;
 };
 
-const ArticelForm = ({ initialData, categories }: Props) => {
+const ArticelForm = ({ initialData, categories, authorId }: Props) => {
   const [tags, setTags] = useState<Tag[]>([]);
   const { data: session } = useSession();
   const [isPending, startTransition] = useTransition();
@@ -91,7 +91,7 @@ const ArticelForm = ({ initialData, categories }: Props) => {
       categoryId: '',
       status: 'DRAFT',
       tags: [],
-      authorId: session?.user.id || '',
+      authorId: authorId || '',
       media: [],
     },
   });
@@ -122,23 +122,23 @@ const ArticelForm = ({ initialData, categories }: Props) => {
     console.log(data);
 
     if (initialData) {
-      // startTransition(() => {
-      //   updateArticle(data)
-      //     .then((res) => {
-      //       if (res?.message) {
-      //         setError(res.message);
-      //         toast.error(res.message);
-      //       } else {
-      //         toast.success('Article updated!');
-      //         router.push(`/posts/${data.slug}`);
-      //       }
-      //     })
-      //     .catch(() => {
-      //       setError('Something went wrong');
-      //       console.log(error);
-      //       toast.error('Something went wrong');
-      //     });
-      // });
+      startTransition(() => {
+        updateArticle(data)
+          .then((res) => {
+            if (res?.message) {
+              setError(res.message);
+              toast.error(res.message);
+            } else {
+              toast.success('Article updated!');
+              router.push(`/posts/${data.slug}`);
+            }
+          })
+          .catch(() => {
+            setError('Something went wrong');
+            console.log(error);
+            toast.error('Something went wrong');
+          });
+      });
     } else {
       startTransition(() => {
         createArticle(data)

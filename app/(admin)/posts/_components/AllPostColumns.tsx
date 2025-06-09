@@ -27,25 +27,6 @@ import {
 } from '@/components/ui/tooltip';
 import { truncateByChar } from '@/lib/helper';
 
-// export type Article = {
-//   id: string;
-//   title: string;
-//   createdAt: Date;
-//   status: ArticleStatus;
-//   slug: string;
-//   author: {
-//     id: string;
-//     name: string | null;
-//     email: string;
-//     role: Role;
-//   };
-//   category: {
-//     id: string;
-//     name: string;
-//     slug: string;
-//   };
-// };
-
 export type Article = Prisma.ArticleGetPayload<{
   select: {
     id: true;
@@ -98,15 +79,7 @@ export const AllPostsColumns: ColumnDef<Article>[] = [
   {
     accessorKey: 'title',
     header: () => {
-      return (
-        <Button
-          variant="ghost"
-          // onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Title
-          {/* <ArrowUpDown className="ml-2 h-4 w-4" /> */}
-        </Button>
-      );
+      return <Button variant="ghost">Title</Button>;
     },
     cell: ({ row }) => (
       <TooltipProvider>
@@ -118,7 +91,6 @@ export const AllPostsColumns: ColumnDef<Article>[] = [
         </Tooltip>
       </TooltipProvider>
     ),
-    // cell: ({ row }) => truncateByChar(row.original.title, 30),
   },
   {
     accessorKey: 'author',
@@ -128,7 +100,7 @@ export const AllPostsColumns: ColumnDef<Article>[] = [
       return (
         <HoverCard>
           <HoverCardTrigger>{author?.name ?? author.name}</HoverCardTrigger>
-          <HoverCardContent>
+          <HoverCardContent className="p-0">
             <AuthorCard author={author} />
           </HoverCardContent>
         </HoverCard>

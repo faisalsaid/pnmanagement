@@ -122,3 +122,140 @@ export async function createArticle(data: z.infer<typeof postFormSchema>) {
     };
   }
 }
+
+// GET POST by slug
+export async function getPostBySlug(slug: string) {
+  const categories = await prisma.category.findMany();
+
+  const post = await prisma.article.findUnique({
+    where: { slug },
+    include: {
+      tags: { include: { tag: true } },
+      media: {
+        select: {
+          mediaAsset: true,
+          role: true,
+        },
+      },
+    },
+  });
+
+  return { categories, post };
+}
+
+// handle UPDATE POST
+type UpdateArticlePayload = z.infer<typeof postFormSchema> & { slug: string };
+
+export async function updateArticle(data: UpdateArticlePayload) {
+  // console.log('updateArticle ==>>', data);
+
+  const { slug, title, content, summary, status, authorId, categoryId, tags } =
+    data;
+
+  try {
+    const existingArticle = await prisma.article.findUnique({
+      where: { slug },
+      select: { id: true },
+    });
+
+    if (!existingArticle) {
+      throw new Error('Article not found.');
+    }
+
+    const articleId = existingArticle.id;
+
+    // Handle tags: ensure all have IDs (create new tags if needed)
+    const ensuredTags = await Promise.all(
+      tags.map(async (tag) => {
+        if (tag.id && tag.id.trim() !== '') {
+          return tag; // existing tag
+        }
+
+        // Check if tag with same slug already exists
+        let existingTag = await prisma.tag.findUnique({
+          where: { slug: tag.slug },
+        });
+
+        if (!existingTag) {
+          // Create new tag
+          existingTag = await prisma.tag.create({
+            data: {
+              name: tag.name,
+              slug: tag.slug,
+            },
+          });
+        }
+
+        return {
+          id: existingTag.id,
+          name: existingTag.name,
+          slug: existingTag.slug,
+        };
+      }),
+    );
+
+    const uniqueMedia = new Set();
+    for (const m of data.media) {
+      const key = `${m.id}:${m.role}`;
+      if (uniqueMedia.has(key)) {
+        throw new Error(`Duplicate media-role pair: ${key}`);
+      }
+      uniqueMedia.add(key);
+    }
+
+    const mediaOps = [
+      prisma.articleMedia.deleteMany({
+        where: { articleId },
+      }),
+
+      ...data.media.map((m) =>
+        prisma.articleMedia.create({
+          data: {
+            articleId,
+            mediaAssetId: m.id,
+            role: m.role,
+          },
+        }),
+      ),
+    ];
+
+    // Run the transaction
+    await prisma.$transaction([
+      // Update the article itself
+      prisma.article.update({
+        where: { id: articleId },
+        data: {
+          title,
+          content,
+          summary,
+          status,
+          authorId,
+          categoryId,
+          updatedAt: new Date(),
+        },
+      }),
+
+      // Clear existing tags
+      prisma.articleTag.deleteMany({
+        where: { articleId },
+      }),
+
+      // Re-create tag relationships
+      ...ensuredTags.map((tag) =>
+        prisma.articleTag.create({
+          data: {
+            articleId,
+            tagId: tag.id,
+          },
+        }),
+      ),
+
+      ...mediaOps,
+    ]);
+
+    return { success: true };
+  } catch (error) {
+    console.error('Update article fail:', error);
+    return { success: false, message: 'Update article fail' };
+  }
+}
