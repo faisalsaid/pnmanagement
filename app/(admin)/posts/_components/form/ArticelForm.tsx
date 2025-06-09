@@ -33,6 +33,7 @@ import RitchTextEditor from '@/components/RitchTextEditor';
 import { Separator } from '@/components/ui/separator';
 import { getAllTags } from '@/action/postActions';
 import { TagSelector } from './TagSelector';
+import AssetPicker from './AssetPicker';
 
 const postStatus: string[] = ['DRAFT', 'REVIEW', 'PUBLISHED', 'ARCHIVED'];
 
@@ -260,7 +261,7 @@ const ArticelForm = ({ initialData, categories }: Props) => {
             </div>
           </div>
           <div className="bg-primary-foreground p-4 rounded-lg ">
-            {/* <FormField
+            <FormField
               control={form.control}
               name="media"
               render={({ field }) => (
@@ -274,7 +275,7 @@ const ArticelForm = ({ initialData, categories }: Props) => {
                   <FormMessage />
                 </FormItem>
               )}
-            /> */}
+            />
           </div>
 
           <div className="bg-primary-foreground p-4 rounded-lg space-y-4 ">
@@ -300,8 +301,6 @@ const ArticelForm = ({ initialData, categories }: Props) => {
                             {status}
                           </SelectItem>
                         ))}
-
-                        {/* <SelectItem value="user">User</SelectItem> */}
                       </SelectContent>
                     </Select>
                   </FormControl>
