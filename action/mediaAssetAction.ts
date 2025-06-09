@@ -134,7 +134,11 @@ export const getAllMediaAsset = async (): Promise<
   { success: true; data: MediaAsset[] } | { success: false; error: string }
 > => {
   try {
-    const allAsset = await prisma.mediaAsset.findMany();
+    const allAsset = await prisma.mediaAsset.findMany({
+      orderBy: {
+        uploadedAt: 'desc',
+      },
+    });
     return { success: true, data: allAsset };
   } catch (error: any) {
     return {
