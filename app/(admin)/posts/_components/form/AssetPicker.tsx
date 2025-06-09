@@ -13,6 +13,13 @@ import { X } from 'lucide-react';
 import { getAllMediaAsset } from '@/action/mediaAssetAction';
 import { MediaAsset } from '@prisma/client';
 import { CldImage } from 'next-cloudinary';
+import { Select } from '@radix-ui/react-select';
+import {
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 type SelectedAsset = MediaAsset & { role: string };
 
@@ -77,7 +84,7 @@ export default function AssetPicker({ value, onChange }: AssetPickerProps) {
   const handleConfirm = () => {
     onChange(selectedAssets.map(({ id, role }) => ({ id, role })));
     setOpen(false);
-    console.log('Sending payload:', selectedAssets); // 🐞 Debug
+    // console.log('Sending payload:', selectedAssets); // 🐞 Debug
   };
 
   return (
@@ -123,9 +130,12 @@ export default function AssetPicker({ value, onChange }: AssetPickerProps) {
       </Dialog>
 
       {/* Selected Thumbnails Display */}
-      <div className="grid grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 gap-4">
         {selectedAssets.map((asset) => (
-          <div key={asset.id} className="relative w-full aspect-square">
+          <div
+            key={asset.id}
+            className="relative w-full aspect-square space-y-2"
+          >
             <CldImage
               width={asset.width as number}
               height={asset.height as number}
@@ -148,7 +158,28 @@ export default function AssetPicker({ value, onChange }: AssetPickerProps) {
             >
               <X className="w-4 h-4 text-red-500  " />
             </Button>
-            <select
+
+            <Select
+              value={asset.role}
+              onValueChange={(newRole) => {
+                const updated = selectedAssets.map((a) =>
+                  a.id === asset.id ? { ...a, role: newRole } : a,
+                );
+                setSelectedAssets(updated);
+                onChange(updated); // trigger change to parent
+              }}
+            >
+              <SelectTrigger className="w-full text-xs py-1 px-2 h-8">
+                <SelectValue placeholder="Select role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="default">Default</SelectItem>
+                <SelectItem value="feature">Feature</SelectItem>
+                <SelectItem value="gallery">Gallery</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* <select
               className="mt-1 w-full text-xs border rounded py-1 px-2"
               value={asset.role}
               onChange={(e) => {
@@ -163,7 +194,7 @@ export default function AssetPicker({ value, onChange }: AssetPickerProps) {
               <option value="default">Default</option>
               <option value="feature">Feature</option>
               <option value="gallery">Gallery</option>
-            </select>
+            </select> */}
           </div>
         ))}
       </div>
