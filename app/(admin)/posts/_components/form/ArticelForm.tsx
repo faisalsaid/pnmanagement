@@ -129,8 +129,8 @@ const ArticelForm = ({ initialData, categories, authorId }: Props) => {
               setError(res.message);
               toast.error(res.message);
             } else {
-              toast.success('Article updated!');
               router.push(`/posts/${data.slug}`);
+              toast.success('Article updated!');
             }
           })
           .catch(() => {
@@ -265,6 +265,7 @@ const ArticelForm = ({ initialData, categories, authorId }: Props) => {
           </div>
           <div className="bg-primary-foreground p-4 rounded-lg ">
             <FormField
+              disabled={isPending}
               control={form.control}
               name="media"
               render={({ field }) => (

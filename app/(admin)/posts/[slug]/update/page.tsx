@@ -1,44 +1,38 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import prisma from '@/lib/prisma';
+// import { PostDetail } from '../../_components/PostDetails';
 import ArticleForm from '../../_components/form/ArticelForm';
-import { getPostBySlug } from '@/action/postActions';
+import { auth } from '@/auth';
 
-export default function EditPostPage() {
-  const params = useParams();
-  const slug = params?.slug as string; // pastikan slug ada
+interface ParamsProps {
+  slug: string;
+}
 
-  const [loading, setLoading] = useState(true);
-  const [post, setPost] = useState<any>(null);
-  const [categories, setCategories] = useState<any[]>([]);
-  const [error, setError] = useState<string | null>(null);
+interface PageProps {
+  params: Promise<ParamsProps>;
+}
 
-  useEffect(() => {
-    if (!slug) return;
+const EditPostPage = async ({ params }: PageProps) => {
+  const { slug } = await params;
 
-    async function fetchData() {
-      try {
-        const data = await getPostBySlug(slug);
-        if (!data.post) {
-          setError('Post not found');
-          return;
-        }
-        setCategories(data.categories);
-        setPost(data.post);
-      } catch (e) {
-        setError('Failed to fetch post');
-      } finally {
-        setLoading(false);
-      }
-    }
+  const categories = await prisma.category.findMany();
+  const session = await auth();
 
-    fetchData();
-  }, [slug]);
+  const post = await prisma.article.findUnique({
+    where: { slug },
+    include: {
+      tags: { include: { tag: true } },
+      media: {
+        select: {
+          mediaAsset: true,
+          role: true,
+        },
+      },
+    },
+  });
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
-  if (!post) return <div>Post not found</div>;
+  // console.log('EditPostPage', post);
+
+  if (!post || !session?.user) return <div>Post not found or unauthorized</div>;
 
   const transformedPost = {
     id: post.id,
@@ -49,18 +43,19 @@ export default function EditPostPage() {
     categoryId: post.categoryId,
     status: post.status,
     authorId: post.authorId,
-    tags: post.tags.map((t: any) => t.tag),
-    media: post.media.map((m: any) => ({
+    tags: post.tags.map((t) => t.tag),
+    media: post.media.map((m) => ({
       id: m.mediaAsset.id,
       role: m.role,
     })),
   };
-
   return (
     <ArticleForm
       initialData={transformedPost}
       categories={categories}
-      authorId={post.authorId}
+      authorId={session?.user.id}
     />
   );
-}
+};
+
+export default EditPostPage;
