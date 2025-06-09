@@ -2,6 +2,7 @@ import prisma from '@/lib/prisma';
 // import { PostDetail } from '../../_components/PostDetails';
 import ArticleForm from '../../_components/form/ArticelForm';
 import { auth } from '@/auth';
+import { redirect } from 'next/navigation';
 
 interface ParamsProps {
   slug: string;
@@ -12,10 +13,13 @@ interface PageProps {
 }
 
 const EditPostPage = async ({ params }: PageProps) => {
+  // get session
+  const session = await auth();
+
+  // fetch arcicle and categories
   const { slug } = await params;
 
   const categories = await prisma.category.findMany();
-  const session = await auth();
 
   const post = await prisma.article.findUnique({
     where: { slug },
@@ -30,7 +34,14 @@ const EditPostPage = async ({ params }: PageProps) => {
     },
   });
 
-  // console.log('EditPostPage', post);
+  // Ensure the user has the appropriate role or owns the article.
+  const permision =
+    ['ADMIN', 'PEMRED', 'REDAKTUR'].includes(session?.user.role as string) ||
+    post?.authorId === session?.user.id;
+
+  if (!permision) {
+    redirect('/posts');
+  }
 
   if (!post || !session?.user) return <div>Post not found or unauthorized</div>;
 
