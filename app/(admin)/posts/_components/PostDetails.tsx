@@ -4,13 +4,7 @@ import AuthorCard from '@/components/AuthorCard';
 import RenderRichText from '@/components/RenderRIchText';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { Prisma } from '@prisma/client';
 import { Dot, Edit } from 'lucide-react';
@@ -167,7 +161,9 @@ const PostDetails = ({ data }: { data: PostDetail }) => {
           <div className="space-y-2">
             <p className="text-sm font-semibold">Tags :</p>
             {data.tags &&
-              data.tags.map((data) => <Badge>{data.tag.name}</Badge>)}
+              data.tags.map((data) => (
+                <Badge key={data.tag.id}>{data.tag.name}</Badge>
+              ))}
           </div>
         </div>
       </div>

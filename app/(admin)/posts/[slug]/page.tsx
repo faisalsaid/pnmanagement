@@ -1,13 +1,6 @@
 import prisma from '@/lib/prisma';
 import PostDetails from '../_components/PostDetails';
 
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { Edit } from 'lucide-react';
-import AuthorCard from '@/components/AuthorCard';
-import Link from 'next/link';
-import { auth } from '@/auth';
-
 interface Params {
   slug: string;
 }
@@ -18,7 +11,6 @@ interface PostDetailsProps {
 
 const PostsDetailsPage = async ({ params }: PostDetailsProps) => {
   const { slug } = await params;
-  const session = await auth();
 
   // console.log(session);
 

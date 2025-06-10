@@ -62,7 +62,7 @@ const PostPage = async ({ searchParams }: PostPageProps) => {
       title: {
         contains: search,
         // mode: 'insensitive',
-        // mode: 'insensitive' as const,
+        mode: 'insensitive' as const,
       },
     }),
     ...(authorId && { authorId }),
