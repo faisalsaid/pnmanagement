@@ -26,12 +26,7 @@ const PostsDetailsPage = async ({ params }: PostDetailsProps) => {
     where: { slug },
     include: {
       author: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          image: true,
-          role: true,
+        include: {
           articles: {
             select: {
               id: true,
@@ -61,43 +56,10 @@ const PostsDetailsPage = async ({ params }: PostDetailsProps) => {
   });
   // console.log(post);
 
-  const permision =
-    ['ADMIN', 'PEMRED', 'REDAKTUR'].includes(session?.user.role as string) ||
-    post?.author.id === session?.user.id;
-
   if (!post) {
     return <div>Post not found.</div>;
   }
-  return (
-    <div className="flex flex-col xl:flex-row gap-8">
-      <div className="w-full space-y-6 xl:w-2/3">
-        <div className="bg-primary-foreground p-4 rounded-lg ">
-          <PostDetails data={post} />
-        </div>
-      </div>
-      <div className="w-full space-y-6 xl:w-1/3">
-        <div className="bg-primary-foreground p-4 rounded-lg space-y-4">
-          <div className="flex items-center justify-between">
-            <p>Article Info</p>
-            {permision && (
-              <Link href={`./${post.slug}/update`}>
-                <Button>
-                  <Edit /> <span>Edit Post</span>
-                </Button>
-              </Link>
-            )}
-          </div>
-          <Separator />
-          <div className="space-y-2">
-            <p className="text-sm">Author :</p>
-            <div className="border rounded-lg overflow-hidden p-2 bg-background">
-              <AuthorCard author={post.author} />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  return <PostDetails data={post} />;
 };
 
 export default PostsDetailsPage;
