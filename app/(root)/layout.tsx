@@ -13,7 +13,7 @@ const layout = async ({
     <main className="container mx-auto min-h-screen flex flex-col relative">
       <WebHeader categories={allCategories} />
       <Separator />
-      {children}
+      <div className="py-4">{children}</div>
       <WebFooter />
     </main>
   );

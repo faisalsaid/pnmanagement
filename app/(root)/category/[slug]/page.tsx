@@ -1,7 +1,4 @@
-import RenderRichText from '@/components/RenderRIchText';
-import { getExcerptFromHtml } from '@/lib/helper/excerptAricle';
 import prisma from '@/prisma';
-import { CldImage } from 'next-cloudinary';
 import CategoryHeadArticle from '../../_components/CategoryHeadArticle';
 
 type SlugProps = { slug: string };

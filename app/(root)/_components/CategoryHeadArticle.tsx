@@ -1,7 +1,9 @@
 'use client';
+
 import { getExcerptFromHtml } from '@/lib/helper/excerptAricle';
 import { Prisma } from '@prisma/client';
 import { CldImage } from 'next-cloudinary';
+import Link from 'next/link';
 
 interface Props {
   article: Prisma.ArticleGetPayload<{
@@ -17,7 +19,7 @@ interface Props {
 }
 
 const CategoryHeadArticle = ({ article }: Props) => {
-  console.log(article.media);
+  //   console.log(article.media);
 
   const excerptArticle = getExcerptFromHtml(article.content, 30);
 
@@ -25,7 +27,7 @@ const CategoryHeadArticle = ({ article }: Props) => {
     (item) => item.role === 'feature',
   )[0];
 
-  console.log(fetureImage);
+  //   console.log(fetureImage);
 
   return (
     <div className="flex gap-4 ">
@@ -39,7 +41,9 @@ const CategoryHeadArticle = ({ article }: Props) => {
         />
       </div>
       <div className="flex-3/5 space-y-4">
-        <h1 className="text-xl font-semibold">{article.title}</h1>
+        <h1 className="text-xl font-semibold">
+          <Link href={`/read/${article.slug}`}>{article.title}</Link>
+        </h1>
         <p>{excerptArticle}</p>
       </div>
     </div>
