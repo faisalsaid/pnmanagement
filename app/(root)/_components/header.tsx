@@ -1,17 +1,33 @@
 'use client';
 
 import { formatIndonesianDate } from '@/lib/helper/formatDate';
+import { Prisma } from '@prisma/client';
 
 import { User } from 'lucide-react';
 import Link from 'next/link';
+import React from 'react';
 
-const dumyNavbarList = [
-  { title: 'Beranda', url: '/' },
-  { title: 'Politik', url: '/category/politik' },
-  { title: 'Hukum', url: '/category/hukum' },
-];
+// const dumyNavbarList = [
+//   { title: 'Beranda', url: '/' },
+//   { title: 'Politik', url: '/category/politik' },
+//   { title: 'Hukum', url: '/category/hukum' },
+// ];
 
-const WebHeader = () => {
+interface WebFooterProps {
+  categories: Prisma.CategoryGetPayload<true>[];
+}
+
+const WebHeader = ({ categories }: WebFooterProps) => {
+  const toExclude = ['uncategorized', 'headline'];
+
+  const filtered = categories.filter((cat) => !toExclude.includes(cat.slug));
+  const priority = ['politik', 'ekonomi'];
+  const cleanCategories = [
+    ...priority
+      .map((slug) => filtered.find((cat) => cat.slug === slug))
+      .filter(Boolean),
+    ...filtered.filter((cat) => !priority.includes(cat.slug)),
+  ];
   return (
     <header className="">
       <div className="grid grid-cols-3 text-sm text-muted-foreground">
@@ -33,16 +49,24 @@ const WebHeader = () => {
         </div>
       </div>
       <nav>
-        <ul className="hidden md:flex gap-6 text-sm font-medium">
-          {dumyNavbarList &&
-            dumyNavbarList.map((menu) => (
-              <Link
-                className="border-b-4 border-transparent hover:border-red-500 py-1 transition-all"
-                key={menu.url}
-                href={menu.url}
-              >
-                {menu.title}
-              </Link>
+        <ul className="hidden md:flex gap-6 text-sm font-medium items-center">
+          <Link
+            className="border-b-4 border-transparent hover:border-red-500 py-1 transition-all"
+            href={'/'}
+          >
+            Beranda
+          </Link>
+          {cleanCategories &&
+            cleanCategories.map((category) => (
+              <React.Fragment key={category?.id}>
+                <Link
+                  className="border-b-4 border-transparent hover:border-red-500 py-1 transition-all"
+                  key={category?.id}
+                  href={`/category/${category?.slug}`}
+                >
+                  {category?.name}
+                </Link>
+              </React.Fragment>
             ))}
         </ul>
       </nav>
