@@ -29,9 +29,7 @@ const SiglePostPage = async ({ params }: Props) => {
   if (article) await incrementPostView(article?.id);
 
   // select first feature image
-  const featureImage = article?.media.filter(
-    (asset) => (asset.role = 'feature'),
-  )[0];
+  const featureImage = article?.media.find((asset) => asset.role === 'feature');
 
   return (
     <div className="flex sm:flex-row flex-col gap-4">
