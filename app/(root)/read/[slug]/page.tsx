@@ -1,6 +1,7 @@
 import RenderRichText from '@/components/RenderRIchText';
 import prisma from '@/lib/prisma';
 import ArticelAsset from '../_components/ArticelAsset';
+import { incrementPostView } from '@/action/postActions';
 
 type ParamsProps = { slug: string };
 
@@ -25,11 +26,12 @@ const SiglePostPage = async ({ params }: Props) => {
     },
   });
 
+  if (article) await incrementPostView(article?.id);
+
   // select first feature image
   const featureImage = article?.media.filter(
     (asset) => (asset.role = 'feature'),
   )[0];
-  console.log(featureImage);
 
   return (
     <div className="flex sm:flex-row flex-col gap-4">

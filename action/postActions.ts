@@ -259,3 +259,14 @@ export async function updateArticle(data: UpdateArticlePayload) {
     return { success: false, message: 'Update article fail' };
   }
 }
+
+// HANDLE ARCTICLE COUNT INCREMENT
+
+export async function incrementPostView(id: string) {
+  await prisma.article.update({
+    where: { id: id },
+    data: {
+      viewCount: { increment: 1 },
+    },
+  });
+}
