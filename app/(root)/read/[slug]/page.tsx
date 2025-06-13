@@ -1,5 +1,6 @@
 import RenderRichText from '@/components/RenderRIchText';
 import prisma from '@/lib/prisma';
+import ArticelAsset from '../_components/ArticelAsset';
 
 type ParamsProps = { slug: string };
 
@@ -14,14 +15,30 @@ const SiglePostPage = async ({ params }: Props) => {
     where: {
       slug,
     },
+    include: {
+      media: {
+        select: {
+          mediaAsset: true,
+          role: true,
+        },
+      },
+    },
   });
 
+  // select first feature image
+  const featureImage = article?.media.filter(
+    (asset) => (asset.role = 'feature'),
+  )[0];
+  console.log(featureImage);
+
   return (
-    <div className="flex gap-4">
+    <div className="flex sm:flex-row flex-col gap-4">
       <section className="flex-8/12">
         <article className="space-y-4">
-          <div></div>
           <h1 className="text-2xl font-semibold">{article?.title}</h1>
+          {featureImage ? (
+            <ArticelAsset asset={featureImage?.mediaAsset} />
+          ) : null}
           <RenderRichText content={article?.content as string} />
         </article>
       </section>

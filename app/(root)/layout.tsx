@@ -10,7 +10,7 @@ const layout = async ({
 }>) => {
   const allCategories = await prisma.category.findMany();
   return (
-    <main className="container mx-auto min-h-screen flex flex-col relative">
+    <main className="container mx-auto min-h-screen flex flex-col px-4">
       <WebHeader categories={allCategories} />
       <Separator />
       <div className="py-4">{children}</div>
