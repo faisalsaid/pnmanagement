@@ -32,7 +32,7 @@ const SiglePostPage = async ({ params }: Props) => {
   const featureImage = article?.media.find((asset) => asset.role === 'feature');
 
   return (
-    <div className="flex sm:flex-row flex-col gap-4">
+    <div className="flex sm:flex-row flex-col gap-6">
       <section className="flex-8/12">
         <article className="space-y-4">
           <h1 className="text-2xl font-semibold">{article?.title}</h1>
