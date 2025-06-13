@@ -4,6 +4,7 @@ import { formatIndonesianDate } from '@/lib/helper/formatDate';
 import { Prisma } from '@prisma/client';
 
 import { User } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import React from 'react';
 
@@ -19,6 +20,7 @@ interface WebFooterProps {
 
 const WebHeader = ({ categories }: WebFooterProps) => {
   const toExclude = ['uncategorized', 'headline'];
+  const { data: session } = useSession();
 
   const filtered = categories.filter((cat) => !toExclude.includes(cat.slug));
   const priority = ['politik', 'ekonomi'];
@@ -42,10 +44,16 @@ const WebHeader = ({ categories }: WebFooterProps) => {
         </div>
         <div className="flex items-center gap-4 justify-end">
           {/* <div>serch article</div> */}
-          <div className="flex gap-1 items-center ">
-            <User size={16} />
-            Sign in
-          </div>
+          {session ? (
+            <div>
+              <Link href={'/dashboard'}>Beranda</Link>{' '}
+            </div>
+          ) : (
+            <div className="flex gap-1 items-center ">
+              <User size={16} />
+              Sign in
+            </div>
+          )}
         </div>
       </div>
       <nav>
