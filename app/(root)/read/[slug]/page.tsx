@@ -19,13 +19,13 @@ const SiglePostPage = async ({ params }: Props) => {
   return (
     <div className="flex gap-4">
       <section className="flex-8/12">
-        <article>
+        <article className="space-y-4">
           <div></div>
-          <h1>{article?.title}</h1>
+          <h1 className="text-2xl font-semibold">{article?.title}</h1>
           <RenderRichText content={article?.content as string} />
         </article>
       </section>
-      <aside className="flex-4/12">kiri</aside>
+      <aside className="flex-4/12">A Side</aside>
     </div>
   );
 };

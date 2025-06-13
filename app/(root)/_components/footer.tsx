@@ -2,7 +2,7 @@ import React from 'react';
 
 const WebFooter = () => {
   return (
-    <footer className="bg-accent border-t py-8 absolute w-full bottom-0">
+    <footer className="bg-accent border-t py-8 w-full">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-sm text-muted-foreground">
         <div>
           <h4 className="font-semibold  mb-3">Kategori</h4>
