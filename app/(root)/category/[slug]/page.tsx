@@ -21,6 +21,7 @@ const CategoryPage = async ({ params }: CategoryPageProps) => {
     },
     where: {
       category: { slug },
+      status: 'PUBLISHED',
     },
     orderBy: {
       createdAt: 'desc',
