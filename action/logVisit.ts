@@ -5,6 +5,7 @@ import { headers } from 'next/headers';
 import { UAParser } from 'ua-parser-js';
 import prisma from '@/lib/prisma';
 import { WebServiceClient } from '@maxmind/geoip2-node';
+import { auth } from '@/auth';
 
 const accountId = process.env.ACCOUNT_ID;
 const licenseKey = process.env.LICENSE_KEY;
@@ -34,6 +35,9 @@ export type ClientLogPayload = {
 
 // server action: boleh side‑effect
 export async function logVisit(payload: ClientLogPayload) {
+  const session = await auth(); // ⇠ null | { user: { id, … } }
+  const userId = session?.user?.id ?? null; // simpan kalau ada
+
   /* ── Header yang hanya bisa di server ── */
   const h = await headers();
 
@@ -85,6 +89,7 @@ export async function logVisit(payload: ClientLogPayload) {
   await prisma.pageVisit.create({
     data: {
       sessionId: payload.sessionId,
+      userId,
       visitTime: new Date(),
       url: payload.url,
       path: payload.path,
