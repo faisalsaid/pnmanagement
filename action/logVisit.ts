@@ -67,7 +67,7 @@ export async function logVisit(payload: ClientLogPayload) {
     console.warn('MaxMind lookup failed:', err);
   }
 
-  console.log(payload.articleSlug);
+  // console.log(payload.articleSlug);
 
   let articleId: string | null = null;
 
@@ -84,7 +84,7 @@ export async function logVisit(payload: ClientLogPayload) {
     articleId = article?.id ?? null;
   }
 
-  console.log('ARTICLE ID ', articleId);
+  // console.log('ARTICLE ID ', articleId);
 
   await prisma.pageVisit.create({
     data: {
