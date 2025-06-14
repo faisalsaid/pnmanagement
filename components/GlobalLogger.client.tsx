@@ -19,6 +19,10 @@ export default function GlobalLogger() {
   const search = useSearchParams();
 
   useEffect(() => {
+    const isArticle = pathname.startsWith('/read/');
+    const articleSLug = isArticle ? pathname.split('/')[2] || null : null;
+    console.log(articleSLug);
+
     // panggil server action (otomatis POST internal Next.js)
     logVisit({
       sessionId: getOrSetSessionId(),
@@ -30,7 +34,7 @@ export default function GlobalLogger() {
       language: navigator.language,
       screen: `${window.innerWidth}x${window.innerHeight}`,
       // articleId bisa di‑set jika slug/artikel tersedia di halaman
-      articleId: null,
+      articleSlug: articleSLug,
     }).catch(() => {});
   }, [pathname, search]);
 

@@ -29,7 +29,7 @@ export type ClientLogPayload = {
   timezone: string;
   language: string;
   screen: string;
-  articleId?: string | null;
+  articleSlug?: string | null;
 };
 
 // server action: boleh side‑effect
@@ -63,6 +63,25 @@ export async function logVisit(payload: ClientLogPayload) {
     console.warn('MaxMind lookup failed:', err);
   }
 
+  console.log(payload.articleSlug);
+
+  let articleId: string | null = null;
+
+  if (payload.articleSlug) {
+    const article = await prisma.article.findUnique({
+      where: {
+        slug: payload.articleSlug,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    articleId = article?.id ?? null;
+  }
+
+  console.log('ARTICLE ID ', articleId);
+
   await prisma.pageVisit.create({
     data: {
       sessionId: payload.sessionId,
@@ -71,7 +90,7 @@ export async function logVisit(payload: ClientLogPayload) {
       path: payload.path,
       pageType: payload.pageType,
       referrer: payload.referrer,
-      articleId: payload.articleId,
+      articleId,
       timezone: payload.timezone,
       language: payload.language,
       screen: payload.screen,
