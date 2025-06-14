@@ -19,6 +19,7 @@ model User {
   sessions      Session[]
   // Optional for WebAuthn support
   Authenticator Authenticator[]
+  pageVisits PageVisit[]
 
   // relasi articel
   articles     Article[]      @relation("AuthorArticles")
@@ -167,6 +168,7 @@ model Article {
   media         ArticleMedia[]
   comments      Comment[]
   revisions     Revision[]
+  pageVisits    PageVisit[]
 
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
@@ -199,6 +201,59 @@ model Revision {
   editor       User       @relation(fields: [editorId], references: [id])
 }
 
+
+
+model PageVisit {
+  id          BigInt      @id @default(autoincrement())            // primary key
+  visitTime   DateTime    @default(now())
+  sessionId   String                                           // UUID sid di cookie
+  userId      String?                                          // nullable kalau guest
+
+  /* ── Geo & IP ────────────────────────────────────────────── */
+  ip          String      @db.VarChar(45)                       // IPv4/IPv6 (gunakan @db.Inet jika memakai PG 14+ & Prisma >=5.15)
+  city        String?     @db.VarChar(80)
+  country     String?     @db.VarChar(80)
+  timezone    String?     @db.VarChar(40)
+
+  /* ── Halaman ─────────────────────────────────────────────── */
+  url         String
+  path        String
+  pageType    PageType
+  referrer    String?
+
+  /* ── Relasi ke Article (opsional) ────────────────────────── */
+  articleId   String?                                           // slug dari Article
+  article     Article?    @relation(fields: [articleId], references: [id])
+
+  /* ── Perangkat & Browser ─────────────────────────────────── */
+  deviceType  String?     @db.VarChar(20)                       // "mobile" | "desktop" | ...
+  os          String?     @db.VarChar(40)
+  browser     String?     @db.VarChar(40)
+  screen      String?     @db.VarChar(20)
+
+  /* ── Preferensi ──────────────────────────────────────────── */
+  language    String?     @db.VarChar(20)
+
+  /* ── Ekstra fleksibel ────────────────────────────────────── */
+  extra       Json?
+
+  /* ── Relasi opsional ke User (kalau ada model User) ─────── */
+  user        User?       @relation(fields: [userId], references: [id])
+
+  /* ── Index untuk query analitik ──────────────────────────── */
+  @@index([visitTime(sort: Desc)])
+  @@index([articleId])
+  @@index([country])
+  @@index([sessionId])
+}
+
+
+enum PageType {
+  article
+  page
+  category
+  other
+}
 
 enum Role {
   ADMIN

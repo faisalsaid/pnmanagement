@@ -2,6 +2,7 @@ import { Separator } from '@/components/ui/separator';
 import WebFooter from './_components/footer';
 import WebHeader from './_components/header';
 import prisma from '@/lib/prisma';
+import GlobalLogger from '@/components/GlobalLogger.client';
 
 const layout = async ({
   children,
@@ -15,6 +16,7 @@ const layout = async ({
       <Separator />
       <div className="py-4">{children}</div>
       <WebFooter />
+      <GlobalLogger />
     </main>
   );
 };
