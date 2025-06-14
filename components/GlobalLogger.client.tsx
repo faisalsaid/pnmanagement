@@ -2,17 +2,16 @@
 
 import { useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { v4 as uuid } from 'uuid';
 import { logVisit } from '@/action/logVisit';
 
-function getOrSetSessionId() {
-  let sid = document.cookie.match(/sid=([^;]+)/)?.[1];
-  if (!sid) {
-    sid = uuid();
-    document.cookie = `sid=${sid};path=/;SameSite=Lax;max-age=1800`;
-  }
-  return sid;
-}
+// function getOrSetSessionId() {
+//   let sid = document.cookie.match(/sid=([^;]+)/)?.[1];
+//   if (!sid) {
+//     sid = uuid();
+//     document.cookie = `sid=${sid};path=/;SameSite=Lax;max-age=1800`;
+//   }
+//   return sid;
+// }
 
 export default function GlobalLogger() {
   const pathname = usePathname();
@@ -25,7 +24,6 @@ export default function GlobalLogger() {
 
     // panggil server action (otomatis POST internal Next.js)
     logVisit({
-      sessionId: getOrSetSessionId(),
       url: window.location.href,
       path: pathname,
       pageType: pathname.startsWith('/artikel') ? 'article' : 'page',

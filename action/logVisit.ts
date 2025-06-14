@@ -1,11 +1,12 @@
 // app/_actions/logVisit.ts
 'use server';
 
-import { headers } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { UAParser } from 'ua-parser-js';
 import prisma from '@/lib/prisma';
 import { WebServiceClient } from '@maxmind/geoip2-node';
 import { auth } from '@/auth';
+import { startOfDay, endOfDay } from 'date-fns';
 
 const accountId = process.env.ACCOUNT_ID;
 const licenseKey = process.env.LICENSE_KEY;
@@ -20,9 +21,8 @@ const client = new WebServiceClient(accountId, licenseKey, {
   host: 'geolite.info',
 });
 
-// tipe data yang diterima dari client
+/////////////////////////////////////////////////////////////////////////////////////////////
 export type ClientLogPayload = {
-  sessionId: string;
   url: string;
   path: string;
   pageType: 'article' | 'page' | 'category' | 'other';
@@ -33,32 +33,34 @@ export type ClientLogPayload = {
   articleSlug?: string | null;
 };
 
-// server action: boleh side‑effect
-export async function logVisit(payload: ClientLogPayload) {
-  const session = await auth(); // ⇠ null | { user: { id, … } }
-  const userId = session?.user?.id ?? null; // simpan kalau ada
+// HANDLE LOG VISIT
 
-  /* ── Header yang hanya bisa di server ── */
+export async function logVisit(payload: Omit<ClientLogPayload, 'sessionId'>) {
+  // 1)  user login?
+  const session = await auth();
+  const userId = session?.user?.id ?? null;
+
+  const cookieStore = await cookies();
+  // const sidCookie = cookieStore.get('sid');
+  const sessionId = cookieStore.get('sid')?.value ?? crypto.randomUUID();
+
+  // 3)  header server‑side
   const h = await headers();
 
-  // Ambil IP dari header (prioritaskan x-forwarded-for)
+  /** 3a) IP */
   let ip =
     (h.get('x-forwarded-for') || '').split(',')[0].trim() ||
     h.get('x-real-ip') ||
     '127.0.0.1';
 
-  // Bersihkan prefix IPv6-mapped
-  if (ip.startsWith('::ffff:')) {
-    ip = ip.replace('::ffff:', '');
-  }
+  if (ip.startsWith('::ffff:')) ip = ip.replace('::ffff:', '');
 
-  // Parse user agent
+  /** 3b) user agent */
   const ua = new UAParser(h.get('user-agent') || '').getResult();
 
-  // Default geo location
+  /** 3c) geolocation (safe fail) */
   let city: string | null = null;
   let country: string | null = null;
-
   try {
     const geo = await client.city(ip);
     city = geo.city?.names?.en || null;
@@ -67,28 +69,20 @@ export async function logVisit(payload: ClientLogPayload) {
     console.warn('MaxMind lookup failed:', err);
   }
 
-  // console.log(payload.articleSlug);
-
+  /** 4) opsional: lookup article ID */
   let articleId: string | null = null;
-
   if (payload.articleSlug) {
     const article = await prisma.article.findUnique({
-      where: {
-        slug: payload.articleSlug,
-      },
-      select: {
-        id: true,
-      },
+      where: { slug: payload.articleSlug },
+      select: { id: true },
     });
-
     articleId = article?.id ?? null;
   }
 
-  // console.log('ARTICLE ID ', articleId);
-
+  /** 5) write to DB */
   await prisma.pageVisit.create({
     data: {
-      sessionId: payload.sessionId,
+      sessionId, // <— from cookeie
       userId,
       visitTime: new Date(),
       url: payload.url,
@@ -99,7 +93,6 @@ export async function logVisit(payload: ClientLogPayload) {
       timezone: payload.timezone,
       language: payload.language,
       screen: payload.screen,
-
       ip,
       city,
       country,
@@ -108,4 +101,29 @@ export async function logVisit(payload: ClientLogPayload) {
       browser: ua.browser.name,
     },
   });
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+// GET VISITOR THIS DAY
+
+export async function getVistorTodayBySessionId() {
+  const todayStart = startOfDay(new Date());
+  const todayEnd = endOfDay(new Date());
+
+  const sessions = await prisma.pageVisit.findMany({
+    where: {
+      visitTime: {
+        gte: todayStart,
+        lte: todayEnd,
+      },
+    },
+    distinct: ['sessionId'],
+    select: {
+      sessionId: true,
+    },
+  });
+
+  const count = sessions.length;
+  console.log('Unique sessions today:', count);
+  return count;
 }
