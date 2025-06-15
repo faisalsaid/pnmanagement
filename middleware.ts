@@ -4,8 +4,8 @@
 import { auth as nextAuth } from '@/auth';
 import { NextRequest, NextResponse } from 'next/server';
 
-// const IDLE_LIMIT_MS = 30 * 60 * 1000; // 30 menit
-const IDLE_LIMIT_MS = 1 * 60 * 1000; // 1 menit
+const IDLE_LIMIT_MS = 30 * 60 * 1000; // 30 menit
+// const IDLE_LIMIT_MS = 1 * 60 * 1000; // 1 menit
 
 export async function middleware(req: NextRequest) {
   /* 1.  Jalankan NextAuth */
