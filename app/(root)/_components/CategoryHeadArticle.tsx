@@ -34,7 +34,7 @@ const CategoryHeadArticle = ({ article }: Props) => {
     }
   }, [article.media]);
 
-  console.log(article);
+  // console.log(article);
 
   return (
     <div className="flex gap-4 ">

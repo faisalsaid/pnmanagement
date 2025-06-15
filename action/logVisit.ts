@@ -43,6 +43,7 @@ export async function logVisit(payload: Omit<ClientLogPayload, 'sessionId'>) {
   const cookieStore = await cookies();
   // const sidCookie = cookieStore.get('sid');
   const sessionId = cookieStore.get('sid')?.value ?? crypto.randomUUID();
+  // console.log(sessionId);
 
   // 3)  header server‑side
   const h = await headers();
