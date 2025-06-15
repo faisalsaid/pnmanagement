@@ -7,6 +7,8 @@ import prisma from '@/lib/prisma';
 import { WebServiceClient } from '@maxmind/geoip2-node';
 import { auth } from '@/auth';
 import { startOfDay, endOfDay } from 'date-fns';
+import { Prisma } from '@prisma/client';
+import { fromZonedTime, toZonedTime } from 'date-fns-tz';
 
 const accountId = process.env.ACCOUNT_ID;
 const licenseKey = process.env.LICENSE_KEY;
@@ -126,4 +128,65 @@ export async function getVistorTodayBySessionId() {
   const count = sessions.length;
   console.log('Unique sessions today:', count);
   return count;
+}
+
+// //////////////////////////////////////////////
+// hit hourly
+
+const tz = 'Asia/Jayapura'; // zona target laporan
+const date = new Date();
+
+export const getHitHourly = async () => {
+  /* 1️⃣  ambil hanya jam yang ada hits */
+  const raw = await prisma.$queryRaw<
+    { hour: string; hits: bigint }[]
+  >(Prisma.sql`
+    SELECT to_char(date_trunc('hour', "visitTime" AT TIME ZONE ${tz}), 'HH24') AS hour,
+           COUNT(*) AS hits
+    FROM   "PageVisit"
+    -- WHERE  "visitTime" AT TIME ZONE ${tz} >= ${date}::date
+    --   AND  "visitTime" AT TIME ZONE ${tz} <  (${date}::date + interval '1 day')
+    GROUP  BY hour
+    ORDER  BY hour
+  `);
+
+  /* 2️⃣  buat array 24 jam default 0 */
+  const full = Array.from({ length: 24 }, (_, i) => ({
+    hour: i.toString().padStart(2, '0'), // '00' … '23'
+    hits: 0,
+  }));
+
+  /* 3️⃣  isi jam yang punya data */
+  raw.forEach(({ hour, hits }) => {
+    full[Number(hour)].hits = Number(hits);
+  });
+
+  return full; // panjang selalu 24 elemen
+};
+
+export async function getHitsTodayUntilNow() {
+  /* 1) Sekarang dalam UTC */
+  const nowUtc = new Date();
+
+  /* 2) Sekarang versi zona target (optional, kalau mau pakai) */
+  const nowLocal = toZonedTime(nowUtc, tz);
+
+  /* 3) 00:00 hari ini di zona target */
+  const startLocal = startOfDay(nowLocal);
+
+  /* 4) Konversi 00:00 lokal → UTC */
+  const startUtc = fromZonedTime(startLocal, tz);
+
+  /* 5) Query semua hit (hanya kolom sessionId) */
+  const rows = await prisma.pageVisit.findMany({
+    where: {
+      visitTime: {
+        gte: startUtc, // ≥ 00:00 WIT, tapi dalam UTC
+        lte: nowUtc, // ≤ sekarang
+      },
+    },
+    select: { sessionId: true, visitTime: true },
+  });
+
+  return rows; // [{ sessionId: 'abc' }, { sessionId: 'def' }, ...]
 }
