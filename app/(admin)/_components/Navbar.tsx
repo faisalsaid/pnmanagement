@@ -6,7 +6,7 @@ import { Session } from 'next-auth';
 import { signOut } from 'next-auth/react';
 
 // import ui
-import { LogOutIcon, Moon, Settings, Sun, User } from 'lucide-react';
+import { House, LogOutIcon, Moon, Settings, Sun, User } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -18,13 +18,32 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 const Navbar = ({ data }: { data: Session | null }) => {
   const { setTheme } = useTheme();
   return (
     <nav className="p-4 flex items-center justify-between sticky top-0 z-10 bg-primary-foreground">
       {/* LEFT */}
-      <SidebarTrigger className="" />
+      <div className="flex gap-2 items-center">
+        <SidebarTrigger className="" />
+        <Link href={'/'}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant={'ghost'} size={'icon'}>
+                <House />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Visit Website</p>
+            </TooltipContent>
+          </Tooltip>
+        </Link>
+      </div>
       {/* RIGHT */}
       <div className="flex items-center gap-4">
         <Link href={'/'}>Dashboard</Link>
