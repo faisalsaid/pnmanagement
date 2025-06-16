@@ -1,18 +1,55 @@
-import { getVistorTodayBySessionId } from '@/action/logVisit';
+import {
+  getDeviceType,
+  getSimpleAnalitic,
+  getTodayHits,
+  getUserActive,
+  getVistorTodayBySessionId,
+} from '@/action/logVisit';
 import React from 'react';
+import TopCard from './_components/TopCard';
+import { User } from 'lucide-react';
+import DeviceChart from './_components/DeviceChart';
 
 const page = async () => {
   const totalVisitorToday = await getVistorTodayBySessionId();
+  const {
+    pageViewsLast24h,
+    uniqueSessionsLast24h,
+    topCountries,
+    topPaths,
+    deviceBreakdown,
+    visitsPerDay,
+  } = await getSimpleAnalitic();
+
+  const dataDevice = await getDeviceType();
+  const userActive = await getUserActive();
+  const totalHits = await getTodayHits();
+  console.log(visitsPerDay);
+
+  const topList = [
+    { title: 'Visitor Today', icon: 'user', value: totalVisitorToday },
+    { title: 'Activities', icon: 'user', value: totalHits },
+    { title: 'Publish Posts', icon: 'user', value: 0 },
+    { title: 'User Active', icon: 'user', value: userActive },
+  ];
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-4 mt-4">
-      <div className="bg-primary-foreground p-4 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2"></div>
-      <div className="bg-primary-foreground p-4 rounded-lg">
-        {totalVisitorToday}
+    <div>
+      <div className="grid grid-cols-2  md:grid-cols-4 gap-4">
+        {topList.map((data, i) => (
+          <TopCard data={data} key={i} />
+        ))}
       </div>
-      <div className="bg-primary-foreground p-4 rounded-lg"></div>
-      <div className="bg-primary-foreground p-4 rounded-lg"></div>
-      <div className="bg-primary-foreground p-4 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2"></div>
-      <div className="bg-primary-foreground p-4 rounded-lg"></div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols- gap-4 mt-4">
+        <div className="bg-primary-foreground p-4 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2">
+          <DeviceChart chartData={dataDevice} />
+        </div>
+        <div className="bg-primary-foreground p-4 rounded-lg"></div>
+        <div className="bg-primary-foreground p-4 rounded-lg">{}</div>
+        <div className="bg-primary-foreground p-4 rounded-lg"></div>
+        <div className="bg-primary-foreground p-4 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2"></div>
+        <div className="bg-primary-foreground p-4 rounded-lg"></div>
+      </div>
     </div>
   );
 };

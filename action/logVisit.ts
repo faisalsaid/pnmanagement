@@ -6,7 +6,7 @@ import { UAParser } from 'ua-parser-js';
 import prisma from '@/lib/prisma';
 import { WebServiceClient } from '@maxmind/geoip2-node';
 import { auth } from '@/auth';
-import { startOfDay, endOfDay } from 'date-fns';
+import { startOfDay, endOfDay, subDays } from 'date-fns';
 import { Prisma } from '@prisma/client';
 import { fromZonedTime, toZonedTime } from 'date-fns-tz';
 
@@ -22,6 +22,19 @@ if (!accountId || !licenseKey) {
 const client = new WebServiceClient(accountId, licenseKey, {
   host: 'geolite.info',
 });
+
+const TZ = 'Asia/Jayapura';
+
+function getStartOfTodayUtc(tz: string = TZ): Date {
+  // 1) Ambil waktu sekarang (UTC → zoned)
+  const zonedNow = toZonedTime(new Date(), tz);
+
+  // 2) Potong ke 00:00 zona lokal
+  const zonedStart = startOfDay(zonedNow);
+
+  // 3) Konversi lagi ke UTC untuk dipakai di DB
+  return fromZonedTime(zonedStart, tz);
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 export type ClientLogPayload = {
@@ -190,4 +203,182 @@ export async function getHitsTodayUntilNow() {
   });
 
   return rows; // [{ sessionId: 'abc' }, { sessionId: 'def' }, ...]
+}
+
+//////////////////////////////////////////////
+
+export async function getSimpleAnalitic() {
+  // Tentukan jendela waktu sekali saja supaya konsisten di seluruh query
+  const now = new Date();
+  const since24h = subDays(now, 1);
+  const since30day = subDays(startOfDay(now), 30);
+
+  const [
+    // 1. Page views (PV) 24 jam
+    pageViewsLast24h,
+
+    // 2. Unique sessions (UV) 24 jam
+    uniqueSessionsLast24h,
+
+    // 3. 10 negara dengan kunjungan terbanyak
+    topCountries,
+
+    // 4. 10 URL/path terpopuler
+    topPaths,
+
+    // 5. Distribusi perangkat
+    deviceBreakdown,
+
+    // 6. Tren kunjungan harian 30 hari terakhir
+    visitsPerDay,
+  ] = await Promise.all([
+    prisma.pageVisit.count({
+      where: { visitTime: { gte: since24h } },
+    }),
+
+    prisma.pageVisit
+      .groupBy({
+        by: ['sessionId'],
+        where: { visitTime: { gte: since24h } },
+        _count: { _all: true }, // atau kosong saja—kita cuma butuh grupnya
+      })
+      .then((groups) => groups.length),
+
+    prisma.pageVisit.groupBy({
+      by: ['country'],
+      _count: { _all: true },
+      orderBy: { _count: { id: 'desc' } },
+      take: 10,
+      where: { country: { not: null } }, // filter null biar rapi
+    }),
+
+    prisma.pageVisit.groupBy({
+      by: ['path'],
+      _count: { _all: true },
+      orderBy: { _count: { id: 'desc' } },
+      take: 10,
+    }),
+
+    prisma.pageVisit.groupBy({
+      by: ['deviceType'],
+      _count: { _all: true },
+    }),
+
+    // ―――― Time series harian ――――
+    prisma.pageVisit
+      .groupBy({
+        by: ['visitTime'],
+        _count: { _all: true },
+        orderBy: { visitTime: 'asc' },
+        where: { visitTime: { gte: since30day } },
+      })
+      .then((rows) =>
+        // Normalisasi ke “YYYY‑MM‑DD” + lengkapi hari tanpa data
+        rows.reduce<Record<string, number>>((acc, { visitTime, _count }) => {
+          const d = visitTime.toISOString().slice(0, 10);
+          acc[d] = _count._all;
+          return acc;
+        }, {}),
+      ),
+  ]);
+
+  return {
+    pageViewsLast24h,
+    uniqueSessionsLast24h,
+    topCountries,
+    topPaths,
+    deviceBreakdown,
+    visitsPerDay,
+  };
+}
+
+export async function getDeviceType(
+  tz = 'Asia/Jayapura', // zona lokal WIT
+) {
+  return prisma.$queryRaw<
+    { date: string; desktop: number; mobile: number }[]
+  >(Prisma.sql`
+WITH params AS (
+  SELECT ${tz}::text AS tz
+),
+-- 1) Buat deret 7 hari (paling lama = hari‑6, paling baru = hari ini – zona lokal)
+days AS (
+  SELECT
+    generate_series(
+      (now() AT TIME ZONE (SELECT tz FROM params))::date - interval '6 day',
+      (now() AT TIME ZONE (SELECT tz FROM params))::date,
+      '1 day'
+    )::date AS local_day
+),
+-- 2) Hitung kunjungan per device per hari
+agg AS (
+  SELECT
+    date_trunc('day', "visitTime" AT TIME ZONE (SELECT tz FROM params))::date AS local_day,
+    "deviceType",
+    COUNT(*) AS cnt
+  FROM "PageVisit"
+  WHERE "visitTime" >= (SELECT MIN(local_day) FROM days)  -- hanya 7 hari ke belakang
+  GROUP BY 1, 2
+),
+-- 3) Pivot desktop / mobile
+pivot AS (
+  SELECT
+    local_day,
+    SUM(CASE WHEN "deviceType" = 'desktop' THEN cnt ELSE 0 END) AS desktop,
+    SUM(CASE WHEN "deviceType" = 'mobile'  THEN cnt ELSE 0 END) AS mobile
+  FROM agg
+  GROUP BY local_day
+)
+-- 4) Gabungkan kerangka tanggal + pivot; isi kosong = 0
+SELECT
+  to_char(d.local_day, 'YYYY-MM-DD')        AS date,
+  COALESCE(p.desktop, 0)::int               AS desktop,
+  COALESCE(p.mobile , 0)::int               AS mobile
+FROM days d
+LEFT JOIN pivot p USING (local_day)
+ORDER BY d.local_day;
+`);
+}
+
+export const getUserActive = async () => {
+  const start = getStartOfTodayUtc(); // 2025‑06‑16T15:00:00Z (karena UTC+9)
+  const now = new Date();
+
+  const rows = await prisma.pageVisit.groupBy({
+    by: ['userId'],
+    where: {
+      visitTime: {
+        gte: start,
+        lte: now,
+      },
+      userId: {
+        not: null,
+      },
+    },
+  });
+
+  return rows.length;
+};
+
+export async function getTodayHits() {
+  // 1) Waktu sekarang (UTC) ➜ konversi ke zona Jayapura (UTC+9)
+  const zonedNow = toZonedTime(new Date(), TZ);
+
+  // 2) Mundur ke 00:00 hari ini (zona Jayapura)
+  const startOfTodayZoned = startOfDay(zonedNow);
+
+  // 3) Konversi kembali ke UTC (karena kolom visitTime disimpan UTC)
+  const startOfTodayUtc = fromZonedTime(startOfTodayZoned, TZ);
+
+  // 4) Hitung TOTAL baris (hits) dari 00:00 lokal sampai sekarang
+  const totalHits = await prisma.pageVisit.count({
+    where: {
+      visitTime: {
+        gte: startOfTodayUtc,
+        lte: new Date(), // sekarang (UTC)
+      },
+    },
+  });
+
+  return totalHits;
 }
