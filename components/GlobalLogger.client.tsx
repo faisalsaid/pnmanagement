@@ -18,15 +18,22 @@ export default function GlobalLogger() {
   const search = useSearchParams();
 
   useEffect(() => {
+    const isCategory = pathname.startsWith('/category');
     const isArticle = pathname.startsWith('/read/');
     const articleSLug = isArticle ? pathname.split('/')[2] || null : null;
     console.log(articleSLug);
+
+    const pageType: 'category' | 'article' | 'page' = isCategory
+      ? 'category'
+      : isArticle
+      ? 'article'
+      : 'page';
 
     // panggil server action (otomatis POST internal Next.js)
     logVisit({
       url: window.location.href,
       path: pathname,
-      pageType: pathname.startsWith('/artikel') ? 'article' : 'page',
+      pageType,
       referrer: document.referrer || null,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       language: navigator.language,
