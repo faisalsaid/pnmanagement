@@ -49,10 +49,10 @@ const WebHeader = ({ categories }: WebFooterProps) => {
               <Link href={'/dashboard'}>Beranda</Link>{' '}
             </div>
           ) : (
-            <div className="flex gap-1 items-center ">
+            <Link className="flex gap-1 items-center " href={'/auth/login'}>
               <User size={16} />
               Sign in
-            </div>
+            </Link>
           )}
         </div>
       </div>
