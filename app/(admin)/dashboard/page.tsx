@@ -8,23 +8,17 @@ import {
 } from '@/action/logVisit';
 import React from 'react';
 import TopCard from './_components/TopCard';
-import { User } from 'lucide-react';
+
 import DeviceChart from './_components/DeviceChart';
 import TopFiveArtcle from './_components/TopFiveArtcle';
 import RushHourChart from './_components/RushHourChart';
 import ActivitesByCity from './_components/ActivitesByCity';
 import ActivitiesChart from './_components/ActivitiesChart';
+import PopularCategory from './_components/PopularCategory';
 
 const page = async () => {
   const totalVisitorToday = await getVistorTodayBySessionId();
-  const {
-    pageViewsLast24h,
-    uniqueSessionsLast24h,
-    topCountries,
-    topPaths,
-    deviceBreakdown,
-    visitsPerDay,
-  } = await getSimpleAnalitic();
+  const { visitsPerDay } = await getSimpleAnalitic();
 
   const dataDevice = await getDeviceType();
   const userActive = await getUserActive();
@@ -66,7 +60,9 @@ const page = async () => {
         <div className="bg-primary-foreground p-4 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2">
           <DeviceChart chartData={dataDevice} />
         </div>
-        <div className="bg-primary-foreground p-4 rounded-lg"></div>
+        <div className="bg-primary-foreground p-4 rounded-lg">
+          <PopularCategory />
+        </div>
       </div>
     </div>
   );

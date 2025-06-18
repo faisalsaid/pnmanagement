@@ -42,7 +42,10 @@ interface Props {
 const DeviceChart = ({ chartData }: Props) => {
   return (
     <div>
-      <h1 className="mb-4 text-lg font-medium">Access By Device</h1>
+      <div className="flex items-baseline gap-2 mb-4">
+        <h1 className=" text-lg font-medium">Access By Device</h1>
+        <p className="text-sm text-muted-foreground">The last 7 days.</p>
+      </div>
 
       <ChartContainer config={chartConfig}>
         <LineChart

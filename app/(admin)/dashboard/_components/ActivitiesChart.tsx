@@ -44,7 +44,12 @@ const ActivitiesChart = ({ data }: ActivitiesChartProps) => {
 
   return (
     <div>
-      <h1 className="mb-4 text-lg font-medium">Activities</h1>
+      <div className="flex items-baseline gap-2 mb-4">
+        <h1 className=" text-lg font-medium">Activities</h1>
+        <p className="text-sm text-muted-foreground">
+          Data from the last 24 hours.
+        </p>
+      </div>
       <ChartContainer config={chartConfig}>
         <AreaChart
           accessibilityLayer
