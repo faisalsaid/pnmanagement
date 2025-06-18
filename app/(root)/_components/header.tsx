@@ -8,7 +8,7 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import MenuSheet from './MenuSheet';
-import { Button } from '@/components/ui/button';
+// import { Button } from '@/components/ui/button';
 
 interface WebFooterProps {
   categories: Prisma.CategoryGetPayload<true>[];
