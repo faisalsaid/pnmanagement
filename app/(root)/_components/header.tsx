@@ -3,11 +3,12 @@
 import { formatIndonesianDate } from '@/lib/helper/formatDate';
 import { Prisma } from '@prisma/client';
 
-import { User } from 'lucide-react';
+import { LayoutDashboard, User } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import MenuSheet from './MenuSheet';
+import { Button } from '@/components/ui/button';
 
 interface WebFooterProps {
   categories: Prisma.CategoryGetPayload<true>[];
@@ -15,6 +16,16 @@ interface WebFooterProps {
 
 const WebHeader = ({ categories }: WebFooterProps) => {
   const { data: session } = useSession();
+  const isAllowed =
+    session?.user.role &&
+    ['ADMIN', 'PEMRED', 'REDAKTUR'].includes(session.user.role);
+
+  const [permission, setPermission] = useState(isAllowed);
+
+  useEffect(() => {
+    setPermission(isAllowed);
+  }, [isAllowed]);
+
   const toExclude = ['uncategorized', 'headline', 'utama'];
   const priority = ['politik', 'ekonomi'];
 
@@ -50,9 +61,11 @@ const WebHeader = ({ categories }: WebFooterProps) => {
         <div className="flex items-center gap-2 justify-end">
           {/* <div>serch article</div> */}
           <div>
-            {session ? (
+            {permission ? (
               <div>
-                <Link href={'/dashboard'}>Beranda</Link>
+                <Link href={'/dashboard'}>
+                  <LayoutDashboard />
+                </Link>
               </div>
             ) : (
               <Link className="flex gap-1 items-center " href={'/auth/login'}>

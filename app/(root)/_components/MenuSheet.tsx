@@ -1,12 +1,12 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+// import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
 import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
+  //   SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
@@ -32,9 +32,9 @@ const MenuSheet = ({ categories }: CategoryListProps) => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button className="sm:hidden" size={'icon'} variant={'ghost'}>
-          <Menu />
-        </Button>
+        <Menu />
+        {/* <Button className="sm:hidden" size={'icon'} variant={'ghost'}>
+        </Button> */}
       </SheetTrigger>
       <SheetContent side="left" className="w-[200px] sm:w-[540px]">
         <SheetHeader>
@@ -46,15 +46,17 @@ const MenuSheet = ({ categories }: CategoryListProps) => {
         <div className="px-4 ">
           <nav>
             <ul className="flex flex-col gap-2 text-sm font-medium ">
-              <Link
-                className="border-b-1 border-transparent hover:border-red-500/50 py-1 transition-all"
-                href={'/'}
-              >
-                Beranda
-              </Link>
+              <SheetClose asChild>
+                <Link
+                  className="border-b-1 border-transparent hover:border-red-500/50 py-1 transition-all"
+                  href={'/'}
+                >
+                  Beranda
+                </Link>
+              </SheetClose>
               {categories &&
                 categories.map((category) => (
-                  <React.Fragment key={category?.id}>
+                  <SheetClose key={category?.id} asChild>
                     <Link
                       className="border-b-1 border-transparent hover:border-red-500/50 py-1 transition-all"
                       key={category?.id}
@@ -62,7 +64,7 @@ const MenuSheet = ({ categories }: CategoryListProps) => {
                     >
                       {category?.name}
                     </Link>
-                  </React.Fragment>
+                  </SheetClose>
                 ))}
             </ul>
           </nav>
