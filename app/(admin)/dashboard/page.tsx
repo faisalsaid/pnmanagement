@@ -1,7 +1,7 @@
 import {
   getDeviceType,
   getHourlyVisits24h,
-  getSimpleAnalitic,
+  // getSimpleAnalitic,
   getTodayHits,
   getUserActive,
   getVistorTodayBySessionId,
@@ -18,12 +18,12 @@ import PopularCategory from './_components/PopularCategory';
 
 const page = async () => {
   const totalVisitorToday = await getVistorTodayBySessionId();
-  const { visitsPerDay } = await getSimpleAnalitic();
+  // const { visitsPerDay } = await getSimpleAnalitic();
 
   const dataDevice = await getDeviceType();
   const userActive = await getUserActive();
   const totalHits = await getTodayHits();
-  console.log(visitsPerDay);
+  // console.log(visitsPerDay);
 
   const topList = [
     { title: 'Visitor Today', icon: 'user', value: totalVisitorToday },

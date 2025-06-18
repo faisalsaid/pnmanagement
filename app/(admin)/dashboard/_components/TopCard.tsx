@@ -10,7 +10,7 @@ interface Props {
 }
 
 const TopCard = ({ data }: Props) => {
-  const Icon = data.icon;
+  // const Icon = data.icon;
   return (
     <Card className="p-0">
       <div className="p-2 flex gap-4 items-center ">
