@@ -42,6 +42,8 @@ interface Props {
 const DeviceChart = ({ chartData }: Props) => {
   return (
     <div>
+      <h1 className="mb-4 text-lg font-medium">Access By Device</h1>
+
       <ChartContainer config={chartConfig}>
         <LineChart
           accessibilityLayer

@@ -11,6 +11,7 @@ import { User } from 'lucide-react';
 import DeviceChart from './_components/DeviceChart';
 import TopFiveArtcle from './_components/TopFiveArtcle';
 import RushHourChart from './_components/RushHourChart';
+import ActivitesByCity from './_components/ActivitesByCity';
 
 const page = async () => {
   const totalVisitorToday = await getVistorTodayBySessionId();
@@ -48,7 +49,7 @@ const page = async () => {
 
   return (
     <div>
-      <div className="grid grid-cols-2 sm:grid-cols-3  md:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3  lg:grid-cols-6 gap-4">
         {topList.map((data, i) => (
           <TopCard data={data} key={i} />
         ))}
@@ -63,7 +64,9 @@ const page = async () => {
         <div className="bg-primary-foreground p-4 rounded-lg">
           <RushHourChart />
         </div>
-        <div className="bg-primary-foreground p-4 rounded-lg"></div>
+        <div className="bg-primary-foreground p-4 rounded-lg">
+          <ActivitesByCity />
+        </div>
         <div className="bg-primary-foreground p-4 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2"></div>
         <div className="bg-primary-foreground p-4 rounded-lg"></div>
       </div>
