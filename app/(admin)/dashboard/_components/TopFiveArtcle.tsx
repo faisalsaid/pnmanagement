@@ -1,3 +1,5 @@
+'use client';
+
 import { Card } from '@/components/ui/card';
 import {
   Tooltip,
@@ -33,9 +35,11 @@ const TopFiveArtcle = () => {
                   Category | 25 Februari 2025{' '}
                 </p>
               </div>
-              <div className="w-[50px] aspect-square bg-primary-foreground flex flex-col items-center justify-center rounded-md">
-                <p className="text-lg font-semibold">{i % 2 ? '2.K' : '826'}</p>
-                <p className="text-xs text-muted-foreground">Views</p>
+              <div className="w-[50px] aspect-square bg-green-100 flex flex-col items-center justify-center rounded-md">
+                <p className="text-lg font-semibold text-green-900">
+                  {i % 2 ? '2.K' : '826'}
+                </p>
+                <p className="text-xs text-green-700">Views</p>
               </div>
             </div>
           </Card>
