@@ -9,6 +9,7 @@ import React from 'react';
 import TopCard from './_components/TopCard';
 import { User } from 'lucide-react';
 import DeviceChart from './_components/DeviceChart';
+import TopFiveArtcle from './_components/TopFiveArtcle';
 
 const page = async () => {
   const totalVisitorToday = await getVistorTodayBySessionId();
@@ -31,20 +32,24 @@ const page = async () => {
     { title: 'Activities', icon: 'user', value: totalHits },
     { title: 'Publish Posts', icon: 'user', value: 0 },
     { title: 'User Active', icon: 'user', value: userActive },
+    { title: 'User Active', icon: 'user', value: userActive },
+    { title: 'User Active', icon: 'user', value: userActive },
   ];
 
   return (
     <div>
-      <div className="grid grid-cols-2  md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3  md:grid-cols-6 gap-4">
         {topList.map((data, i) => (
           <TopCard data={data} key={i} />
         ))}
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols- gap-4 mt-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-4 mt-4">
         <div className="bg-primary-foreground p-4 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2">
           <DeviceChart chartData={dataDevice} />
         </div>
-        <div className="bg-primary-foreground p-4 rounded-lg"></div>
+        <div className="bg-primary-foreground p-4 rounded-lg">
+          <TopFiveArtcle />
+        </div>
         <div className="bg-primary-foreground p-4 rounded-lg">{}</div>
         <div className="bg-primary-foreground p-4 rounded-lg"></div>
         <div className="bg-primary-foreground p-4 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2"></div>
