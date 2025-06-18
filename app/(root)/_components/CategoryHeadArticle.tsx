@@ -39,7 +39,7 @@ const CategoryHeadArticle = ({ article }: Props) => {
   return (
     <div className="flex gap-4 ">
       {featureImage && (
-        <div className="flex-2/5 rounded-md overflow-hidden">
+        <div className="flex-2/5 rounded-md overflow-hidden w-full aspect-square">
           <CldImage
             className="w-full h-full object-cover"
             width={featureImage.width as number}
