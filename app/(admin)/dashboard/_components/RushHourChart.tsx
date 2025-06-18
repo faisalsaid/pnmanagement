@@ -5,6 +5,8 @@ import { Label, Pie, PieChart } from 'recharts';
 import {
   ChartConfig,
   ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
@@ -52,15 +54,17 @@ const RushHourChart = () => {
   return (
     <div>
       <h1 className="mb-4 text-lg font-medium">Rush Hour</h1>
-      <ChartContainer
-        config={chartConfig}
-        className="mx-auto aspect-square max-h-[250px]"
-      >
+      <ChartContainer config={chartConfig} className="mx-auto aspect-square ">
         <PieChart>
           <ChartTooltip
             cursor={false}
             content={<ChartTooltipContent hideLabel />}
           />
+
+          {/* <ChartLegend
+            content={<ChartLegendContent nameKey="hour" />}
+            className="-translate-y-2 flex-wrap gap-2 *:basis-1/4 *:justify-center"
+          /> */}
           <Pie
             data={rushHourDummy}
             dataKey="visits"
