@@ -91,7 +91,7 @@ const ActivitiesChart = ({ data }: ActivitiesChartProps) => {
           </defs>
           <Area
             dataKey="activities"
-            type="natural"
+            type="linear"
             fill="url(#fillDesktop)"
             fillOpacity={0.4}
             stroke="orange"
