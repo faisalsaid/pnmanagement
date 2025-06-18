@@ -19,7 +19,7 @@ interface WebFooterProps {
 }
 
 const WebHeader = ({ categories }: WebFooterProps) => {
-  const toExclude = ['uncategorized', 'headline'];
+  const toExclude = ['uncategorized', 'headline', 'utama'];
   const { data: session } = useSession();
 
   const filtered = categories.filter((cat) => !toExclude.includes(cat.slug));
@@ -32,8 +32,8 @@ const WebHeader = ({ categories }: WebFooterProps) => {
   ];
   return (
     <header className="">
-      <div className="grid grid-cols-3 text-sm text-muted-foreground">
-        <div className="flex items-center gap-4">
+      <div className="sm:grid grid-cols-3 text-sm text-muted-foreground flex items-center justify-between">
+        <div className="hidden sm:flex items-center gap-4 ">
           <p>{formatIndonesianDate()}</p>
           {/* <p>weather</p> */}
         </div>
