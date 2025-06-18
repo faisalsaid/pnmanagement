@@ -1,5 +1,6 @@
 import {
   getDeviceType,
+  getHourlyVisits24h,
   getSimpleAnalitic,
   getTodayHits,
   getUserActive,
@@ -12,6 +13,7 @@ import DeviceChart from './_components/DeviceChart';
 import TopFiveArtcle from './_components/TopFiveArtcle';
 import RushHourChart from './_components/RushHourChart';
 import ActivitesByCity from './_components/ActivitesByCity';
+import ActivitiesChart from './_components/ActivitiesChart';
 
 const page = async () => {
   const totalVisitorToday = await getVistorTodayBySessionId();
@@ -38,14 +40,8 @@ const page = async () => {
     { title: 'User Active', icon: 'user', value: userActive },
   ];
 
-  const rushHourDumu = [
-    { hour: 9, visits: 240 },
-    { hour: 10, visits: 310 },
-    { hour: 11, visits: 275 },
-    { hour: 12, visits: 410 }, // 🔥 jam kunjungan terbanyak
-    { hour: 13, visits: 360 },
-    { hour: 14, visits: 290 },
-  ];
+  const get24lastActivites = await getHourlyVisits24h();
+  // console.log('DASHBOARD PAGE', get24lastActivites);
 
   return (
     <div>
@@ -56,7 +52,7 @@ const page = async () => {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-4 mt-4">
         <div className="bg-primary-foreground p-4 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2">
-          <DeviceChart chartData={dataDevice} />
+          <ActivitiesChart data={get24lastActivites.data} />
         </div>
         <div className="bg-primary-foreground p-4 rounded-lg">
           <TopFiveArtcle />
@@ -67,7 +63,9 @@ const page = async () => {
         <div className="bg-primary-foreground p-4 rounded-lg">
           <ActivitesByCity />
         </div>
-        <div className="bg-primary-foreground p-4 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2"></div>
+        <div className="bg-primary-foreground p-4 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2">
+          <DeviceChart chartData={dataDevice} />
+        </div>
         <div className="bg-primary-foreground p-4 rounded-lg"></div>
       </div>
     </div>

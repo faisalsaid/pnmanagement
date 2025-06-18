@@ -382,3 +382,50 @@ export async function getTodayHits() {
 
   return totalHits;
 }
+
+////////////////////////////////////////////////////////////
+
+// GET last 24 activites group by hour
+
+export async function getHourlyVisits24h() {
+  const rows = await prisma.$queryRaw<{ hour_bucket: Date; visits: bigint }[]>`
+    WITH bounds AS (
+      SELECT date_trunc('hour', now()) - INTERVAL '24 hours' AS start_time,
+             date_trunc('hour', now())                       AS end_time
+    ),
+    hours AS (
+      SELECT generate_series(start_time,
+                             end_time - INTERVAL '1 hour',
+                             INTERVAL '1 hour') AS hour_bucket
+      FROM bounds
+    ),
+    visits AS (
+      SELECT date_trunc('hour', "visitTime") AS hour_bucket,
+             COUNT(*)                        AS visits
+      FROM   "PageVisit", bounds
+      WHERE  "visitTime" >= bounds.start_time
+        AND  "visitTime" <  bounds.end_time
+      GROUP  BY hour_bucket
+    )
+    SELECT h.hour_bucket,
+           COALESCE(v.visits, 0) AS visits
+    FROM   hours h
+    LEFT JOIN visits v USING (hour_bucket)
+    ORDER  BY h.hour_bucket;
+  `;
+
+  /* Susun payload persis contoh */
+  const end = rows.at(-1)!.hour_bucket; // jam terakhir
+  const start = new Date(end.getTime() - 24 * 60 * 60 * 1000); // jam pertama
+
+  return {
+    range: {
+      start: start.toISOString(),
+      end: end.toISOString(),
+    },
+    data: rows.map((r) => ({
+      hour: r.hour_bucket.toISOString(),
+      visits: Number(r.visits),
+    })),
+  };
+}
