@@ -7,29 +7,33 @@ import { User } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import React from 'react';
-
-// const dumyNavbarList = [
-//   { title: 'Beranda', url: '/' },
-//   { title: 'Politik', url: '/category/politik' },
-//   { title: 'Hukum', url: '/category/hukum' },
-// ];
+import MenuSheet from './MenuSheet';
 
 interface WebFooterProps {
   categories: Prisma.CategoryGetPayload<true>[];
 }
 
 const WebHeader = ({ categories }: WebFooterProps) => {
-  const toExclude = ['uncategorized', 'headline', 'utama'];
   const { data: session } = useSession();
-
-  const filtered = categories.filter((cat) => !toExclude.includes(cat.slug));
+  const toExclude = ['uncategorized', 'headline', 'utama'];
   const priority = ['politik', 'ekonomi'];
-  const cleanCategories = [
-    ...priority
-      .map((slug) => filtered.find((cat) => cat.slug === slug))
-      .filter(Boolean),
-    ...filtered.filter((cat) => !priority.includes(cat.slug)),
+
+  const filtered = categories.filter(
+    (cat): cat is Prisma.CategoryGetPayload<true> =>
+      !toExclude.includes(cat.slug),
+  );
+
+  const prioritized = priority
+    .map((slug) => filtered.find((cat) => cat.slug === slug))
+    .filter((cat): cat is Prisma.CategoryGetPayload<true> => cat !== undefined);
+
+  const others = filtered.filter((cat) => !priority.includes(cat.slug));
+
+  const cleanCategories: Prisma.CategoryGetPayload<true>[] = [
+    ...prioritized,
+    ...others,
   ];
+
   return (
     <header className="">
       <div className="sm:grid grid-cols-3 text-sm text-muted-foreground flex items-center justify-between">
@@ -37,23 +41,27 @@ const WebHeader = ({ categories }: WebFooterProps) => {
           <p>{formatIndonesianDate()}</p>
           {/* <p>weather</p> */}
         </div>
-        <div className="flex items-center justify-center gap-4">
-          <h1 className="text-2xl font-bold p-2 text-orange-600">
+        <div className="sm:flex items-center justify-center gap-4 py-4">
+          <h1 className="text-lg sm:text-2xl font-bold  text-orange-600">
             DAILY EXPRESS
           </h1>
+          <p className=" sm:hidden">{formatIndonesianDate()}</p>
         </div>
-        <div className="flex items-center gap-4 justify-end">
+        <div className="flex items-center gap-2 justify-end">
           {/* <div>serch article</div> */}
-          {session ? (
-            <div>
-              <Link href={'/dashboard'}>Beranda</Link>{' '}
-            </div>
-          ) : (
-            <Link className="flex gap-1 items-center " href={'/auth/login'}>
-              <User size={16} />
-              Sign in
-            </Link>
-          )}
+          <div>
+            {session ? (
+              <div>
+                <Link href={'/dashboard'}>Beranda</Link>
+              </div>
+            ) : (
+              <Link className="flex gap-1 items-center " href={'/auth/login'}>
+                <User size={16} />
+                Sign in
+              </Link>
+            )}
+          </div>
+          <MenuSheet categories={cleanCategories} />
         </div>
       </div>
       <nav>
