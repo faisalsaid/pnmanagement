@@ -1,7 +1,7 @@
 import {
   getCategoryVisitStats,
   getCityActivityLast30Days,
-  getDeviceType,
+  getDeviceVisitPerDay,
   getHourlyVisits24h,
   // getSimpleAnalitic,
   getTodayHits,
@@ -28,7 +28,7 @@ import { FaUserCheck } from 'react-icons/fa';
 const page = async () => {
   const totalVisitorToday = await getVistorTodayBySessionId();
 
-  const dataDevice = await getDeviceType();
+  const dataDevice = await getDeviceVisitPerDay();
   const userActive = await getUserActive();
   const totalHits = await getTodayHits();
   const { data } = await getPublishPostsToday();
@@ -86,7 +86,7 @@ const page = async () => {
     ...item,
     fill: categoryColor[i] || 'gray',
   }));
-  console.log(popularCategory);
+  console.log(dataDevice);
 
   return (
     <div>

@@ -11,7 +11,7 @@ const layout = async ({
   children: React.ReactNode;
 }>) => {
   const session = await auth();
-  console.log('layout web', session);
+  // console.log('layout web', session);
 
   const allCategories = await prisma.category.findMany();
   return (

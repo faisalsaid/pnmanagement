@@ -6,6 +6,8 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
 } from '@/components/ui/chart';
 
 import { format } from 'date-fns';
@@ -33,7 +35,7 @@ const chartConfig = {
 
 interface Props {
   chartData: {
-    date: string;
+    date: string | null;
     desktop: number;
     mobile: number;
   }[];
@@ -44,7 +46,7 @@ const DeviceChart = ({ chartData }: Props) => {
     <div>
       <div className="flex items-baseline gap-2 mb-4">
         <h1 className=" text-lg font-medium">Access By Device</h1>
-        <p className="text-sm text-muted-foreground">The last 7 days.</p>
+        <p className="text-sm text-muted-foreground">Last 30 days.</p>
       </div>
 
       <ChartContainer config={chartConfig}>
@@ -63,7 +65,7 @@ const DeviceChart = ({ chartData }: Props) => {
             axisLine={false}
             tickMargin={8}
             tickFormatter={(value) =>
-              format(new Date(value), 'd MMMM', { locale: id })
+              format(new Date(value), 'd MMM', { locale: id })
             }
           />
           <YAxis tickLine={false} tickMargin={10} axisLine={false} />
@@ -82,6 +84,7 @@ const DeviceChart = ({ chartData }: Props) => {
             strokeWidth={2}
             dot={false}
           />
+          <ChartLegend content={<ChartLegendContent />} />
         </LineChart>
       </ChartContainer>
     </div>
