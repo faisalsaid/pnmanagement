@@ -68,7 +68,7 @@ const Navbar = ({ data }: { data: Session | null }) => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <div className="">
+        <div className="hidden sm:block">
           <p className="capitalize">{data?.user.name}</p>
           <p className="text-xs text-muted-foreground capitalize">
             {data?.user.role.toLocaleLowerCase()}
@@ -86,7 +86,16 @@ const Navbar = ({ data }: { data: Session | null }) => {
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent sideOffset={10}>
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>
+              <div className=" sm:hidden">
+                <p className="capitalize line-clamp-1 ">{data?.user.name}</p>
+                <p className="text-xs text-muted-foreground capitalize">
+                  {data?.user.role.toLocaleLowerCase()}
+                </p>
+              </div>
+              <p className="hidden sm:block">My Account</p>
+            </DropdownMenuLabel>
+
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <User className="h-[1.2rem] w-[1.2rem] mr-2" />
