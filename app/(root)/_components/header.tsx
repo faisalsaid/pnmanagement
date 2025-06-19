@@ -8,14 +8,15 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import MenuSheet from './MenuSheet';
+import { Session } from 'next-auth';
 // import { Button } from '@/components/ui/button';
 
 interface WebFooterProps {
   categories: Prisma.CategoryGetPayload<true>[];
+  session: Session | null;
 }
 
-const WebHeader = ({ categories }: WebFooterProps) => {
-  const { data: session } = useSession();
+const WebHeader = ({ categories, session }: WebFooterProps) => {
   const isAllowed =
     session?.user.role &&
     ['ADMIN', 'PEMRED', 'REDAKTUR'].includes(session.user.role);
@@ -67,12 +68,13 @@ const WebHeader = ({ categories }: WebFooterProps) => {
                   <LayoutDashboard />
                 </Link>
               </div>
-            ) : (
+            ) : null}
+            {!session ? (
               <Link className="flex gap-1 items-center " href={'/auth/login'}>
                 <User size={16} />
                 Sign in
               </Link>
-            )}
+            ) : null}
           </div>
           <MenuSheet categories={cleanCategories} />
         </div>
