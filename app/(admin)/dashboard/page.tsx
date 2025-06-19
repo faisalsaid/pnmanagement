@@ -17,6 +17,11 @@ import ActivitiesChart from './_components/ActivitiesChart';
 import PopularCategory from './_components/PopularCategory';
 import { getPublishPostsToday } from '@/action/postActions';
 
+import { FaUsers } from 'react-icons/fa6';
+import { TbActivityHeartbeat } from 'react-icons/tb';
+import { RiArticleLine } from 'react-icons/ri';
+import { FaUserCheck } from 'react-icons/fa';
+
 const page = async () => {
   const totalVisitorToday = await getVistorTodayBySessionId();
 
@@ -36,12 +41,12 @@ const page = async () => {
   // console.log(visitsPerDay);
 
   const topList = [
-    { title: 'Visitor Today', icon: 'user', value: totalVisitorToday },
-    { title: 'Activities', icon: 'user', value: totalHits },
-    { title: 'Publish Posts', icon: 'user', value: publishPost },
-    { title: 'User Active', icon: 'user', value: userActive },
-    { title: 'User Active', icon: 'user', value: userActive },
-    { title: 'User Active', icon: 'user', value: userActive },
+    { title: 'Visitor Today', icon: FaUsers, value: totalVisitorToday },
+    { title: 'Activities', icon: TbActivityHeartbeat, value: totalHits },
+    { title: 'Publish Posts', icon: RiArticleLine, value: publishPost },
+    { title: 'User Active', icon: FaUserCheck, value: userActive },
+    { title: 'User Active', icon: FaUserCheck, value: userActive },
+    { title: 'User Active', icon: FaUserCheck, value: userActive },
   ];
 
   const get24lastActivites = await getHourlyVisits24h();
