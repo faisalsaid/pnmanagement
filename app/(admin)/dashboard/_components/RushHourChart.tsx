@@ -5,8 +5,8 @@ import { Label, Pie, PieChart } from 'recharts';
 import {
   ChartConfig,
   ChartContainer,
-  // ChartLegend,
-  // ChartLegendContent,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
@@ -33,26 +33,26 @@ const chartConfig = {
   visitors: {
     label: 'Visitors',
   },
-  //   t_9PM: {
-  //     label: '09:PM',
-  //     color: 'var(--chart-1)',
-  //   },
-  //   t_10PM: {
-  //     label: '10:PM',
-  //     color: 'var(--chart-2)',
-  //   },
-  //   t_11PM: {
-  //     label: '11:PM',
-  //     color: 'var(--chart-3)',
-  //   },
-  //   t_12PM: {
-  //     label: '12:PM',
-  //     color: 'var(--chart-4)',
-  //   },
-  //   t_13PM: {
-  //     label: '13:PM',
-  //     color: 'var(--chart-5)',
-  //   },
+  t_9PM: {
+    label: '09:PM',
+    color: 'var(--chart-1)',
+  },
+  t_10PM: {
+    label: '10:PM',
+    color: 'var(--chart-2)',
+  },
+  t_11PM: {
+    label: '11:PM',
+    color: 'var(--chart-3)',
+  },
+  t_12PM: {
+    label: '12:PM',
+    color: 'var(--chart-4)',
+  },
+  t_13PM: {
+    label: '13:PM',
+    color: 'var(--chart-5)',
+  },
 } satisfies ChartConfig;
 
 const RushHourChart = ({ data }: Props) => {
@@ -113,6 +113,7 @@ const RushHourChart = ({ data }: Props) => {
               }}
             />
           </Pie>
+          <ChartLegend content={<ChartLegendContent nameKey="hour" />} />
         </PieChart>
       </ChartContainer>
     </div>
