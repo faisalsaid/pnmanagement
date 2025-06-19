@@ -9,6 +9,7 @@ import {
 import { Prisma } from '@prisma/client';
 import { Image } from 'lucide-react';
 import { CldImage } from 'next-cloudinary';
+import Link from 'next/link';
 import { useState } from 'react';
 
 type ArticleProps = Prisma.ArticleGetPayload<{
@@ -18,6 +19,7 @@ type ArticleProps = Prisma.ArticleGetPayload<{
     viewCount: true;
     category: true;
     createdAt: true;
+    slug: true;
     media: {
       select: {
         mediaAsset: true;
@@ -58,7 +60,11 @@ const TopFiveArtcle = ({ articles }: { articles: ArticleProps }) => {
                     <Image className="text-muted-foreground" />
                   )}
                 </div>
-                <div className="flex-1">
+                <Link
+                  target="_blank"
+                  className="flex-1"
+                  href={`/posts/${article.slug}`}
+                >
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <p id="title" className="line-clamp-1">
@@ -78,7 +84,7 @@ const TopFiveArtcle = ({ articles }: { articles: ArticleProps }) => {
                       year: 'numeric',
                     })}
                   </p>
-                </div>
+                </Link>
                 <div className="w-[50px] aspect-square bg-green-100 flex flex-col items-center justify-center rounded-md">
                   <p className="text-lg font-semibold text-green-900">
                     {article.viewCount}

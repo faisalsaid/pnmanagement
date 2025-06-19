@@ -323,6 +323,7 @@ export async function getTopFiveArticles() {
       viewCount: true,
       category: true,
       createdAt: true,
+      slug: true,
       media: {
         select: {
           mediaAsset: true,
