@@ -32,7 +32,7 @@ const TopFiveArtcle = () => {
                   </TooltipContent>
                 </Tooltip>
                 <p className="text-sm text-muted-foreground">
-                  Category | 25 Februari 2025{' '}
+                  Category | 25 Feb 2025
                 </p>
               </div>
               <div className="w-[50px] aspect-square bg-green-100 flex flex-col items-center justify-center rounded-md">

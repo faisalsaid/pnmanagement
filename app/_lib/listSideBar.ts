@@ -12,7 +12,7 @@ import {
 
 export const adminMenuList = [
   {
-    title: 'Home',
+    title: 'Dashboard',
     url: '/dashboard',
     icon: Home,
   },

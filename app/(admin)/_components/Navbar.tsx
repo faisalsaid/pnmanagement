@@ -46,7 +46,7 @@ const Navbar = ({ data }: { data: Session | null }) => {
       </div>
       {/* RIGHT */}
       <div className="flex items-center gap-4">
-        <Link href={'/'}>Dashboard</Link>
+        {/* <Link href={'/'}>Dashboard</Link> */}
         {/* THEME MENU */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
