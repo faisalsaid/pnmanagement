@@ -40,7 +40,10 @@ interface Props {
 const PopularCategory = ({ data }: Props) => {
   return (
     <div>
-      <h1 className="mb-4 text-lg font-medium">Popular Category</h1>
+      <div className="flex items-baseline gap-2 mb-4">
+        <h1 className=" text-lg font-medium">Popular Category</h1>
+        <p className="text-sm text-muted-foreground">Last 30 days</p>
+      </div>
       <div className="space-y-3">
         {data.map((category) => (
           <Card
