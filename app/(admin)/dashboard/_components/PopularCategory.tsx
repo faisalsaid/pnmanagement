@@ -29,22 +29,33 @@ const dummyData = [
   },
 ];
 
-const PopularCategory = () => {
+interface Props {
+  data: {
+    category: string;
+    visits: number;
+    fill: string;
+  }[];
+}
+
+const PopularCategory = ({ data }: Props) => {
   return (
     <div>
       <h1 className="mb-4 text-lg font-medium">Popular Category</h1>
       <div className="space-y-3">
-        {dummyData.map((category) => (
-          <Card key={category.name} className="p-0 overflow-hidden rounded-md ">
+        {data.map((category) => (
+          <Card
+            key={category.category}
+            className="p-0 overflow-hidden rounded-md "
+          >
             <div className="flex">
               <div className={`w-1 ${category.fill} `}></div>
               <div className="flex items-center justify-between w-full p-2">
                 <div className="">
-                  <p className="capitalize text-lg">{category.name}</p>
+                  <p className="capitalize text-lg">{category.category}</p>
                 </div>
                 <div className=" flex flex-col items-end justify-center">
                   <p className="capitalize text-xl">
-                    {formatNumber(category.visit, { compact: true })}
+                    {formatNumber(category.visits, { compact: true })}
                   </p>
                   <p className="text-xs">Activites</p>
                 </div>

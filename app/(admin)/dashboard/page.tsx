@@ -1,4 +1,5 @@
 import {
+  getCategoryVisitStats,
   getCityActivityLast30Days,
   getDeviceType,
   getHourlyVisits24h,
@@ -69,9 +70,23 @@ const page = async () => {
   }));
 
   // handle city activies
-
   const theCity = await getCityActivityLast30Days();
-  console.log(theCity);
+
+  // handle get  popular category
+  const rawCategory = await getCategoryVisitStats();
+  const categoryColor = [
+    'bg-red-400',
+    'bg-green-400',
+    'bg-blue-400',
+    'bg-purple-400',
+    'bg-yellow-400',
+  ];
+
+  const popularCategory = rawCategory.map((item, i) => ({
+    ...item,
+    fill: categoryColor[i] || 'gray',
+  }));
+  console.log(popularCategory);
 
   return (
     <div>
@@ -97,7 +112,7 @@ const page = async () => {
           <DeviceChart chartData={dataDevice} />
         </div>
         <div className="bg-primary-foreground p-4 rounded-lg">
-          <PopularCategory />
+          <PopularCategory data={popularCategory} />
         </div>
       </div>
     </div>

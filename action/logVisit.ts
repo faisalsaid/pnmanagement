@@ -498,3 +498,36 @@ export async function getCityActivityLast30Days() {
     visits: r._count.id,
   }));
 }
+
+////////////////////////////////////////////////////////////////////////////////////////
+// GET popular category
+
+export async function getCategoryVisitStats() {
+  const tz = 'Asia/Jakarta';
+
+  /* 1️⃣  Rentang 30 hari terakhir (zona Asia/Jakarta) */
+  const now = DateTime.now().setZone(tz);
+  const startUtc = now.minus({ days: 30 }).startOf('day').toUTC().toJSDate();
+  const endUtc = now.toUTC().toJSDate();
+
+  /* 2️⃣  SQL raw: split path, group by, order desc, LIMIT 5 */
+  const rows = await prisma.$queryRaw<{ category: string; visits: bigint }[]>`
+    SELECT
+      SPLIT_PART("path", '/', 3) AS category,  -- '/category/hukum' → 'hukum'
+      COUNT(*)                   AS visits
+    FROM "PageVisit"
+    WHERE "pageType"  = 'category'
+      AND "visitTime" >= ${startUtc}
+      AND "visitTime" <  ${endUtc}
+      AND "path" LIKE '/category/%'
+    GROUP BY category
+    ORDER BY visits DESC
+    LIMIT 5;                                  -- ⬅️ top‑5 saja
+  `;
+
+  /* 3️⃣  Normalisasi hasil */
+  return rows.map((r) => ({
+    category: r.category ?? 'unknown',
+    visits: Number(r.visits),
+  }));
+}
