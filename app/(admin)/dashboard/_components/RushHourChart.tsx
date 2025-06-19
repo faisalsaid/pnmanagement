@@ -20,14 +20,14 @@ interface Props {
   }[];
 }
 
-const rushHourDummy = [
-  { hour: '09:PM', visits: 240, fill: 'pink' },
-  { hour: '10:PM', visits: 310, fill: 'goldenrod' },
-  { hour: '11:PM', visits: 275, fill: 'lightblue' },
-  { hour: '12:PM', visits: 820, fill: 'lightseagreen' }, // 🔥 jam kunjungan terbanyak
-  { hour: '13:PM', visits: 360, fill: 'orange' },
-  { hour: '14:PM', visits: 290, fill: 'thistle' },
-];
+// const rushHourDummy = [
+//   { hour: '09:PM', visits: 240, fill: 'pink' },
+//   { hour: '10:PM', visits: 310, fill: 'goldenrod' },
+//   { hour: '11:PM', visits: 275, fill: 'lightblue' },
+//   { hour: '12:PM', visits: 820, fill: 'lightseagreen' }, // 🔥 jam kunjungan terbanyak
+//   { hour: '13:PM', visits: 360, fill: 'orange' },
+//   { hour: '14:PM', visits: 290, fill: 'thistle' },
+// ];
 
 const chartConfig = {
   visitors: {

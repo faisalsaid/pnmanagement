@@ -1,4 +1,5 @@
 import {
+  getCityActivityLast30Days,
   getDeviceType,
   getHourlyVisits24h,
   // getSimpleAnalitic,
@@ -52,6 +53,7 @@ const page = async () => {
   const topFiveArticle = await getTopFiveArticles();
   // console.log(topFiveArticle);
 
+  // handle rush hour
   const rawRushHour = await getTopHoursYesterday();
   const color = [
     'pink',
@@ -65,7 +67,11 @@ const page = async () => {
     ...item,
     fill: color[index] || 'gray', // fallback jika color habis
   }));
-  console.log(rushHourYesterday);
+
+  // handle city activies
+
+  const theCity = await getCityActivityLast30Days();
+  console.log(theCity);
 
   return (
     <div>
@@ -85,7 +91,7 @@ const page = async () => {
           <RushHourChart data={rushHourYesterday} />
         </div>
         <div className="bg-primary-foreground p-4 rounded-lg">
-          <ActivitesByCity />
+          <ActivitesByCity data={theCity} />
         </div>
         <div className="bg-primary-foreground p-4 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2">
           <DeviceChart chartData={dataDevice} />

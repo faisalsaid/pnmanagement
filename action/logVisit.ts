@@ -465,3 +465,36 @@ export async function getTopHoursYesterday() {
     visits: Number(r.visits),
   }));
 }
+
+// //////////////////////////////////////////////////////////////////////////////////////
+
+// GET top city
+
+export async function getCityActivityLast30Days() {
+  const tz = 'Asia/Jakarta';
+
+  /* 1️⃣  Rentang waktu 30 hari terakhir */
+  const now = DateTime.now().setZone(tz);
+  const startUtc = now.minus({ days: 30 }).startOf('day').toUTC().toJSDate();
+  const endUtc = now.toUTC().toJSDate();
+
+  /* 2️⃣  Group by "country" & "city", hitung kunjungan, urutkan, ambil 5 */
+  const rows = await prisma.pageVisit.groupBy({
+    by: ['country', 'city'],
+    where: {
+      visitTime: { gte: startUtc, lt: endUtc },
+      city: { not: null }, // abaikan baris tanpa city
+      country: { not: null }, // abaikan baris tanpa country
+    },
+    _count: { id: true }, // COUNT(id) → jumlah kunjungan
+    orderBy: { _count: { id: 'desc' } },
+    take: 5,
+  });
+
+  /* 3️⃣  Format hasil */
+  return rows.map((r) => ({
+    city: r.city ?? 'Unknown',
+    country: r.country ?? 'Unknown',
+    visits: r._count.id,
+  }));
+}
