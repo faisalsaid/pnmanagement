@@ -15,7 +15,7 @@ import RushHourChart from './_components/RushHourChart';
 import ActivitesByCity from './_components/ActivitesByCity';
 import ActivitiesChart from './_components/ActivitiesChart';
 import PopularCategory from './_components/PopularCategory';
-import { getPublishPostsToday } from '@/action/postActions';
+import { getPublishPostsToday, getTopFiveArticles } from '@/action/postActions';
 
 import { FaUsers } from 'react-icons/fa6';
 import { TbActivityHeartbeat } from 'react-icons/tb';
@@ -35,11 +35,6 @@ const page = async () => {
   if (data) {
     publishPost = data.length;
   }
-
-  console.log(publishPost);
-
-  // console.log(visitsPerDay);
-
   const topList = [
     { title: 'Visitor Today', icon: FaUsers, value: totalVisitorToday },
     { title: 'Activities', icon: TbActivityHeartbeat, value: totalHits },
@@ -51,6 +46,10 @@ const page = async () => {
 
   const get24lastActivites = await getHourlyVisits24h();
   // console.log('DASHBOARD PAGE', get24lastActivites);
+
+  // get top five article
+  const topFiveArticle = await getTopFiveArticles();
+  console.log(topFiveArticle);
 
   return (
     <div>
@@ -64,7 +63,7 @@ const page = async () => {
           <ActivitiesChart data={get24lastActivites.data} />
         </div>
         <div className="bg-primary-foreground p-4 rounded-lg">
-          <TopFiveArtcle />
+          <TopFiveArtcle articles={topFiveArticle} />
         </div>
         <div className="bg-primary-foreground p-4 rounded-lg">
           <RushHourChart />

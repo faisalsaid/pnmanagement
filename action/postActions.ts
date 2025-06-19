@@ -310,3 +310,27 @@ export const getPublishPostsToday = async () => {
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
+
+// GET Top Five Article with mosts viewCount
+
+export async function getTopFiveArticles() {
+  const articles = await prisma.article.findMany({
+    take: 5,
+    orderBy: { viewCount: 'desc' },
+    select: {
+      id: true,
+      title: true,
+      viewCount: true,
+      category: true,
+      createdAt: true,
+      media: {
+        select: {
+          mediaAsset: true,
+          role: true,
+        },
+      },
+    },
+  });
+
+  return articles;
+}

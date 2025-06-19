@@ -6,44 +6,89 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { Prisma } from '@prisma/client';
+import { Image } from 'lucide-react';
+import { CldImage } from 'next-cloudinary';
+import { useState } from 'react';
 
-const TopFiveArtcle = () => {
+type ArticleProps = Prisma.ArticleGetPayload<{
+  select: {
+    id: true;
+    title: true;
+    viewCount: true;
+    category: true;
+    createdAt: true;
+    media: {
+      select: {
+        mediaAsset: true;
+        role: true;
+      };
+    };
+  };
+}>[];
+
+const TopFiveArtcle = ({ articles }: { articles: ArticleProps }) => {
   return (
     <div>
       <h1 className="mb-4 text-lg font-medium">Top Five Articles</h1>
       <div className="space-y-2">
-        {Array.from({ length: 5 }, (_, i) => (
-          <Card key={i} className="p-0">
-            <div className="flex gap-2 p-2">
-              <div className="w-[50px] aspect-square bg-primary-foreground rounded-md"></div>
-              <div className="flex-1">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <p id="title" className="line-clamp-1">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Nulla aut itaque.
-                    </p>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Nulla aut itaque.
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-                <p className="text-sm text-muted-foreground">
-                  Category | 25 Feb 2025
-                </p>
+        {articles.map((article) => {
+          const futureImage = article.media.find(
+            (item) => item.role === 'feature',
+          );
+
+          console.log('futureImage', futureImage);
+
+          return (
+            <Card key={article.id} className="p-0">
+              <div className="flex gap-2 p-2">
+                <div className="w-[50px] aspect-square bg-primary-foreground rounded-md overflow-hidden flex items-center justify-center">
+                  {futureImage ? (
+                    <CldImage
+                      className="w-full h-full object-cover"
+                      width={futureImage.mediaAsset.width as number}
+                      height={futureImage.mediaAsset.height as number}
+                      alt={futureImage.mediaAsset.public_id as string}
+                      src={
+                        (futureImage.mediaAsset.public_id as string) ||
+                        (futureImage.mediaAsset.secure_url as string)
+                      }
+                    />
+                  ) : (
+                    <Image className="text-muted-foreground" />
+                  )}
+                </div>
+                <div className="flex-1">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <p id="title" className="line-clamp-1">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Nulla aut itaque.
+                      </p>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{article.title}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <p className="text-sm text-muted-foreground">
+                    {article.category.name} |{' '}
+                    {article.createdAt.toLocaleString('id-ID', {
+                      day: 'numeric',
+                      month: '2-digit',
+                      year: 'numeric',
+                    })}
+                  </p>
+                </div>
+                <div className="w-[50px] aspect-square bg-green-100 flex flex-col items-center justify-center rounded-md">
+                  <p className="text-lg font-semibold text-green-900">
+                    {article.viewCount}
+                  </p>
+                  <p className="text-xs text-green-700">Views</p>
+                </div>
               </div>
-              <div className="w-[50px] aspect-square bg-green-100 flex flex-col items-center justify-center rounded-md">
-                <p className="text-lg font-semibold text-green-900">
-                  {i % 2 ? '2.K' : '826'}
-                </p>
-                <p className="text-xs text-green-700">Views</p>
-              </div>
-            </div>
-          </Card>
-        ))}
+            </Card>
+          );
+        })}
       </div>
     </div>
   );
