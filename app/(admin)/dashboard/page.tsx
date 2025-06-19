@@ -15,20 +15,30 @@ import RushHourChart from './_components/RushHourChart';
 import ActivitesByCity from './_components/ActivitesByCity';
 import ActivitiesChart from './_components/ActivitiesChart';
 import PopularCategory from './_components/PopularCategory';
+import { getPublishPostsToday } from '@/action/postActions';
 
 const page = async () => {
   const totalVisitorToday = await getVistorTodayBySessionId();
-  // const { visitsPerDay } = await getSimpleAnalitic();
 
   const dataDevice = await getDeviceType();
   const userActive = await getUserActive();
   const totalHits = await getTodayHits();
+  const { data } = await getPublishPostsToday();
+
+  let publishPost = 0;
+
+  if (data) {
+    publishPost = data.length;
+  }
+
+  console.log(publishPost);
+
   // console.log(visitsPerDay);
 
   const topList = [
     { title: 'Visitor Today', icon: 'user', value: totalVisitorToday },
     { title: 'Activities', icon: 'user', value: totalHits },
-    { title: 'Publish Posts', icon: 'user', value: 0 },
+    { title: 'Publish Posts', icon: 'user', value: publishPost },
     { title: 'User Active', icon: 'user', value: userActive },
     { title: 'User Active', icon: 'user', value: userActive },
     { title: 'User Active', icon: 'user', value: userActive },

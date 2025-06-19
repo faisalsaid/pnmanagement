@@ -4,6 +4,7 @@ import { CreateCategorySchema, postFormSchema } from '@/lib/zod';
 import { revalidatePath } from 'next/cache';
 import slugify from 'slugify';
 import { z } from 'zod';
+import { DateTime } from 'luxon';
 
 interface InputCategory {
   name: string;
@@ -270,3 +271,42 @@ export async function incrementPostView(id: string) {
     },
   });
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// HANDLE GET ALL POST PUBLISH TODAY ASIA/JAKART GMT+7
+
+const nowJakarta = DateTime.now().setZone('Asia/Jakarta');
+
+export const getPublishPostsToday = async () => {
+  // set star day and end day
+  const startOfDay = nowJakarta.startOf('day'); // 00:00:00 Jakarta
+  const endOfDay = nowJakarta.endOf('day'); // 23:59:59.999 Jakarta
+
+  // covertion to UTC
+  const startUtc = startOfDay.toUTC().toJSDate();
+  const endUtc = endOfDay.toUTC().toJSDate();
+
+  // console.log('TIMES LOCAL GMT+7', startOfDay, endOfDay);
+  // console.log('TIMES UTC ', startUtc, endUtc);
+
+  try {
+    // Prisma query
+    const posts = await prisma.article.findMany({
+      select: {
+        id: true,
+      },
+      where: {
+        createdAt: {
+          gte: startUtc,
+          lte: endUtc,
+        },
+      },
+    });
+
+    return { messages: 'success', data: posts };
+  } catch (error) {
+    return { message: 'Failed get publish post today', error };
+  }
+};
+
+/////////////////////////////////////////////////////////////////////////////////////////
