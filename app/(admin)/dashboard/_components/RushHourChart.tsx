@@ -12,6 +12,14 @@ import {
 } from '@/components/ui/chart';
 import { useMemo } from 'react';
 
+interface Props {
+  data: {
+    hour: string;
+    visits: number;
+    fill: string;
+  }[];
+}
+
 const rushHourDummy = [
   { hour: '09:PM', visits: 240, fill: 'pink' },
   { hour: '10:PM', visits: 310, fill: 'goldenrod' },
@@ -47,13 +55,16 @@ const chartConfig = {
   //   },
 } satisfies ChartConfig;
 
-const RushHourChart = () => {
+const RushHourChart = ({ data }: Props) => {
   const totalVisitors = useMemo(() => {
-    return rushHourDummy.reduce((acc, curr) => acc + curr.visits, 0);
+    return data.reduce((acc, curr) => acc + curr.visits, 0);
   }, []);
   return (
     <div>
-      <h1 className="mb-4 text-lg font-medium">Rush Hour</h1>
+      <div className="flex items-baseline gap-2 mb-4">
+        <h1 className=" text-lg font-medium">Rush Hour</h1>
+        <p className="text-sm text-muted-foreground">Yesterday | GMT+7</p>
+      </div>
       <ChartContainer config={chartConfig} className="mx-auto aspect-square ">
         <PieChart>
           <ChartTooltip
@@ -66,7 +77,7 @@ const RushHourChart = () => {
             className="-translate-y-2 flex-wrap gap-2 *:basis-1/4 *:justify-center"
           /> */}
           <Pie
-            data={rushHourDummy}
+            data={data}
             dataKey="visits"
             nameKey="hour"
             innerRadius={60}

@@ -9,6 +9,7 @@ import { auth } from '@/auth';
 import { startOfDay, endOfDay, subDays } from 'date-fns';
 import { Prisma } from '@prisma/client';
 import { fromZonedTime, toZonedTime } from 'date-fns-tz';
+import { DateTime } from 'luxon';
 
 const accountId = process.env.ACCOUNT_ID;
 const licenseKey = process.env.LICENSE_KEY;
@@ -140,7 +141,7 @@ export async function getVistorTodayBySessionId() {
   });
 
   const count = sessions.length;
-  console.log('Unique sessions today:', count);
+  // console.log('Unique sessions today:', count);
   return count;
 }
 
@@ -428,4 +429,39 @@ export async function getHourlyVisits24h() {
       visits: Number(r.visits),
     })),
   };
+}
+
+/////////////////////////////////////
+
+// GET Yeseterday Rush Hour, top 6
+
+export async function getTopHoursYesterday() {
+  const tz = 'Asia/Jakarta';
+
+  /* ── 1. Hitung rentang waktu “kemarin” ─────────────────────────────── */
+  const now = DateTime.now().setZone(tz); // waktu lokal
+  const startLocal = now.minus({ days: 1 }).startOf('day'); // 00:00 kemarin (lokal)
+  const endLocal = startLocal.plus({ days: 1 }); // 00:00 hari ini (lokal)
+
+  // Konversi ke UTC (JS Date) untuk dipakai di query
+  const startUtc = startLocal.toUTC().toJSDate();
+  const endUtc = endLocal.toUTC().toJSDate();
+
+  /* ── 2. SQL: group‑by per jam, urutkan desc, ambil 6 ───────────────── */
+  const rows = await prisma.$queryRaw<{ hour: Date; visits: bigint }[]>`
+    SELECT DATE_TRUNC('hour', "visitTime") AS hour,
+           COUNT(*)                       AS visits
+    FROM   "PageVisit"
+    WHERE  "visitTime" >= ${startUtc}
+      AND  "visitTime" <  ${endUtc}
+    GROUP  BY hour
+    ORDER  BY visits DESC
+    LIMIT  6;
+  `;
+
+  /* ── 3. Format hasil untuk klien ───────────────────────────────────── */
+  return rows.map((r) => ({
+    hour: DateTime.fromJSDate(r.hour).setZone(tz).toFormat('HH:mm'),
+    visits: Number(r.visits),
+  }));
 }

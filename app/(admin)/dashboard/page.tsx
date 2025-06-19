@@ -3,6 +3,7 @@ import {
   getHourlyVisits24h,
   // getSimpleAnalitic,
   getTodayHits,
+  getTopHoursYesterday,
   getUserActive,
   getVistorTodayBySessionId,
 } from '@/action/logVisit';
@@ -49,7 +50,22 @@ const page = async () => {
 
   // get top five article
   const topFiveArticle = await getTopFiveArticles();
-  console.log(topFiveArticle);
+  // console.log(topFiveArticle);
+
+  const rawRushHour = await getTopHoursYesterday();
+  const color = [
+    'pink',
+    'goldenrod',
+    'lightblue',
+    'lightseagreen',
+    'orange',
+    'thistle',
+  ];
+  const rushHourYesterday = rawRushHour.map((item, index) => ({
+    ...item,
+    fill: color[index] || 'gray', // fallback jika color habis
+  }));
+  console.log(rushHourYesterday);
 
   return (
     <div>
@@ -66,7 +82,7 @@ const page = async () => {
           <TopFiveArtcle articles={topFiveArticle} />
         </div>
         <div className="bg-primary-foreground p-4 rounded-lg">
-          <RushHourChart />
+          <RushHourChart data={rushHourYesterday} />
         </div>
         <div className="bg-primary-foreground p-4 rounded-lg">
           <ActivitesByCity />

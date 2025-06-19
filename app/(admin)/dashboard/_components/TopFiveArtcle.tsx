@@ -39,7 +39,7 @@ const TopFiveArtcle = ({ articles }: { articles: ArticleProps }) => {
             (item) => item.role === 'feature',
           );
 
-          console.log('futureImage', futureImage);
+          // console.log('futureImage', futureImage);
 
           return (
             <Card key={article.id} className="p-0">
