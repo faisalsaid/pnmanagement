@@ -58,7 +58,7 @@ const chartConfig = {
 const RushHourChart = ({ data }: Props) => {
   const totalVisitors = useMemo(() => {
     return data.reduce((acc, curr) => acc + curr.visits, 0);
-  }, []);
+  }, [data]);
   return (
     <div>
       <div className="flex items-baseline gap-2 mb-4">
