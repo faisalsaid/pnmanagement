@@ -1,5 +1,4 @@
 import { Card } from '@/components/ui/card';
-import { House } from 'lucide-react';
 import { IconType } from 'react-icons/lib';
 
 interface Props {

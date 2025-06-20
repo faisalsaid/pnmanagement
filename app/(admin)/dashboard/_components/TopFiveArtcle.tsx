@@ -10,7 +10,6 @@ import { Prisma } from '@prisma/client';
 import { Image } from 'lucide-react';
 import { CldImage } from 'next-cloudinary';
 import Link from 'next/link';
-import { useState } from 'react';
 
 type ArticleProps = Prisma.ArticleGetPayload<{
   select: {
@@ -50,7 +49,10 @@ const TopFiveArtcle = ({ articles }: { articles: ArticleProps }) => {
                       className="w-full h-full object-cover"
                       width={futureImage.mediaAsset.width as number}
                       height={futureImage.mediaAsset.height as number}
-                      alt={futureImage.mediaAsset.public_id as string}
+                      alt={
+                        (futureImage.mediaAsset.public_id as string) ||
+                        'Post Image'
+                      }
                       src={
                         (futureImage.mediaAsset.public_id as string) ||
                         (futureImage.mediaAsset.secure_url as string)

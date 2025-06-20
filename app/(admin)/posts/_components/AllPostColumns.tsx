@@ -10,13 +10,7 @@ import { PostActionsCell } from './_columnsegment/PostActionsCell';
 
 import { Button } from '@/components/ui/button';
 
-import {
-  Archive,
-  CheckCheck,
-  Eye,
-  FileCheck2,
-  ListCollapse,
-} from 'lucide-react';
+import { Archive, Eye, FileCheck2, ListCollapse } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   HoverCard,
