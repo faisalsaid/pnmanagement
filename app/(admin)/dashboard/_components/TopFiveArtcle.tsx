@@ -43,7 +43,7 @@ const TopFiveArtcle = ({ articles }: { articles: ArticleProps }) => {
 
           return (
             <Card key={article.id} className="p-0">
-              <div className="flex gap-2 p-2">
+              <div className="flex gap-2 p-2 items-center">
                 <div className="w-[50px] aspect-square bg-primary-foreground rounded-md overflow-hidden flex items-center justify-center">
                   {futureImage ? (
                     <CldImage
@@ -67,7 +67,7 @@ const TopFiveArtcle = ({ articles }: { articles: ArticleProps }) => {
                 >
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <p id="title" className="line-clamp-1">
+                      <p id="title" className="line-clamp-1 text-sm">
                         Lorem ipsum dolor sit amet consectetur adipisicing elit.
                         Nulla aut itaque.
                       </p>
@@ -76,7 +76,7 @@ const TopFiveArtcle = ({ articles }: { articles: ArticleProps }) => {
                       <p>{article.title}</p>
                     </TooltipContent>
                   </Tooltip>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     {article.category.name} |{' '}
                     {article.createdAt.toLocaleString('id-ID', {
                       day: 'numeric',
