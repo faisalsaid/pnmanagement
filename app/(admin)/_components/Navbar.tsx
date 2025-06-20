@@ -6,7 +6,7 @@ import { Session } from 'next-auth';
 import { signOut } from 'next-auth/react';
 
 // import ui
-import { House, LogOutIcon, Moon, Settings, Sun, User } from 'lucide-react';
+import { Globe, LogOutIcon, Moon, Settings, Sun, User } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -35,7 +35,7 @@ const Navbar = ({ data }: { data: Session | null }) => {
           <Tooltip>
             <TooltipTrigger asChild>
               <Button variant={'ghost'} size={'icon'}>
-                <House />
+                <Globe />
               </Button>
             </TooltipTrigger>
             <TooltipContent>
