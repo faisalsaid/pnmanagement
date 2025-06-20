@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 // import { deleteArticle } from '@/app/action/postActions';
@@ -33,18 +33,35 @@ export function PostActionsCell({ post }: { post: Article }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
-  const isAllowed =
-    session?.user.role &&
-    (['ADMIN', 'PEMRED', 'REDAKTUR'].includes(session.user.role) ||
-      session.user.id === post.author.id);
-
-  const [permission, setPermission] = useState(isAllowed);
+  const [permission, setPermission] = useState(false);
 
   useEffect(() => {
-    setPermission(isAllowed);
-  }, [isAllowed, session]);
+    const fetchSession = async () => {
+      const currentSession = await getSession();
+      if (currentSession?.user) {
+        const isAllowed =
+          ['ADMIN', 'PEMRED', 'REDAKTUR'].includes(currentSession.user.role) ||
+          currentSession.user.id === post.author.id;
+        setPermission(isAllowed);
+      }
+    };
+
+    fetchSession();
+  }, [post.author.id]);
+
+  // useEffect(() => {
+  //   if (status === 'authenticated') {
+  //     const allowed =
+  //       session?.user.role &&
+  //       (['ADMIN', 'PEMRED', 'REDAKTUR'].includes(session.user.role) ||
+  //         session.user.id === post.author.id);
+  //     setPermission(allowed);
+  //   }
+  // }, [status, session]);
+
+  console.log(session);
 
   const handleDelete = () => {
     startTransition(async () => {
