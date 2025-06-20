@@ -54,10 +54,10 @@ const PopularCategory = ({ data }: Props) => {
               <div className={`w-1 ${category.fill} `}></div>
               <div className="flex items-center justify-between w-full p-2">
                 <div className="">
-                  <p className="capitalize text-lg">{category.category}</p>
+                  <p className="capitalize ">{category.category}</p>
                 </div>
                 <div className=" flex flex-col items-end justify-center">
-                  <p className="capitalize text-xl">
+                  <p className="capitalize text-lg">
                     {formatNumber(category.visits, { compact: true })}
                   </p>
                   <p className="text-xs">Activites</p>
