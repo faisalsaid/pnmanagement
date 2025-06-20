@@ -145,27 +145,29 @@ export const AllPostsColumns: ColumnDef<Article>[] = [
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <div
-                className={cn(
-                  `bg-slate-200/40 rounded-full border  w-8 h-8 flex items-center justify-center p-1.5 mx-auto,`,
-                  status === 'DRAFT'
-                    ? 'bg-yellow-500/20 border-yellow-500 text-yellow-500'
-                    : status === 'PUBLISHED'
-                    ? 'bg-green-500/20 border-green-500 text-green-500'
-                    : status === 'ARCHIVED'
-                    ? 'bg-red-500/20 border-red-500 text-red-500'
-                    : 'bg-sky-500/20 border-sky-500 text-sky-500',
-                )}
-              >
-                {status === 'DRAFT' ? (
-                  <ListCollapse />
-                ) : status === 'PUBLISHED' ? (
-                  <FileCheck2 />
-                ) : status === 'ARCHIVED' ? (
-                  <Archive />
-                ) : (
-                  <Eye />
-                )}
+              <div className=" flex items-center justify-center">
+                <div
+                  className={cn(
+                    `bg-slate-200/40 rounded-full border  w-8 h-8 flex items-center justify-center p-1.5 mx-auto,`,
+                    status === 'DRAFT'
+                      ? 'bg-yellow-500/20 border-yellow-500 text-yellow-500'
+                      : status === 'PUBLISHED'
+                      ? 'bg-green-500/20 border-green-500 text-green-500'
+                      : status === 'ARCHIVED'
+                      ? 'bg-red-500/20 border-red-500 text-red-500'
+                      : 'bg-sky-500/20 border-sky-500 text-sky-500',
+                  )}
+                >
+                  {status === 'DRAFT' ? (
+                    <ListCollapse />
+                  ) : status === 'PUBLISHED' ? (
+                    <FileCheck2 />
+                  ) : status === 'ARCHIVED' ? (
+                    <Archive />
+                  ) : (
+                    <Eye />
+                  )}
+                </div>
               </div>
             </TooltipTrigger>
             <TooltipContent>{status as string}</TooltipContent>
