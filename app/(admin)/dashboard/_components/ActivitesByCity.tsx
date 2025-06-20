@@ -48,15 +48,15 @@ const ActivitesByCity = ({ data }: Props) => {
               <div className="w-1 bg-amber-600 "></div>
               <div className="flex items-center justify-between w-full p-2">
                 <div className="">
-                  <p className="capitalize text-lg">
+                  <p className="capitalize ">
                     {city.city}{' '}
-                    <span className="text-muted-foreground text-sm">
+                    <span className="text-muted-foreground text-xs">
                       - {city.country}
                     </span>
                   </p>
                 </div>
                 <div className=" flex flex-col items-end justify-center">
-                  <p className="capitalize text-xl">
+                  <p className="capitalize text-lg">
                     {formatNumber(city.visits)}
                   </p>
                   <p className="text-xs">Activites</p>
