@@ -61,7 +61,7 @@ export function PostActionsCell({ post }: { post: Article }) {
   //   }
   // }, [status, session]);
 
-  console.log(session);
+  // console.log(session);
 
   const handleDelete = () => {
     startTransition(async () => {
