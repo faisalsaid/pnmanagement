@@ -10,7 +10,13 @@ import { PostActionsCell } from './_columnsegment/PostActionsCell';
 
 import { Button } from '@/components/ui/button';
 
-import { CheckCheck } from 'lucide-react';
+import {
+  Archive,
+  CheckCheck,
+  Eye,
+  FileCheck2,
+  ListCollapse,
+} from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   HoverCard,
@@ -139,9 +145,9 @@ export const AllPostsColumns: ColumnDef<Article>[] = [
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <CheckCheck
+              <div
                 className={cn(
-                  `px-1.5 py-0.5 aspect-square w-max text-xs border rounded-full mx-auto`,
+                  `bg-slate-200/40 rounded-full border  w-8 h-8 flex items-center justify-center p-1.5 mx-auto,`,
                   status === 'DRAFT'
                     ? 'bg-yellow-500/20 border-yellow-500 text-yellow-500'
                     : status === 'PUBLISHED'
@@ -150,7 +156,17 @@ export const AllPostsColumns: ColumnDef<Article>[] = [
                     ? 'bg-red-500/20 border-red-500 text-red-500'
                     : 'bg-sky-500/20 border-sky-500 text-sky-500',
                 )}
-              />
+              >
+                {status === 'DRAFT' ? (
+                  <ListCollapse />
+                ) : status === 'PUBLISHED' ? (
+                  <FileCheck2 />
+                ) : status === 'ARCHIVED' ? (
+                  <Archive />
+                ) : (
+                  <Eye />
+                )}
+              </div>
             </TooltipTrigger>
             <TooltipContent>{status as string}</TooltipContent>
           </Tooltip>
