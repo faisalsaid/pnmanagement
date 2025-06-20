@@ -31,22 +31,24 @@ const Navbar = ({ data }: { data: Session | null }) => {
       {/* LEFT */}
       <div className="flex gap-2 items-center">
         <SidebarTrigger className="" />
-        <Link href={'/'}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant={'ghost'} size={'icon'}>
-                <Globe />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Visit Website</p>
-            </TooltipContent>
-          </Tooltip>
-        </Link>
       </div>
       {/* RIGHT */}
       <div className="flex items-center gap-4">
         {/* <Link href={'/'}>Dashboard</Link> */}
+        <div>
+          <Link href={'/'}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant={'outline'} size={'icon'}>
+                  <Globe />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Visit Website</p>
+              </TooltipContent>
+            </Tooltip>
+          </Link>
+        </div>
         {/* THEME MENU */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
