@@ -70,8 +70,7 @@ const TopFiveArtcle = ({ articles }: { articles: ArticleProps }) => {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <p id="title" className="line-clamp-1 text-sm">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Nulla aut itaque.
+                        {article.title}
                       </p>
                     </TooltipTrigger>
                     <TooltipContent>
