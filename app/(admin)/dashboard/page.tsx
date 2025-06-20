@@ -89,14 +89,14 @@ const page = async () => {
   // console.log(dataDevice);
 
   return (
-    <div>
+    <div className="space-y-4">
       <div className="grid grid-cols-2 sm:grid-cols-3  lg:grid-cols-6 gap-4">
         {topList.map((data, i) => (
           <TopCard data={data} key={i} />
         ))}
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-4 mt-4">
-        <div className="bg-primary-foreground p-4 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 ">
+        <div className="bg-primary-foreground p-4 rounded-lg md:col-span-2  ">
           <ActivitiesChart data={get24lastActivites.data} />
         </div>
         <div className="bg-primary-foreground p-4 rounded-lg">
@@ -108,7 +108,7 @@ const page = async () => {
         <div className="bg-primary-foreground p-4 rounded-lg">
           <ActivitesByCity data={theCity} />
         </div>
-        <div className="bg-primary-foreground p-4 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2">
+        <div className="bg-primary-foreground p-4 rounded-lg md:col-span-2 md:row-start-3 lg:row-start-auto">
           <DeviceChart chartData={dataDevice} />
         </div>
         <div className="bg-primary-foreground p-4 rounded-lg">

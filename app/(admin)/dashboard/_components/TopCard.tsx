@@ -20,7 +20,7 @@ const TopCard = ({ data }: Props) => {
           <Icon className="w-4 sm:w-6" />
         </div>
         <div className=" flex flex-col w-full">
-          <p className="font-semibold text-xs text-muted-foreground">
+          <p className="font-semibold text-xs lg:text-sm text-muted-foreground">
             {data.title}
           </p>
           <p className="text-sm font-semibold self-end">{data.value}</p>
