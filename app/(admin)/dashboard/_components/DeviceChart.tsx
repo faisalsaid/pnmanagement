@@ -43,50 +43,51 @@ interface Props {
 
 const DeviceChart = ({ chartData }: Props) => {
   return (
-    <div>
+    <div className="h-full bg--300">
       <div className="flex items-baseline gap-2 mb-4">
         <h1 className=" text-lg font-medium">Access By Device</h1>
         <p className="text-sm text-muted-foreground">Last 30 days.</p>
       </div>
-
-      <ChartContainer config={chartConfig}>
-        <LineChart
-          accessibilityLayer
-          data={chartData}
-          // margin={{
-          //   left: 12,
-          //   right: 12,
-          // }}
-        >
-          <CartesianGrid vertical={false} />
-          <XAxis
-            dataKey="date"
-            tickLine={false}
-            axisLine={false}
-            tickMargin={8}
-            tickFormatter={(value) =>
-              format(new Date(value), 'd MMM', { locale: id })
-            }
-          />
-          <YAxis tickLine={false} tickMargin={10} axisLine={false} />
-          <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-          <Line
-            dataKey="desktop"
-            type="monotone"
-            stroke="var(--color-desktop)"
-            strokeWidth={2}
-            dot={false}
-          />
-          <Line
-            dataKey="mobile"
-            type="monotone"
-            stroke="var(--color-mobile)"
-            strokeWidth={2}
-            dot={false}
-          />
-          <ChartLegend content={<ChartLegendContent />} />
-        </LineChart>
-      </ChartContainer>
+      <div className="  bg--300 max-w-full h-full flex items-center justify-center ">
+        <ChartContainer config={chartConfig}>
+          <LineChart
+            accessibilityLayer
+            data={chartData}
+            // margin={{
+            //   left: 12,
+            //   right: 12,
+            // }}
+          >
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="date"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickFormatter={(value) =>
+                format(new Date(value), 'd MMM', { locale: id })
+              }
+            />
+            <YAxis tickLine={false} tickMargin={10} axisLine={false} />
+            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            <Line
+              dataKey="desktop"
+              type="monotone"
+              stroke="var(--color-desktop)"
+              strokeWidth={2}
+              dot={false}
+            />
+            <Line
+              dataKey="mobile"
+              type="monotone"
+              stroke="var(--color-mobile)"
+              strokeWidth={2}
+              dot={false}
+            />
+            <ChartLegend content={<ChartLegendContent />} />
+          </LineChart>
+        </ChartContainer>
+      </div>
     </div>
   );
 };
