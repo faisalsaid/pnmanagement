@@ -86,7 +86,7 @@ const page = async () => {
     ...item,
     fill: categoryColor[i] || 'gray',
   }));
-  console.log(dataDevice);
+  // console.log(dataDevice);
 
   return (
     <div>
