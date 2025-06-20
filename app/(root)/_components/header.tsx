@@ -75,7 +75,9 @@ const WebHeader = ({ categories, session }: WebFooterProps) => {
               </Link>
             ) : null}
           </div>
-          <MenuSheet categories={cleanCategories} />
+          <div className="block md:hidden">
+            <MenuSheet categories={cleanCategories} />
+          </div>
         </div>
       </div>
       <nav>
