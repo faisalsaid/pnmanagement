@@ -44,7 +44,7 @@ export function PostActionsCell({ post }: { post: Article }) {
 
   useEffect(() => {
     setPermission(isAllowed);
-  }, [isAllowed]);
+  }, [isAllowed, session]);
 
   const handleDelete = () => {
     startTransition(async () => {
