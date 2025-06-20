@@ -20,6 +20,7 @@ import { signupCredentials } from '@/action/authAction';
 import { Separator } from '@/components/ui/separator';
 import { FaGoogle } from 'react-icons/fa';
 import Link from 'next/link';
+import { signIn } from 'next-auth/react';
 // import { FcGoogle } from 'react-icons/fc';
 
 export default function RegisterPage() {
@@ -139,7 +140,7 @@ export default function RegisterPage() {
           <Button
             variant="outline"
             className="w-full flex items-center justify-center gap-2"
-            onClick={handleGoogleSignup}
+            onClick={() => signIn('google')}
           >
             <FaGoogle size={20} />
             Sign up with Google

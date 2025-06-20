@@ -22,6 +22,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { loginSchema } from '@/lib/zod';
 import { signinCredentials } from '@/action/authAction';
+import { signIn } from 'next-auth/react';
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
@@ -42,10 +43,10 @@ export default function LoginPage() {
     // handle login logic here
   };
 
-  const handleGoogleLogin = () => {
-    console.log('Google Sign-In triggered');
-    // e.g., signIn("google") with NextAuth
-  };
+  // const handleGoogleLogin = () => {
+  //   console.log('Google Sign-In triggered');
+  //   // e.g., signIn("google") with NextAuth
+  // };
 
   return (
     <div className="min-h-screen flex items-center justify-center">
@@ -129,7 +130,7 @@ export default function LoginPage() {
           <Button
             variant="outline"
             className="w-full flex items-center justify-center gap-2"
-            onClick={handleGoogleLogin}
+            onClick={() => signIn('google')}
           >
             <FaGoogle size={20} />
             Sign in with Google
