@@ -1,5 +1,4 @@
 import {
-  Home,
   Inbox,
   Settings,
   Plus,
@@ -8,13 +7,14 @@ import {
   Mail,
   GalleryThumbnails,
   UserRound,
+  LayoutDashboard,
 } from 'lucide-react';
 
 export const adminMenuList = [
   {
     title: 'Dashboard',
     url: '/dashboard',
-    icon: Home,
+    icon: LayoutDashboard,
   },
   {
     title: 'Posts',
