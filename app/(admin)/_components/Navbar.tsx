@@ -80,11 +80,8 @@ const Navbar = ({ data }: { data: Session | null }) => {
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Avatar className="hover:cursor-pointer">
-              <AvatarImage
-                src="https://avatars.githubusercontent.com/u/61022946?v=4"
-                alt={'profile'}
-              />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarImage src={data?.user.image || 'image'} alt={'profile'} />
+              <AvatarFallback>!</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent sideOffset={10}>
