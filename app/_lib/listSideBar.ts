@@ -6,8 +6,8 @@ import {
   HandCoins,
   Mail,
   GalleryThumbnails,
-  UserRound,
   LayoutDashboard,
+  Users,
 } from 'lucide-react';
 
 export const adminMenuList = [
@@ -57,9 +57,9 @@ export const adminMenuList = [
   },
 
   {
-    title: 'Profile',
-    url: '/profile',
-    icon: UserRound,
+    title: 'Users',
+    url: '/users',
+    icon: Users,
   },
   {
     title: 'Settings',
