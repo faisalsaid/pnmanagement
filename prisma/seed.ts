@@ -31,11 +31,11 @@ async function main() {
 
   // Upsert category
   await prisma.category.upsert({
-    where: { slug: 'uncategories' },
+    where: { slug: 'uncategorized' },
     update: {},
     create: {
-      name: 'Uncategories',
-      slug: 'uncategories',
+      name: 'Uncategorized',
+      slug: 'uncategorized',
     },
   });
 
