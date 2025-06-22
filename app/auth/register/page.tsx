@@ -40,10 +40,10 @@ export default function RegisterPage() {
     // TODO: submit to backend
   };
 
-  const handleGoogleSignup = () => {
-    // TODO: Integrate with Google OAuth
-    console.log('Google Signup');
-  };
+  // const handleGoogleSignup = () => {
+  //   // TODO: Integrate with Google OAuth
+  //   console.log('Google Signup');
+  // };
 
   return (
     <div className="min-h-screen flex items-center justify-center  p-4">

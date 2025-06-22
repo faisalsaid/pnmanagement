@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { getSession, useSession } from 'next-auth/react';
+import { getSession } from 'next-auth/react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 // import { deleteArticle } from '@/app/action/postActions';
@@ -33,7 +33,6 @@ export function PostActionsCell({ post }: { post: Article }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
-  const { data: session, status } = useSession();
 
   const [permission, setPermission] = useState(false);
 
