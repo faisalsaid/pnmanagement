@@ -13,7 +13,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { FaGoogle } from 'react-icons/fa';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,13 +20,15 @@ import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import Link from 'next/link';
 import { loginSchema } from '@/lib/zod';
-import { signinCredentials } from '@/action/authAction';
-import { signIn } from 'next-auth/react';
 import GoogleAuth from './GoogleAuth';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<LoginFormValues>({
@@ -38,16 +39,24 @@ export default function LoginPage() {
     },
   });
 
-  const onSubmit = (data: LoginFormValues) => {
-    // console.log('Login Data:', data);
-    signinCredentials({ data });
-    // handle login logic here
-  };
+  const onSubmit = async (data: LoginFormValues) => {
+    const toastId = toast.loading('Logging in...');
 
-  // const handleGoogleLogin = () => {
-  //   console.log('Google Sign-In triggered');
-  //   // e.g., signIn("google") with NextAuth
-  // };
+    const res = await signIn('credentials', {
+      redirect: false,
+      email: data.email,
+      password: data.password,
+    });
+
+    toast.dismiss(toastId);
+
+    if (res?.error) {
+      toast.error('Error Credentials');
+    } else if (res?.ok) {
+      toast.success('Login success!');
+      router.push('/dashboard');
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center">
