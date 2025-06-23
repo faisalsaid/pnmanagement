@@ -67,7 +67,7 @@ export function UserDataTable<TData, TValue>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    // getPaginationRowModel: getPaginationRowModel(), //default 10 rows
     meta: { currentUser },
   });
 
