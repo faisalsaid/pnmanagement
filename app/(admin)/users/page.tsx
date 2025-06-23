@@ -122,6 +122,12 @@ const UserPage = async ({ searchParams }: PostPageProps) => {
             columns={columns}
             data={users}
             currentUser={currentUser}
+            pagination={{
+              page: pageNumber,
+              limit: pageSizeNumber,
+              totalPages,
+              total,
+            }}
           />
         </Suspense>
       </div>

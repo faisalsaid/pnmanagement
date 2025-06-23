@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter, useSearchParams } from 'next/navigation';
+
 import {
   ColumnDef,
   flexRender,
@@ -7,6 +9,7 @@ import {
   useReactTable,
   getPaginationRowModel,
   RowData,
+  SortingState,
 } from '@tanstack/react-table';
 
 import {
@@ -18,6 +21,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
+import UsersTablePagination from './UsersTablePagination';
+import { useCallback, useState } from 'react';
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -39,13 +44,25 @@ interface DataTableProps<TData, TValue> {
     email: string | null | undefined;
     role: string;
   } | null;
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
 export function UserDataTable<TData, TValue>({
   columns,
   data,
   currentUser,
+  pagination,
 }: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [rowSelection, setRowSelection] = useState({});
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const table = useReactTable({
     data,
     columns,
@@ -54,8 +71,28 @@ export function UserDataTable<TData, TValue>({
     meta: { currentUser },
   });
 
+  const handlePageChange = useCallback(
+    (newPage: number) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('page', newPage.toString());
+      params.set('limit', pagination.limit.toString());
+      router.push(`?${params.toString()}`);
+    },
+    [router, searchParams, pagination.limit],
+  );
+
+  const handleLimitChange = useCallback(
+    (newLimit: number) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('pageSize', newLimit.toString());
+      params.set('page', '1'); // reset ke page pertama
+      router.push(`?${params.toString()}`);
+    },
+    [router, searchParams],
+  );
+
   return (
-    <div>
+    <div className="space-y-4">
       <div className="rounded-md border overflow-hidden">
         <Table>
           <TableHeader>
@@ -109,24 +146,14 @@ export function UserDataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
-      </div>
+
+      <UsersTablePagination
+        page={pagination.page}
+        limit={pagination.limit}
+        totalPages={pagination.totalPages}
+        onPageChange={handlePageChange}
+        onLimitChange={handleLimitChange}
+      />
     </div>
   );
 }
