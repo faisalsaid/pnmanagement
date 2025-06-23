@@ -15,15 +15,11 @@ import {
 } from '@/components/ui/form';
 import { Card, CardContent } from '@/components/ui/card';
 import { registerSchema, RegisterSchema } from '@/lib/zod';
-// import { useFormState } from 'react-dom';
 import { signupCredentials } from '@/action/authAction';
 import { Separator } from '@/components/ui/separator';
-import { FaGoogle } from 'react-icons/fa';
 import Link from 'next/link';
-import { signIn } from 'next-auth/react';
 import GoogleAuth from '@/components/GoogleAuth';
 import { toast } from 'sonner';
-// import { FcGoogle } from 'react-icons/fc';
 import { useRouter } from 'next/navigation';
 
 export default function RegisterPage() {
@@ -59,11 +55,6 @@ export default function RegisterPage() {
     toast.success('Account created successfully!');
     router.push('/auth/login');
   };
-
-  // const handleGoogleSignup = () => {
-  //   // TODO: Integrate with Google OAuth
-  //   console.log('Google Signup');
-  // };
 
   return (
     <div className="min-h-screen flex items-center justify-center  p-4">
