@@ -3,6 +3,7 @@
 import { Prisma } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import UsersActionCells from './UsersActionCells';
+import UserRolesCells from './UserRolesCells';
 
 export type UsersTable = Prisma.UserGetPayload<{
   select: {
@@ -24,11 +25,21 @@ export const columns: ColumnDef<UsersTable>[] = [
   },
   {
     accessorKey: 'role',
-    header: 'Role',
+    cell: ({ row, table }) => (
+      <UserRolesCells
+        currentUser={table.options.meta?.currentUser}
+        user={{ id: row.original.id, role: row.original.role }}
+      />
+    ),
   },
   {
     id: 'action',
     header: 'Actions',
-    cell: ({ row }) => <UsersActionCells user={row.original} />,
+    cell: ({ row, table }) => (
+      <UsersActionCells
+        currentUser={table.options.meta?.currentUser}
+        user={row.original}
+      />
+    ),
   },
 ];

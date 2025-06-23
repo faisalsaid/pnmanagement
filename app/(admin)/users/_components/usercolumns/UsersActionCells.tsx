@@ -1,5 +1,3 @@
-'use client';
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +11,6 @@ import { Button } from '@/components/ui/button';
 import { MoreHorizontal } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState, useTransition } from 'react';
-import { getSession } from 'next-auth/react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,7 +24,17 @@ import {
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 
-const UsersActionCells = ({ user }: { user: UsersTable }) => {
+type Props = {
+  user: UsersTable;
+  currentUser?: {
+    id: string;
+    name: string | null | undefined;
+    email: string | null | undefined;
+    role: string;
+  } | null;
+};
+
+const UsersActionCells = ({ user, currentUser }: Props) => {
   const router = useRouter();
   const [permission, setPermission] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -35,15 +42,10 @@ const UsersActionCells = ({ user }: { user: UsersTable }) => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const fetchSession = async () => {
-      const currentSession = await getSession();
-      if (currentSession?.user) {
-        const isAllowed = ['ADMIN'].includes(currentSession.user.role);
-        setPermission(isAllowed);
-      }
-    };
-
-    fetchSession();
+    if (currentUser) {
+      const isAllowed = ['ADMIN'].includes(currentUser.role);
+      setPermission(isAllowed);
+    }
   }, [user.id]);
 
   const handleDelete = () => {

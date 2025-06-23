@@ -6,6 +6,7 @@ import {
   getCoreRowModel,
   useReactTable,
   getPaginationRowModel,
+  RowData,
 } from '@tanstack/react-table';
 
 import {
@@ -18,20 +19,39 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 
+declare module '@tanstack/react-table' {
+  interface TableMeta<TData extends RowData> {
+    currentUser?: {
+      id: string;
+      name: string | null | undefined;
+      email: string | null | undefined;
+      role: string;
+    } | null;
+  }
+}
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  currentUser: {
+    id: string;
+    name: string | null | undefined;
+    email: string | null | undefined;
+    role: string;
+  } | null;
 }
 
 export function UserDataTable<TData, TValue>({
   columns,
   data,
+  currentUser,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    meta: { currentUser },
   });
 
   return (
