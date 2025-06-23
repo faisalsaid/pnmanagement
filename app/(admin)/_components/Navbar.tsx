@@ -25,6 +25,8 @@ import {
 } from '@/components/ui/tooltip';
 
 const Navbar = ({ data }: { data: Session | null }) => {
+  console.log(data);
+
   const { setTheme } = useTheme();
   return (
     <nav className="p-4 flex items-center justify-between sticky top-0 z-10 bg-primary-foreground">
@@ -80,7 +82,7 @@ const Navbar = ({ data }: { data: Session | null }) => {
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Avatar className="hover:cursor-pointer">
-              <AvatarImage src={data?.user.image || 'image'} alt={'profile'} />
+              <AvatarImage src={data?.user.image as string} alt={'profile'} />
               <AvatarFallback>!</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
