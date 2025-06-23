@@ -118,7 +118,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       const user = auth?.user;
       const isLoggedIn = !!user;
 
-      const roleRedaksi = ['ADMIN', 'PEMRED', 'REDAKTUR', 'REPORTER'];
+      const roleRedaksi = ['ADMIN', 'PEMRED', 'REDAKTUR', 'REPORTER', 'TESTER'];
 
       const protectedRoutes = [
         { prefix: '/dashboard', roles: roleRedaksi },
