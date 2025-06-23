@@ -4,7 +4,7 @@ import { FaGoogle } from 'react-icons/fa';
 import { signIn } from 'next-auth/react';
 
 type Props = {
-  disabled: boolean;
+  disabled?: boolean;
 };
 
 const GoogleAuth = ({ disabled }: Props) => {
