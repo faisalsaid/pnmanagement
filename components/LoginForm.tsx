@@ -23,6 +23,7 @@ import Link from 'next/link';
 import { loginSchema } from '@/lib/zod';
 import { signinCredentials } from '@/action/authAction';
 import { signIn } from 'next-auth/react';
+import GoogleAuth from './GoogleAuth';
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
@@ -127,14 +128,7 @@ export default function LoginPage() {
             <Separator className="flex-1" />
           </div>
 
-          <Button
-            variant="outline"
-            className="w-full flex items-center justify-center gap-2"
-            onClick={() => signIn('google')}
-          >
-            <FaGoogle size={20} />
-            Sign in with Google
-          </Button>
+          <GoogleAuth />
         </CardContent>
       </Card>
     </div>
