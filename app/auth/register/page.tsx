@@ -21,6 +21,7 @@ import { Separator } from '@/components/ui/separator';
 import { FaGoogle } from 'react-icons/fa';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
+import GoogleAuth from '@/components/GoogleAuth';
 // import { FcGoogle } from 'react-icons/fc';
 
 export default function RegisterPage() {
@@ -137,14 +138,7 @@ export default function RegisterPage() {
             <Separator className="flex-1" />
           </div>
 
-          <Button
-            variant="outline"
-            className="w-full flex items-center justify-center gap-2"
-            onClick={() => signIn('google')}
-          >
-            <FaGoogle size={20} />
-            Sign up with Google
-          </Button>
+          <GoogleAuth />
         </CardContent>
       </Card>
     </div>
