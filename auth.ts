@@ -23,7 +23,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       credentials: {},
 
       authorize: async (credentials) => {
-        console.log('authCredentials ==>>', credentials);
+        // console.log('authCredentials ==>>', credentials);
 
         // validate crendetials input
         const validatedFields = loginSchema.safeParse(credentials);
