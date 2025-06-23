@@ -11,23 +11,28 @@ import {
 import { hashSync } from 'bcrypt-ts';
 import { redirect } from 'next/navigation';
 import { AuthError } from 'next-auth';
+import { Prisma } from '@prisma/client';
+
+type ActionResult =
+  | { ok: true } // sukses
+  | { ok: false; error: string } // gagal umum
+  | { ok: false; fieldErrors: Record<string, string[]> }; // gagal validasi
 
 type SignupPorps = {
   data: RegisterSchema;
 };
 
-export const signupCredentials = async ({ data }: SignupPorps) => {
+export async function signupCredentials({
+  data,
+}: {
+  data: RegisterSchema;
+}): Promise<ActionResult> {
   // validated form field
-  const validatedField = registerSchema.safeParse(data);
-
-  if (!validatedField.success) {
-    return {
-      error: validatedField.error.flatten().fieldErrors,
-    };
+  const parsed = registerSchema.safeParse(data);
+  if (!parsed.success) {
+    return { ok: false, fieldErrors: parsed.error.flatten().fieldErrors };
   }
-
-  // Destructuring field
-  const { name, email, password } = validatedField.data;
+  const { name, email, password } = parsed.data;
 
   // hash password
   const hashPassword = hashSync(password, 10);
@@ -37,18 +42,21 @@ export const signupCredentials = async ({ data }: SignupPorps) => {
   // Block mutated db create user
   try {
     await prisma.user.create({
-      data: {
-        name,
-        email,
-        hashPassword,
-      },
+      data: { name, email, hashPassword },
     });
-  } catch (error) {
-    console.error('User creation failed:', error);
-    return { error: 'Failed to create user. Email might already be taken.' };
+    return { ok: true };
+  } catch (err) {
+    if (
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.code === 'P2002'
+    ) {
+      // unique constraint
+      return { ok: false, error: 'The email address has already been used.' };
+    }
+    console.error('User creation failed:', err);
+    return { ok: false, error: 'Account creation failed. Please try again.' };
   }
-  redirect('/auth/login');
-};
+}
 
 type SigninProps = {
   data: SigninSchema;

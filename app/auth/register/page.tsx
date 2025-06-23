@@ -22,9 +22,12 @@ import { FaGoogle } from 'react-icons/fa';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import GoogleAuth from '@/components/GoogleAuth';
+import { toast } from 'sonner';
 // import { FcGoogle } from 'react-icons/fc';
+import { useRouter } from 'next/navigation';
 
 export default function RegisterPage() {
+  const router = useRouter();
   const form = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -35,10 +38,26 @@ export default function RegisterPage() {
     },
   });
 
-  const onSubmit = (data: RegisterSchema) => {
-    console.log('Form Data:', data);
-    signupCredentials({ data });
-    // TODO: submit to backend
+  const onSubmit = async (data: RegisterSchema) => {
+    const id = toast.loading('Register account...');
+    const res = await signupCredentials({ data });
+
+    toast.dismiss(id);
+
+    if (!res.ok) {
+      // Error validasi field level
+      if ('fieldErrors' in res) {
+        Object.values(res.fieldErrors)
+          .flat()
+          .forEach((msg) => toast.error(msg));
+        return;
+      }
+      toast.error(res.error);
+      return;
+    }
+
+    toast.success('Account created successfully!');
+    router.push('/auth/login');
   };
 
   // const handleGoogleSignup = () => {
