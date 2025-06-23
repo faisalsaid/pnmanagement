@@ -156,16 +156,16 @@ export default function RegisterPage() {
                   </Link>
                 </p>
               </fieldset>
+
+              <div className="flex items-center space-x-2">
+                <Separator className="flex-1" />
+                <span className="text-xs text-muted-foreground">or</span>
+                <Separator className="flex-1" />
+              </div>
+
+              <GoogleAuth disabled={form.formState.isSubmitting} />
             </form>
           </Form>
-
-          <div className="flex items-center space-x-2">
-            <Separator className="flex-1" />
-            <span className="text-xs text-muted-foreground">or</span>
-            <Separator className="flex-1" />
-          </div>
-
-          <GoogleAuth />
         </CardContent>
       </Card>
     </div>
