@@ -18,7 +18,7 @@ export type UsersTable = Prisma.UserGetPayload<{
 export const columns: ColumnDef<UsersTable>[] = [
   {
     accessorKey: 'name',
-    header: 'Name',
+    header: () => <UserHeaderSortable columnKey="name" label="name" />,
   },
   {
     accessorKey: 'email',
