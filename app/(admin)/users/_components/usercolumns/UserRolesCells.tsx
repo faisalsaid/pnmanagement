@@ -46,7 +46,7 @@ const UserRolesCells = ({ user, currentUser }: Props) => {
       const isAllowed = ['ADMIN'].includes(currentUser.role);
       setPermission(isAllowed);
     }
-  }, [currentUser]);
+  }, [currentUser, user]);
 
   const handleChangeRole = async ({ userId, role }: UpdateUserRoleInput) => {
     const toastId = toast.loading('Updating role...');
@@ -62,27 +62,29 @@ const UserRolesCells = ({ user, currentUser }: Props) => {
   if (!permission) return <div>{user.role}</div>;
 
   return (
-    <Select
-      value={selectedRole}
-      onValueChange={(newRole: Role) => {
-        setSelectedRole(newRole); // Optimistic update
-        handleChangeRole({ userId: user.id, role: newRole });
-      }}
-    >
-      <SelectTrigger className="w-[120px]">
-        <SelectValue placeholder={user.role} />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          <SelectLabel>Role</SelectLabel>
-          {role.map((item) => (
-            <SelectItem key={item} value={item}>
-              {item}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+    <div>
+      <Select
+        value={user.role}
+        onValueChange={(newRole: Role) => {
+          setSelectedRole(newRole); // Optimistic update
+          handleChangeRole({ userId: user.id, role: newRole });
+        }}
+      >
+        <SelectTrigger className="w-[120px]">
+          <SelectValue placeholder={user.role} />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectLabel>Role</SelectLabel>
+            {role.map((item) => (
+              <SelectItem key={item} value={item}>
+                {item}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </div>
   );
 };
 
