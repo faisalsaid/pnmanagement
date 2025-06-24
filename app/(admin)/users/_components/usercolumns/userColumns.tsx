@@ -4,6 +4,7 @@ import { Prisma } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import UsersActionCells from './UsersActionCells';
 import UserRolesCells from './UserRolesCells';
+import { UserHeaderSortable } from './UserHeaderSortable';
 
 export type UsersTable = Prisma.UserGetPayload<{
   select: {
@@ -25,6 +26,7 @@ export const columns: ColumnDef<UsersTable>[] = [
   },
   {
     accessorKey: 'role',
+    header: () => <UserHeaderSortable columnKey="role" label="role" />,
     cell: ({ row, table }) => (
       <UserRolesCells
         currentUser={table.options.meta?.currentUser}

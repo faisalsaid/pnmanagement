@@ -7,7 +7,6 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
-  getPaginationRowModel,
   RowData,
   SortingState,
 } from '@tanstack/react-table';
@@ -20,7 +19,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
 import UsersTablePagination from './UsersTablePagination';
 import { useCallback, useState } from 'react';
 
@@ -67,7 +65,6 @@ export function UserDataTable<TData, TValue>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    // getPaginationRowModel: getPaginationRowModel(), //default 10 rows
     meta: { currentUser },
   });
 
