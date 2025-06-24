@@ -1,3 +1,6 @@
+'use client';
+
+import { updateUserRole, UpdateUserRoleInput } from '@/action/usersActions';
 import {
   Select,
   SelectContent,
@@ -7,7 +10,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Role } from '@prisma/client';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 type Props = {
   user: {
@@ -23,21 +28,47 @@ type Props = {
   } | null;
 };
 
-const role = ['ADMIN', 'PEMRED', 'REDAKTUR', 'REPORTER', 'USER', '  TESTER'];
+const role: Role[] = [
+  'ADMIN',
+  'PEMRED',
+  'REDAKTUR',
+  'REPORTER',
+  'USER',
+  'TESTER',
+];
 
 const UserRolesCells = ({ user, currentUser }: Props) => {
   const [permission, setPermission] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(user.role);
 
   useEffect(() => {
     if (currentUser) {
       const isAllowed = ['ADMIN'].includes(currentUser.role);
       setPermission(isAllowed);
     }
-  }, [user.id]);
+  }, [currentUser]);
 
+  const handleChangeRole = async ({ userId, role }: UpdateUserRoleInput) => {
+    const toastId = toast.loading('Updating role...');
+    try {
+      await updateUserRole({ userId, role });
+      toast.success(`User role updated to ${role}`, { id: toastId });
+    } catch (error) {
+      toast.error('Failed to update user role', { id: toastId });
+      // rollback
+      setSelectedRole(user.role);
+    }
+  };
   if (!permission) return <div>{user.role}</div>;
+
   return (
-    <Select>
+    <Select
+      value={selectedRole}
+      onValueChange={(newRole: Role) => {
+        setSelectedRole(newRole); // Optimistic update
+        handleChangeRole({ userId: user.id, role: newRole });
+      }}
+    >
       <SelectTrigger className="w-[120px]">
         <SelectValue placeholder={user.role} />
       </SelectTrigger>

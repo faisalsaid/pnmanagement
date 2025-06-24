@@ -1,11 +1,11 @@
-'use server ';
+'use server';
 
 import prisma from '@/lib/prisma';
 import { Role } from '@prisma/client';
 
 // UPDATE user role
 
-interface UpdateUserRoleInput {
+export interface UpdateUserRoleInput {
   userId: string;
   role: Role;
 }
