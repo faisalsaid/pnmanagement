@@ -61,13 +61,19 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <Card className="w-full max-w-md rounded-2xl shadow-md">
-        <CardContent className="p-6 space-y-6">
-          <h2 className="text-2xl font-bold text-center">Login</h2>
+        <CardContent className="p-6 space-y-2">
+          <GoogleAuth disabled={form.formState.isSubmitting} />
+          <div className="flex items-center space-x-2 mt-6">
+            <Separator className="flex-1" />
+            <span className="text-xs text-muted-foreground">or</span>
+            <Separator className="flex-1" />
+          </div>
+          <h2 className="text-lg text-center">Login</h2>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <fieldset
                 disabled={form.formState.isSubmitting}
-                className="space-y-4"
+                className="space-y-2"
               >
                 <FormField
                   control={form.control}
@@ -77,6 +83,7 @@ export default function LoginPage() {
                       <FormLabel>Email</FormLabel>
                       <FormControl>
                         <Input
+                          className="text-sm"
                           placeholder="you@example.com"
                           type="email"
                           {...field}
@@ -101,7 +108,7 @@ export default function LoginPage() {
                             placeholder={
                               showPassword ? 'Type a password' : '••••••••'
                             }
-                            className="pr-10"
+                            className="pr-10 text-sm"
                           />
                           <button
                             type="button"
@@ -123,7 +130,7 @@ export default function LoginPage() {
                 />
 
                 <Button type="submit" className="w-full">
-                  Sign In
+                  {form.formState.isSubmitting ? 'Processing...' : 'Sign In'}
                 </Button>
                 <p className="text-xs text-center text-muted-foreground">
                   <span>{`Don't have an account yet? `}</span>
@@ -135,15 +142,8 @@ export default function LoginPage() {
                   </Link>
                 </p>
               </fieldset>
-
-              <div className="flex items-center space-x-2">
-                <Separator className="flex-1" />
-                <span className="text-xs text-muted-foreground">or</span>
-                <Separator className="flex-1" />
-              </div>
             </form>
           </Form>
-          <GoogleAuth disabled={form.formState.isSubmitting} />
         </CardContent>
       </Card>
     </div>

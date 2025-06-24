@@ -59,17 +59,20 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex items-center justify-center  p-4">
       <Card className="w-full max-w-md rounded-2xl shadow-md">
-        <CardContent className="p-6 space-y-6">
-          <h2 className="text-2xl font-bold mb-4 text-center">
-            Create Account
-          </h2>
-
+        <CardContent className="p-6 space-y-2">
+          <GoogleAuth disabled={form.formState.isSubmitting} />
+          <div className="flex items-center space-x-2 mt-6">
+            <Separator className="flex-1" />
+            <span className="text-xs text-muted-foreground">or</span>
+            <Separator className="flex-1" />
+          </div>
+          <h2 className="text-lg text-center">Create Account</h2>
           <Form {...form}>
             {/* <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4"> */}
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
               <fieldset
                 disabled={form.formState.isSubmitting}
-                className="space-y-4"
+                className="space-y-2"
               >
                 <FormField
                   control={form.control}
@@ -78,7 +81,11 @@ export default function RegisterPage() {
                     <FormItem>
                       <FormLabel>Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g. Jhon Doe" {...field} />
+                        <Input
+                          className="text-sm"
+                          placeholder="e.g. Jhon Doe"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -92,6 +99,7 @@ export default function RegisterPage() {
                       <FormLabel>Email</FormLabel>
                       <FormControl>
                         <Input
+                          className="text-sm"
                           placeholder="e.g. jhon-doe@email.com"
                           {...field}
                         />
@@ -109,6 +117,7 @@ export default function RegisterPage() {
                       <FormLabel>Password</FormLabel>
                       <FormControl>
                         <Input
+                          className="text-sm"
                           type="password"
                           placeholder="••••••••"
                           {...field}
@@ -127,6 +136,7 @@ export default function RegisterPage() {
                       <FormLabel>Confirm Password</FormLabel>
                       <FormControl>
                         <Input
+                          className="text-sm"
                           type="password"
                           placeholder="••••••••"
                           {...field}
@@ -138,7 +148,7 @@ export default function RegisterPage() {
                 />
 
                 <Button type="submit" className="w-full">
-                  Sign Up
+                  {form.formState.isSubmitting ? 'Processing...' : 'Sign Up'}
                 </Button>
                 <p className="text-xs text-center text-muted-foreground">
                   Already have an account?{' '}
@@ -147,15 +157,8 @@ export default function RegisterPage() {
                   </Link>
                 </p>
               </fieldset>
-
-              <div className="flex items-center space-x-2">
-                <Separator className="flex-1" />
-                <span className="text-xs text-muted-foreground">or</span>
-                <Separator className="flex-1" />
-              </div>
             </form>
           </Form>
-          <GoogleAuth disabled={form.formState.isSubmitting} />
         </CardContent>
       </Card>
     </div>

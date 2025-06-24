@@ -76,7 +76,7 @@ const WebHeader = ({ categories, session }: WebFooterProps) => {
             ) : null}
           </div>
           <div className="block md:hidden">
-            <MenuSheet categories={cleanCategories} />
+            <MenuSheet categories={cleanCategories} session={session} />
           </div>
         </div>
       </div>
