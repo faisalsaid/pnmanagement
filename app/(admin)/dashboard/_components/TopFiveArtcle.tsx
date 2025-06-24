@@ -7,7 +7,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Prisma } from '@prisma/client';
-import { Image } from 'lucide-react';
+import { Images } from 'lucide-react';
 import { CldImage } from 'next-cloudinary';
 import Link from 'next/link';
 
@@ -59,7 +59,7 @@ const TopFiveArtcle = ({ articles }: { articles: ArticleProps }) => {
                       }
                     />
                   ) : (
-                    <Image className="text-muted-foreground" />
+                    <Images className="text-muted-foreground" />
                   )}
                 </div>
                 <Link

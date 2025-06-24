@@ -46,7 +46,7 @@ const UsersActionCells = ({ user, currentUser }: Props) => {
       const isAllowed = ['ADMIN'].includes(currentUser.role);
       setPermission(isAllowed);
     }
-  }, [user.id]);
+  }, [currentUser]);
 
   const handleDelete = () => {
     startTransition(async () => {

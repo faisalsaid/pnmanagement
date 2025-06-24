@@ -8,7 +8,7 @@ import {
   getCoreRowModel,
   useReactTable,
   RowData,
-  SortingState,
+  // SortingState,
 } from '@tanstack/react-table';
 
 import {
@@ -23,6 +23,7 @@ import UsersTablePagination from './UsersTablePagination';
 import { useCallback, useState } from 'react';
 
 declare module '@tanstack/react-table' {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface TableMeta<TData extends RowData> {
     currentUser?: {
       id: string;
@@ -56,7 +57,7 @@ export function UserDataTable<TData, TValue>({
   currentUser,
   pagination,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  // const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState({});
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -65,7 +66,11 @@ export function UserDataTable<TData, TValue>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    onRowSelectionChange: setRowSelection,
     meta: { currentUser },
+    state: {
+      rowSelection,
+    },
   });
 
   const handlePageChange = useCallback(

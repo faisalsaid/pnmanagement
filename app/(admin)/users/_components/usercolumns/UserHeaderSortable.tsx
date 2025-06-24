@@ -2,7 +2,7 @@
 
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { usersMultiSortHandler } from './usersMultiSortHandler';
+import { useUserMultiSortHandler } from './usersMultiSortHandler';
 import { useSearchParams } from 'next/navigation';
 
 interface HeaderSortableProps {
@@ -11,7 +11,7 @@ interface HeaderSortableProps {
 }
 
 export function UserHeaderSortable({ columnKey, label }: HeaderSortableProps) {
-  const handleSort = usersMultiSortHandler(columnKey);
+  const handleSort = useUserMultiSortHandler(columnKey);
 
   const searchParams = useSearchParams();
 

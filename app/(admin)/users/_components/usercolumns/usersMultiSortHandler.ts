@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export function usersMultiSortHandler(columnId: string) {
+export function useUserMultiSortHandler(columnId: string) {
   const router = useRouter();
   const searchParams = useSearchParams();
 

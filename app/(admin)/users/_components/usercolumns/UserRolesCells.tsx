@@ -54,6 +54,7 @@ const UserRolesCells = ({ user, currentUser }: Props) => {
       await updateUserRole({ userId, role });
       toast.success(`User role updated to ${role}`, { id: toastId });
     } catch (error) {
+      console.log(error);
       toast.error('Failed to update user role', { id: toastId });
       // rollback
       setSelectedRole(user.role);
@@ -71,7 +72,7 @@ const UserRolesCells = ({ user, currentUser }: Props) => {
         }}
       >
         <SelectTrigger className="w-[120px]">
-          <SelectValue placeholder={user.role} />
+          <SelectValue placeholder={selectedRole} />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>

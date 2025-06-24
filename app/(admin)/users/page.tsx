@@ -1,5 +1,5 @@
 import prisma from '@/lib/prisma';
-import { columns } from './_components/usercolumns/userColumns';
+import { columns, UsersTable } from './_components/usercolumns/userColumns';
 import { UserDataTable } from './_components/usercolumns/userDataTable';
 import { Suspense } from 'react';
 import { auth } from '@/auth';
@@ -118,7 +118,7 @@ const UserPage = async ({ searchParams }: PostPageProps) => {
           <UserFIlterBar />
         </div>
         <Suspense fallback={<div>Loading...</div>}>
-          <UserDataTable
+          <UserDataTable<UsersTable, unknown>
             columns={columns}
             data={users}
             currentUser={currentUser}
