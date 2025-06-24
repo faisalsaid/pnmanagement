@@ -36,6 +36,7 @@ const UserFIlterBar = () => {
   const [searchText, setSearchText] = useState(search);
 
   const selectedRole = searchParams.get('role') || '';
+  const selectSortBy = searchParams.get('sortBy') || '';
 
   const [openRole, setOpenRole] = useState(false);
 
@@ -119,7 +120,7 @@ const UserFIlterBar = () => {
         </Popover>
 
         {/* Reset All */}
-        {(search || selectedRole) && (
+        {(search || selectedRole || selectSortBy) && (
           <Button
             variant="ghost"
             className="bg-red-600 text-white hover:text-white hover:bg-red-500 dark:hover:bg-red-500"
