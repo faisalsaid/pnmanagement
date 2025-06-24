@@ -51,7 +51,7 @@ export async function signupCredentials({
       err.code === 'P2002'
     ) {
       // unique constraint
-      return { ok: false, error: 'The email address has already been used.' };
+      return { ok: false, error: 'The email has already been used.' };
     }
     console.error('User creation failed:', err);
     return { ok: false, error: 'Account creation failed. Please try again.' };

@@ -10,6 +10,7 @@ type Props = {
 const GoogleAuth = ({ disabled }: Props) => {
   return (
     <Button
+      type="button"
       disabled={disabled}
       variant="outline"
       className="w-full flex items-center justify-center gap-2"

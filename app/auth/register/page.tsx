@@ -153,10 +153,9 @@ export default function RegisterPage() {
                 <span className="text-xs text-muted-foreground">or</span>
                 <Separator className="flex-1" />
               </div>
-
-              <GoogleAuth disabled={form.formState.isSubmitting} />
             </form>
           </Form>
+          <GoogleAuth disabled={form.formState.isSubmitting} />
         </CardContent>
       </Card>
     </div>

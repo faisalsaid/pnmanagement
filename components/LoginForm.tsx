@@ -63,7 +63,6 @@ export default function LoginPage() {
       <Card className="w-full max-w-md rounded-2xl shadow-md">
         <CardContent className="p-6 space-y-6">
           <h2 className="text-2xl font-bold text-center">Login</h2>
-
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <fieldset
@@ -142,10 +141,9 @@ export default function LoginPage() {
                 <span className="text-xs text-muted-foreground">or</span>
                 <Separator className="flex-1" />
               </div>
-
-              <GoogleAuth disabled={form.formState.isSubmitting} />
             </form>
           </Form>
+          <GoogleAuth disabled={form.formState.isSubmitting} />
         </CardContent>
       </Card>
     </div>
