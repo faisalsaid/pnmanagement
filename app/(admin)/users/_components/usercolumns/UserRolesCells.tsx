@@ -73,7 +73,7 @@ const UserRolesCells = ({ user, currentUser }: Props) => {
     try {
       await updateUserRole({ userId, role });
       toast.success(`User role updated to ${role}`, { id: toastId });
-      setSelectedRole(role); // Final update setelah berhasil
+      setSelectedRole(role); // Final update
     } catch (error) {
       console.log(error);
       toast.error('Failed to update user role', { id: toastId });
@@ -83,7 +83,7 @@ const UserRolesCells = ({ user, currentUser }: Props) => {
   };
   if (!permission) return <div>{user.role}</div>;
 
-  console.log(pendingRole);
+  // console.log(pendingRole);
 
   return (
     <div className="flex gap-2 items-center">
@@ -122,7 +122,7 @@ const UserRolesCells = ({ user, currentUser }: Props) => {
           </div>
         </DropdownMenuContent>
       </DropdownMenu>
-      {/* Konfirmasi perubahan role */}
+      {/* confirm role changes */}
       {pendingRole && (
         <ConfirmDialog
           open={dialogOpen}
