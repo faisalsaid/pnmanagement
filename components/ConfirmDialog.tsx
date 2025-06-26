@@ -14,11 +14,13 @@ import { ReactNode, useState } from 'react';
 
 type ConfirmDialogProps = {
   title?: string;
-  description?: string;
-  trigger: ReactNode;
+  description?: string | React.ReactNode;
+  trigger?: ReactNode;
   confirmLabel?: string;
   cancelLabel?: string;
   onConfirm: () => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
 const ConfirmDialog = ({
@@ -28,16 +30,26 @@ const ConfirmDialog = ({
   confirmLabel = 'Yes, Delete',
   cancelLabel = 'Cancel',
   onConfirm,
+  open,
+  onOpenChange,
 }: ConfirmDialogProps) => {
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isControlled = open !== undefined && onOpenChange !== undefined;
 
   const handleConfirm = () => {
     onConfirm();
-    setOpen(false);
+    if (isControlled) {
+      onOpenChange?.(false);
+    } else {
+      setInternalOpen(false);
+    }
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={isControlled ? open : internalOpen}
+      onOpenChange={isControlled ? onOpenChange : setInternalOpen}
+    >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -48,7 +60,12 @@ const ConfirmDialog = ({
           <Button variant="ghost" onClick={handleConfirm}>
             {confirmLabel}
           </Button>
-          <Button variant="default" onClick={() => setOpen(false)}>
+          <Button
+            variant="default"
+            onClick={() =>
+              isControlled ? onOpenChange?.(false) : setInternalOpen(false)
+            }
+          >
             {cancelLabel}
           </Button>
         </DialogFooter>

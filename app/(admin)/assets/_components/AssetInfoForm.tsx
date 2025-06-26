@@ -150,6 +150,7 @@ const AssetInfoForm = ({
               title="Delete this asset?"
               description="This action cannot be undone. The asset will be permanently removed."
               onConfirm={handleDelete}
+              confirmLabel="Yes, Delete"
               cancelLabel="Cancel Delete"
               trigger={
                 <Button

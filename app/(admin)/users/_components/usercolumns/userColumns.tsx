@@ -30,7 +30,11 @@ export const columns: ColumnDef<UsersTable>[] = [
     cell: ({ row, table }) => (
       <UserRolesCells
         currentUser={table.options.meta?.currentUser}
-        user={{ id: row.original.id, role: row.original.role }}
+        user={{
+          id: row.original.id,
+          role: row.original.role,
+          name: row.original.name,
+        }}
       />
     ),
   },
