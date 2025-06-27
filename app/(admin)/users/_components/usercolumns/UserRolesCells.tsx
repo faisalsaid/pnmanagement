@@ -26,6 +26,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Label } from '@/components/ui/label';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 type Props = {
   user: {
@@ -86,9 +88,11 @@ const UserRolesCells = ({ user, currentUser }: Props) => {
   // console.log(pendingRole);
 
   return (
-    <div className="flex gap-2 items-center">
+    <div className="flex  items-center">
       {/* <p>{user.role}</p> */}
-      <p>{selectedRole}</p>
+      {/* <p className="capitalize">{user.role.toLocaleLowerCase()}</p> */}
+
+      <RoleBadge role={user.role} />
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -152,3 +156,13 @@ const UserRolesCells = ({ user, currentUser }: Props) => {
 };
 
 export default UserRolesCells;
+
+const RoleBadge = ({ role }: { role: string }) => {
+  return (
+    <Badge
+      className={cn('bg-yellow-400/40 border border-yellow-400 text-primary')}
+    >
+      {role}
+    </Badge>
+  );
+};
