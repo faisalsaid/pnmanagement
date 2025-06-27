@@ -72,3 +72,11 @@ export const UpdateAssetInfoSchema = z.object({
   title: z.string().optional(),
   caption: z.string().optional(),
 });
+
+// CREATE PROJECT SCHEMA
+
+export const CreateProjectSchema = z.object({
+  name: z.string().min(3, 'Project name must be at least 3 characters.'),
+  description: z.string().optional(),
+  ownerId: z.string(),
+});
