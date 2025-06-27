@@ -19,7 +19,7 @@ import { useTransition } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
-import { Plus, User } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { CreateProjectSchema } from '@/lib/zod';
 
 import {

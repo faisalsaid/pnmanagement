@@ -1,8 +1,13 @@
 import { auth } from '@/auth';
 import CreateNewProjects from './_components/CreateNewProjects';
+import { getAllProjects } from '@/actions/projecActions';
 
 const ProjectsPage = async () => {
   const session = await auth();
+
+  const allProjects = await getAllProjects();
+
+  console.log(allProjects);
 
   return (
     <div>

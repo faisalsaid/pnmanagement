@@ -97,3 +97,57 @@ export const getUserToOwnerProject = async () => {
     );
   }
 };
+
+// HENDLE GET ALL PROJECT
+
+export const getAllProjects = async () => {
+  try {
+    const session = await auth();
+    const user = session?.user;
+
+    if (!user?.id) throw new Error('Unauthorized');
+
+    const dbUser = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: { role: true },
+    });
+
+    if (!dbUser || dbUser.role === 'USER') {
+      throw new Error('Forbidden: Access denied');
+    }
+
+    const projects = await prisma.project.findMany({
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        name: true,
+        createdAt: true,
+        description: true,
+        createdBy: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            role: true,
+          },
+        },
+        owner: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            role: true,
+          },
+        },
+        // Tambahkan field lain jika diperlukan
+      },
+    });
+
+    return projects;
+  } catch (error) {
+    console.error('Error fetching projects:', error);
+    throw new Error(
+      error instanceof Error ? error.message : 'Failed to load projects',
+    );
+  }
+};
