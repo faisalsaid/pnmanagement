@@ -34,10 +34,10 @@ import {
   User,
   LogOut,
   Plus,
-  Newspaper,
   ChevronDown,
   HelpCircle,
   Info,
+  FolderOpenDot,
 } from 'lucide-react';
 import {
   Collapsible,
@@ -140,7 +140,7 @@ const AppSidebar = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <Link href={'/projects'}>
-                    <Newspaper />
+                    <FolderOpenDot />
                     <span>See All Project</span>
                   </Link>
                 </SidebarMenuButton>
