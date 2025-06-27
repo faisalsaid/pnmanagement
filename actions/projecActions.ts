@@ -1,47 +1,99 @@
-// app/project/actions.ts
 'use server';
 
 import { z } from 'zod';
-
 import { revalidatePath } from 'next/cache';
 import { auth } from '@/auth';
-import prisma from '@/prisma';
+import prisma from '@/lib/prisma';
 import { CreateProjectSchema } from '@/lib/zod';
-import { log } from 'node:console';
-
-interface CreateProjcetProps {
-  name: string;
-  description: string | undefined;
-  ownerId: string;
-}
+// import { Role } from '@prisma/client';
 
 export async function createProject({
   payload,
 }: {
-  payload: CreateProjcetProps;
+  payload: z.infer<typeof CreateProjectSchema>;
 }) {
-  const session = await auth();
-  if (!session?.user?.id) throw new Error('Unauthorized');
-
-  const parsed = CreateProjectSchema.safeParse(payload);
-  if (!parsed.success) throw new Error('Invalid data');
-
-  const { name, description, ownerId } = parsed.data;
-
   try {
-    const newProject = await prisma.project.create({
+    const session = await auth();
+    if (!session?.user?.id) {
+      throw new Error('Unauthorized: User not authenticated');
+    }
+
+    // Validate input data
+    const parsed = CreateProjectSchema.safeParse(payload);
+    if (!parsed.success) {
+      throw new Error(`Invalid data: ${parsed.error.message}`);
+    }
+
+    const { name, description, ownerId } = parsed.data;
+
+    // Verify that the assigned owner has a valid role
+    const owner = await prisma.user.findUnique({
+      where: { id: ownerId },
+      select: { role: true },
+    });
+
+    if (!owner) {
+      throw new Error('Invalid owner: User not found');
+    }
+
+    if (owner.role === 'USER' || owner.role === 'TESTER') {
+      throw new Error('Invalid owner: Must have elevated privileges');
+    }
+
+    // Create the project
+    await prisma.project.create({
       data: {
         name,
-        description,
+        description: description || null,
         createdById: session.user.id,
         ownerId,
       },
     });
 
     revalidatePath('/projects');
-    return newProject;
+    return { success: true, message: 'Project created successfully' };
   } catch (error) {
-    console.log(error);
-    return { message: 'Failed create Projects' };
+    console.error('Project creation error:', error);
+    return {
+      success: false,
+      message:
+        error instanceof Error ? error.message : 'Failed to create project',
+    };
   }
 }
+
+export const getUserToOwnerProject = async () => {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      throw new Error('Unauthorized: User not authenticated');
+    }
+
+    const users = await prisma.user.findMany({
+      where: {
+        role: {
+          notIn: ['USER', 'TESTER'],
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        role: true,
+        email: true,
+        image: true,
+      },
+      orderBy: {
+        name: 'asc',
+      },
+    });
+
+    return users;
+  } catch (error) {
+    console.error('Failed to get project owners:', error);
+    throw new Error(
+      error instanceof Error
+        ? error.message
+        : 'Failed to retrieve eligible project owners',
+    );
+  }
+};
