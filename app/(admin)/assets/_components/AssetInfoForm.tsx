@@ -19,7 +19,7 @@ import { UpdateAssetInfoSchema } from '@/lib/zod';
 import {
   deleteMediaAsset,
   updateMediaAssetInfo,
-} from '@/action/mediaAssetAction';
+} from '@/actions/mediaAssetAction';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { MediaAsset } from '@prisma/client';

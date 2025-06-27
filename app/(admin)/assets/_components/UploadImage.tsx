@@ -1,6 +1,6 @@
 'use client';
 
-import { saveMediaAssetInfo } from '@/action/mediaAssetAction';
+import { saveMediaAssetInfo } from '@/actions/mediaAssetAction';
 import { Button } from '@/components/ui/button';
 
 import { useSession } from 'next-auth/react';

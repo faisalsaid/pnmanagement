@@ -1,4 +1,4 @@
-import { getAllCategory } from '@/action/postActions';
+import { getAllCategory } from '@/actions/postActions';
 import ArticelForm from '../_components/form/ArticelForm';
 import { auth } from '@/auth';
 

@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { logVisit } from '@/action/logVisit';
+import { logVisit } from '@/actions/logVisit';
 
 // function getOrSetSessionId() {
 //   let sid = document.cookie.match(/sid=([^;]+)/)?.[1];

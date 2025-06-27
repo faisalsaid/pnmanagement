@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { X } from 'lucide-react';
-import { getAllMediaAsset } from '@/action/mediaAssetAction';
+import { getAllMediaAsset } from '@/actions/mediaAssetAction';
 import { MediaAsset } from '@prisma/client';
 import { CldImage } from 'next-cloudinary';
 import { Select } from '@radix-ui/react-select';

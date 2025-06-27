@@ -1,6 +1,6 @@
 'use client';
 
-import { updateUserRole, UpdateUserRoleInput } from '@/action/usersActions';
+import { updateUserRole, UpdateUserRoleInput } from '@/actions/usersActions';
 import { Button } from '@/components/ui/button';
 import {
   Select,

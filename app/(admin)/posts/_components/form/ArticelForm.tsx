@@ -31,7 +31,11 @@ import { Button } from '@/components/ui/button';
 import { Loader2, Upload } from 'lucide-react';
 import RitchTextEditor from '@/components/RitchTextEditor';
 import { Separator } from '@/components/ui/separator';
-import { createArticle, getAllTags, updateArticle } from '@/action/postActions';
+import {
+  createArticle,
+  getAllTags,
+  updateArticle,
+} from '@/actions/postActions';
 import { TagSelector } from './TagSelector';
 import AssetPicker from './AssetPicker';
 import { toast } from 'sonner';

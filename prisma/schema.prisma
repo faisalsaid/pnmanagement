@@ -26,6 +26,10 @@ model User {
   comments     Comment[]
   uploadedMedia MediaAsset[] 
   revisions Revision[]  // relasi balik, opsional
+
+  //relasi project
+  createdProjects Project[]    @relation("CreatedProjects")
+  ownedProjects    Project[]   @relation("OwnedProjects")
  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -246,6 +250,29 @@ model PageVisit {
   @@index([country])
   @@index([sessionId])
 }
+
+
+
+// PROJECT 
+
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+
+
+  // Relasi user
+  createdBy   User     @relation("CreatedProjects", fields: [createdById], references: [id])
+  createdById String
+
+  owner       User     @relation("OwnedProjects", fields: [ownerId], references: [id])
+  ownerId     String
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+
 
 
 enum PageType {

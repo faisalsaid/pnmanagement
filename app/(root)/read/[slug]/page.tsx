@@ -1,7 +1,7 @@
 import RenderRichText from '@/components/RenderRIchText';
 import prisma from '@/lib/prisma';
 import ArticelAsset from '../_components/ArticelAsset';
-import { incrementPostView } from '@/action/postActions';
+import { incrementPostView } from '@/actions/postActions';
 
 type ParamsProps = { slug: string };
 

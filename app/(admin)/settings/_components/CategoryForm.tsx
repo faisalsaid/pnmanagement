@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/form';
 import { useEffect } from 'react';
 import { CreateCategorySchema } from '@/lib/zod';
-import { createCategory } from '@/action/postActions';
+import { createCategory } from '@/actions/postActions';
 
 type FormData = z.infer<typeof CreateCategorySchema>;
 

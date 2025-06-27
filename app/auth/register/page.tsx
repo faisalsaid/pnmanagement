@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/form';
 import { Card, CardContent } from '@/components/ui/card';
 import { registerSchema, RegisterSchema } from '@/lib/zod';
-import { signupCredentials } from '@/action/authAction';
+import { signupCredentials } from '@/actions/authAction';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import GoogleAuth from '@/components/GoogleAuth';

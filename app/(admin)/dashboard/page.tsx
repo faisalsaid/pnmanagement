@@ -8,7 +8,7 @@ import {
   getTopHoursYesterday,
   getUserActive,
   getVistorTodayBySessionId,
-} from '@/action/logVisit';
+} from '@/actions/logVisit';
 import React from 'react';
 import TopCard from './_components/TopCard';
 
@@ -18,7 +18,10 @@ import RushHourChart from './_components/RushHourChart';
 import ActivitesByCity from './_components/ActivitesByCity';
 import ActivitiesChart from './_components/ActivitiesChart';
 import PopularCategory from './_components/PopularCategory';
-import { getPublishPostsToday, getTopFiveArticles } from '@/action/postActions';
+import {
+  getPublishPostsToday,
+  getTopFiveArticles,
+} from '@/actions/postActions';
 
 import { FaUsers } from 'react-icons/fa6';
 import { TbActivityHeartbeat } from 'react-icons/tb';

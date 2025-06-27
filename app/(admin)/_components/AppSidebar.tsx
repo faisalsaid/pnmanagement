@@ -139,7 +139,7 @@ const AppSidebar = () => {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link href={'#'}>
+                  <Link href={'/projects'}>
                     <Newspaper />
                     <span>See All Project</span>
                   </Link>
