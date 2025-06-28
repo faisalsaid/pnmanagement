@@ -129,6 +129,12 @@ export const getAllProjects = async () => {
             email: true,
             name: true,
             role: true,
+            image: true,
+            articles: {
+              select: {
+                id: true,
+              },
+            },
           },
         },
         owner: {
@@ -137,6 +143,12 @@ export const getAllProjects = async () => {
             email: true,
             name: true,
             role: true,
+            image: true,
+            articles: {
+              select: {
+                id: true,
+              },
+            },
           },
         },
         // Tambahkan field lain jika diperlukan

@@ -1,9 +1,19 @@
 import { auth } from '@/auth';
 import CreateNewProjects from './_components/CreateNewProjects';
 import { getAllProjects } from '@/actions/projecActions';
+import { ProjectsTable } from './_components/table/ProjectsTable';
+import { columns } from './_components/table/ProjectsColumns';
 
 const ProjectsPage = async () => {
   const session = await auth();
+  const currentUser = session?.user
+    ? {
+        id: session.user.id,
+        name: session.user.name,
+        email: session.user.email,
+        role: session.user.role,
+      }
+    : null;
 
   const allProjects = await getAllProjects();
 
@@ -15,7 +25,13 @@ const ProjectsPage = async () => {
         <h1 className="text-xl font-semibold">All Project</h1>
         {session?.user?.id && <CreateNewProjects userId={session.user.id} />}
       </div>
-      <div>List Project</div>
+      <div>
+        <ProjectsTable
+          data={allProjects}
+          columns={columns}
+          currentUser={currentUser}
+        />
+      </div>
     </div>
   );
 };
