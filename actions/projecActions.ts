@@ -163,3 +163,33 @@ export const getAllProjects = async () => {
     );
   }
 };
+
+// GET projcet by id
+
+interface GetPorjectById {
+  id: string;
+}
+
+export const getProjectById = async ({ id }: GetPorjectById) => {
+  try {
+    const session = await auth();
+    const user = session?.user;
+
+    if (!user?.id) throw new Error('Unauthorized');
+
+    const dbUser = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: { role: true },
+    });
+
+    if (!dbUser || dbUser.role === 'USER') {
+      throw new Error('Forbidden: Access denied');
+    }
+
+    const project = await prisma.project.findUnique({
+      where: { id },
+    });
+
+    return project;
+  } catch (error) {}
+};
