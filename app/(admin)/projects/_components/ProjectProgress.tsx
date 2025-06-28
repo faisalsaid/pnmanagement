@@ -23,8 +23,8 @@ const ProjectProgress = ({ goals }: ProjectProgressProps) => {
       </div>
       <div className="space-y-2.5">
         {goals.length > 0 ? (
-          goals.map((goal) => (
-            <ProgressCard value={goal.value} title={goal.title} />
+          goals.map((goal, i) => (
+            <ProgressCard key={i} value={goal.value} title={goal.title} />
           ))
         ) : (
           <div>no goals</div>
