@@ -2,6 +2,7 @@ import { getProjectById } from '@/actions/projecActions';
 import ProjectTeamLists from '../_components/ProjectTeamLists';
 import ProjectProgress from '../_components/ProjectProgress';
 import ProjectDetailsInfo from '../_components/ProjectDetailsInfo';
+import ProjectTab from '../_components/ProjectTab';
 
 type Params = Promise<{ id: string }>;
 
@@ -17,19 +18,30 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
   const projetDetail = await getProjectById({ id });
 
   return (
-    <div className="bg-primary-foreground rounded-lg p-4 space-y-8">
-      <div className="sm:flex items-center justify-between space-y-2">
+    <div className="bg-primary-foreground rounded-lg p-4 space-y-6">
+      <div className="sm:flex sm:flex-row-reverse items-center justify-between space-y-2 ">
         <ProjectTeamLists />
         <h1 className="text-2xl font-semibold">{projetDetail?.name}</h1>
       </div>
       <div className="space-y-6">
-        <p className="bg-muted rounded-md p-2 w-full md:flex-1/2 text-sm text-muted-foreground">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum eum
-          at iure voluptatibus similique, velit illum. Explicabo rem suscipit
-          nulla impedit, commodi totam.
-        </p>
-        <ProjectProgress goals={allGoals} />
-        <ProjectDetailsInfo />
+        <div className="grid md:grid-cols-3 md:grid-rows-3 gap-4 max-h-fit">
+          <div className="p-4 bg-muted rounded-md md:col-span-2 ">
+            <p className="text-sm text-muted-foreground">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum
+              eum at iure voluptatibus similique, velit illum. Explicabo rem
+              suscipit nulla impedit, commodi totam.
+            </p>
+          </div>
+          <div className="p-4 bg-muted rounded-md md:row-span-3 ">
+            <ProjectProgress goals={allGoals} />
+          </div>
+          <div className="p-4 bg-muted rounded-md md:col-span-2 md:row-span-2 ">
+            <ProjectDetailsInfo />
+          </div>
+        </div>
+      </div>
+      <div>
+        <ProjectTab />
       </div>
     </div>
   );
