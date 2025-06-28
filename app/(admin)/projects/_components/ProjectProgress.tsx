@@ -12,12 +12,13 @@ interface ProjectProgressProps {
 }
 
 const ProjectProgress = ({ goals }: ProjectProgressProps) => {
+  const finishGoals = goals.filter((goal) => goal.value === 100);
   return (
     <div className="w-full space-y-3">
       <div className="flex items-center justify-between">
         <h2 className="font-bolds">Goals Progress</h2>
         <div className="text-sm text-primary bg-orange-400/20 border border-orange-500 px-2 rounded-md">
-          2/4 Goals
+          {finishGoals.length}/{goals.length} Goals
         </div>
       </div>
       <div className="space-y-2.5">
