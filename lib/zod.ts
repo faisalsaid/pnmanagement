@@ -76,7 +76,16 @@ export const UpdateAssetInfoSchema = z.object({
 // CREATE PROJECT SCHEMA
 
 export const CreateProjectSchema = z.object({
-  name: z.string().min(3, 'Project name must be at least 3 characters.'),
+  name: z.string().min(3),
   description: z.string().optional(),
   ownerId: z.string(),
+  deadline: z.string().optional(), // ISO Date string
+  teamMembers: z
+    .array(
+      z.object({
+        userId: z.string(),
+        role: z.enum(['OWNER', 'ADMIN', 'EDITOR', 'VIEWER']),
+      }),
+    )
+    .optional(),
 });

@@ -7,6 +7,7 @@ import prisma from '@/lib/prisma';
 import { CreateProjectSchema } from '@/lib/zod';
 // import { Role } from '@prisma/client';
 
+// CREATE Project
 export async function createProject({
   payload,
 }: {
@@ -18,40 +19,63 @@ export async function createProject({
       throw new Error('Unauthorized: User not authenticated');
     }
 
-    // Validate input data
     const parsed = CreateProjectSchema.safeParse(payload);
     if (!parsed.success) {
       throw new Error(`Invalid data: ${parsed.error.message}`);
     }
 
-    const { name, description, ownerId } = parsed.data;
+    const {
+      name,
+      description,
+      ownerId,
+      deadline,
+      teamMembers = [],
+    } = parsed.data;
 
-    // Verify that the assigned owner has a valid role
+    // Validasi owner
     const owner = await prisma.user.findUnique({
       where: { id: ownerId },
       select: { role: true },
     });
 
-    if (!owner) {
-      throw new Error('Invalid owner: User not found');
-    }
-
+    if (!owner) throw new Error('Invalid owner: User not found');
     if (owner.role === 'USER' || owner.role === 'TESTER') {
       throw new Error('Invalid owner: Must have elevated privileges');
     }
 
-    // Create the project
-    await prisma.project.create({
+    // Gabungkan creator & owner ke teamMembers (hindari duplikat)
+    const allMembersMap = new Map<string, { userId: string; role: any }>();
+    teamMembers.forEach((m) => allMembersMap.set(m.userId, m));
+
+    allMembersMap.set(ownerId, { userId: ownerId, role: 'OWNER' });
+    if (ownerId !== session.user.id) {
+      allMembersMap.set(session.user.id, {
+        userId: session.user.id,
+        role: 'ADMIN',
+      });
+    }
+
+    const finalTeam = Array.from(allMembersMap.values());
+
+    // Buat project dan sekaligus tambahkan team member
+    const data = await prisma.project.create({
       data: {
         name,
         description: description || null,
-        createdById: session.user.id,
-        ownerId,
+        deadline: deadline ? new Date(deadline) : null,
+        createdBy: { connect: { id: session.user.id } },
+        owner: { connect: { id: ownerId } },
+        members: {
+          create: finalTeam.map((member) => ({
+            user: { connect: { id: member.userId } },
+            role: member.role,
+          })),
+        },
       },
     });
 
     revalidatePath('/projects');
-    return { success: true, message: 'Project created successfully' };
+    return { success: true, message: 'Project created successfully', data };
   } catch (error) {
     console.error('Project creation error:', error);
     return {

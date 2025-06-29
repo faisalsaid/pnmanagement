@@ -25,7 +25,7 @@ import {
 } from '@/components/ui/tooltip';
 
 const Navbar = ({ data }: { data: Session | null }) => {
-  console.log(data);
+  // console.log(data);
 
   const { setTheme } = useTheme();
   return (

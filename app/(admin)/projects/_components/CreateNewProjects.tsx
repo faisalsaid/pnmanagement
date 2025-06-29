@@ -44,6 +44,7 @@ import { Role } from '@prisma/client';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { transformNameToInitials } from '@/lib/helper/formatAvatarName';
 import { Separator } from '@/components/ui/separator';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface ProjectUser {
   id: string;
@@ -59,13 +60,18 @@ const CreateNewProjects = ({ userId }: { userId: string }) => {
   const [users, setUsers] = useState<ProjectUser[]>([]);
   const [isLoadingUsers, setIsLoadingUsers] = useState(true);
 
-  console.log(userId);
+  // console.log('USER ID', userId);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const usersData = await getUserToOwnerProject();
-        setUsers(usersData);
+        // Filter: eliminate creator and selected owner
+        const filtered = usersData.filter(
+          (user) => user.id !== userId && user.id !== form.getValues('ownerId'),
+        );
+
+        setUsers(filtered);
       } catch (error) {
         toast.error('Failed to load users');
         console.error('Error fetching users:', error);
@@ -85,6 +91,8 @@ const CreateNewProjects = ({ userId }: { userId: string }) => {
       name: '',
       description: '',
       ownerId: userId,
+      deadline: '',
+      teamMembers: [],
     },
   });
 
@@ -99,11 +107,27 @@ const CreateNewProjects = ({ userId }: { userId: string }) => {
   }, [open, form, userId]);
 
   async function onSubmit(payload: z.infer<typeof CreateProjectSchema>) {
-    console.log(payload);
+    console.log('PAYLOAD', payload);
+
+    const finalPayload = {
+      ...payload,
+      deadline: payload.deadline
+        ? new Date(payload.deadline).toISOString()
+        : undefined,
+    };
+    console.log('FINAL PAYLOAD', finalPayload);
 
     startTransition(async () => {
       try {
-        await createProject({ payload });
+        const result = await createProject({ payload: finalPayload });
+
+        if (!result.success) {
+          toast.error(result.message);
+          form.reset();
+          setOpen(false);
+          return;
+        }
+
         toast.success('Project created successfully');
         form.reset();
         setOpen(false);
@@ -113,7 +137,7 @@ const CreateNewProjects = ({ userId }: { userId: string }) => {
     });
   }
 
-  console.log(users);
+  // console.log(users);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -127,114 +151,200 @@ const CreateNewProjects = ({ userId }: { userId: string }) => {
           <DialogTitle> New Project</DialogTitle>
         </DialogHeader>
         <Separator />
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem className=" ">
-                  <FormLabel>Name :</FormLabel>
-                  <FormControl>
-                    <Input
-                      className="w-full"
-                      placeholder="Enter Project Name"
-                      {...field}
-                      disabled={isPending || isLoadingUsers}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description : </FormLabel>
-                  <Textarea
-                    disabled={isPending || isLoadingUsers}
-                    className="resize-none"
-                    placeholder="Please provide a project description."
-                    {...field}
-                  />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="ownerId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Owner</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    disabled={isPending || isLoadingUsers}
-                  >
-                    <FormControl className="w-full">
-                      <SelectTrigger>
-                        <SelectValue className="" />
-                      </SelectTrigger>
+        <ScrollArea className=" h-[70vh]">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem className=" ">
+                    <FormLabel>Name :</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="w-full"
+                        placeholder="Enter Project Name"
+                        {...field}
+                        disabled={isPending || isLoadingUsers}
+                      />
                     </FormControl>
-                    <SelectContent>
-                      {isLoadingUsers ? (
-                        <SelectItem value="loading" disabled>
-                          Loading users...
-                        </SelectItem>
-                      ) : users.length === 0 ? (
-                        <SelectItem value="no-users" disabled>
-                          No users available
-                        </SelectItem>
-                      ) : (
-                        users.map((user) => (
-                          <SelectItem key={user.id} value={user.id}>
-                            <div className="flex items-center gap-2">
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description : </FormLabel>
+                    <Textarea
+                      disabled={isPending || isLoadingUsers}
+                      className="resize-none"
+                      placeholder="Please provide a project description."
+                      {...field}
+                    />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="ownerId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Owner</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      disabled={isPending || isLoadingUsers}
+                    >
+                      <FormControl className="w-full">
+                        <SelectTrigger>
+                          <SelectValue className="" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {isLoadingUsers ? (
+                          <SelectItem value="loading" disabled>
+                            Loading users...
+                          </SelectItem>
+                        ) : users.length === 0 ? (
+                          <SelectItem value="no-users" disabled>
+                            No users available
+                          </SelectItem>
+                        ) : (
+                          users.map((user) => (
+                            <SelectItem key={user.id} value={user.id}>
+                              <div className="flex items-center gap-2">
+                                <Avatar>
+                                  <AvatarImage
+                                    src={user.image || undefined}
+                                    alt="user image"
+                                  />
+                                  <AvatarFallback>
+                                    {transformNameToInitials(user.name)}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <span className="font-medium">
+                                    {user.name || user.email}
+                                  </span>
+                                  <span className="text-muted-foreground ml-2 text-xs">
+                                    ({user.role.toLowerCase()})
+                                  </span>
+                                </div>
+                              </div>
+                            </SelectItem>
+                          ))
+                        )}
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      You may assign someone else as the project owner.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="teamMembers"
+                render={() => (
+                  <FormItem>
+                    <FormLabel>Team Members</FormLabel>
+                    <div className="space-y-2">
+                      {users
+                        .filter(
+                          (user) =>
+                            user.id !== userId &&
+                            user.id !== form.watch('ownerId'), // Filter creator & selected owner
+                        )
+                        .map((user) => (
+                          <div
+                            key={user.id}
+                            className="flex items-center gap-4"
+                          >
+                            <input
+                              type="checkbox"
+                              id={`user-${user.id}`}
+                              value={user.id}
+                              onChange={(e) => {
+                                const checked = e.target.checked;
+                                const members =
+                                  form.getValues('teamMembers') || [];
+
+                                if (checked) {
+                                  form.setValue('teamMembers', [
+                                    ...members,
+                                    { userId: user.id, role: 'VIEWER' },
+                                  ]);
+                                } else {
+                                  form.setValue(
+                                    'teamMembers',
+                                    members.filter(
+                                      (m: any) => m.userId !== user.id,
+                                    ),
+                                  );
+                                }
+                              }}
+                            />
+                            <label
+                              htmlFor={`user-${user.id}`}
+                              className="flex gap-2 items-center"
+                            >
                               <Avatar>
-                                <AvatarImage
-                                  src={user.image || undefined}
-                                  alt="user image"
-                                />
+                                <AvatarImage src={user.image || undefined} />
                                 <AvatarFallback>
                                   {transformNameToInitials(user.name)}
                                 </AvatarFallback>
                               </Avatar>
                               <div>
-                                <span className="font-medium">
-                                  {user.name || user.email}
-                                </span>
-                                <span className="text-muted-foreground ml-2 text-xs">
+                                {user.name || user.email}{' '}
+                                <span className="text-muted-foreground text-xs ml-2">
                                   ({user.role.toLowerCase()})
                                 </span>
                               </div>
-                            </div>
-                          </SelectItem>
-                        ))
-                      )}
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>
-                    You may assign someone else as the project owner.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                            </label>
+                          </div>
+                        ))}
+                    </div>
+                    <FormDescription>
+                      Select team members. Roles can be edited later.
+                    </FormDescription>
+                  </FormItem>
+                )}
+              />
 
-            <div className="w-full flex">
-              <Button
-                className="ml-auto"
-                type="submit"
-                disabled={isPending || isLoadingUsers}
-              >
-                {isPending ? 'Processing...' : 'Create'}
-              </Button>
-            </div>
-          </form>
-        </Form>
+              <FormField
+                control={form.control}
+                name="deadline"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Deadline</FormLabel>
+                    <FormControl>
+                      <Input type="date" disabled={isPending} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="w-full flex">
+                <Button
+                  className="ml-auto"
+                  type="submit"
+                  disabled={isPending || isLoadingUsers}
+                >
+                  {isPending ? 'Processing...' : 'Create'}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
