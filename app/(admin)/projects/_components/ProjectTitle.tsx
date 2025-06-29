@@ -55,10 +55,15 @@ const ProjectTitle = ({ title, id }: Props) => {
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    try {
-      // toast(data.title);
-      const result = await updateProjecNameById({ name: data.title, id });
+    // handle if project name never change
+    const payloadName = data.title.trim();
+    if (title === payloadName) {
+      setEditMode(false);
+      return;
+    }
 
+    try {
+      const result = await updateProjecNameById({ name: data.title, id });
       if (result.message === 'success') {
         setDisplayTitle(result.result.name);
         toast.success('Project name updated');
