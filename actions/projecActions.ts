@@ -231,5 +231,52 @@ export const getProjectById = async ({ id }: GetPorjectById) => {
     });
 
     return project;
-  } catch (error) {}
+  } catch (error) {
+    console.error('Error find Project:', error);
+    throw new Error(
+      error instanceof Error ? error.message : 'Failed find project',
+    );
+  }
+};
+
+// UPDATE project name by id
+
+interface UpdateProjecNameByIdProps {
+  name: string;
+  id: string | undefined;
+}
+
+export const updateProjecNameById = async ({
+  name,
+  id,
+}: UpdateProjecNameByIdProps) => {
+  try {
+    const session = await auth();
+    const user = session?.user;
+
+    if (!user?.id) throw new Error('Unauthorized');
+
+    const dbUser = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: { role: true },
+    });
+
+    if (!dbUser || dbUser.role === 'USER') {
+      throw new Error('Forbidden: Access denied');
+    }
+
+    const result = await prisma.project.update({
+      where: { id },
+      data: {
+        name,
+      },
+    });
+
+    return { message: 'success', result };
+  } catch (error) {
+    console.error('Error update project:', error);
+    throw new Error(
+      error instanceof Error ? error.message : 'Failed update project',
+    );
+  }
 };

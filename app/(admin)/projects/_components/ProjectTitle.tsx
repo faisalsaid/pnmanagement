@@ -2,20 +2,20 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Pen } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { toast } from 'sonner';
+import { updateProjecNameById } from '@/actions/projecActions';
+import { getSession } from 'next-auth/react';
 
 const FormSchema = z.object({
   title: z.string().min(3, {
@@ -23,19 +23,51 @@ const FormSchema = z.object({
   }),
 });
 
-const ProjectTitle = ({ title }: { title: string | undefined }) => {
+interface Props {
+  title: string | undefined;
+  id: string;
+}
+
+const ProjectTitle = ({ title, id }: Props) => {
   const [editMode, setEditMode] = useState<boolean>(false);
+  const [displayTitle, setDisplayTitle] = useState<string | undefined>(title);
+  const [permission, setPermission] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      const currentSession = await getSession();
+      if (currentSession?.user) {
+        const isAllowed = ['ADMIN', 'PEMRED', 'REDAKTUR', 'REPORTER'].includes(
+          currentSession.user.role,
+        );
+        setPermission(isAllowed);
+      }
+    };
+
+    fetchSession();
+  }, [id]);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      title: title,
+      title: displayTitle,
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast(data.title);
-    setEditMode(false);
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    try {
+      // toast(data.title);
+      const result = await updateProjecNameById({ name: data.title, id });
+
+      if (result.message === 'success') {
+        setDisplayTitle(result.result.name);
+        toast.success('Project name updated');
+        setEditMode(false);
+      }
+      console.log(result);
+    } catch (error) {
+      toast.error('Fail');
+    }
   }
 
   return (
@@ -68,10 +100,10 @@ const ProjectTitle = ({ title }: { title: string | undefined }) => {
           </form>
         </Form>
       ) : (
-        <h1 className="text-2xl font-semibold">{title}</h1>
+        <h1 className="text-2xl font-semibold">{displayTitle}</h1>
       )}
 
-      {!editMode && (
+      {permission && !editMode && (
         <button
           onClick={() => setEditMode(true)}
           className="hover:cursor-pointer bg-green-500 p-1 rounded-full"
