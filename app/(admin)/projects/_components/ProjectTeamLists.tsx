@@ -1,36 +1,43 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+import UserAvatar from '@/components/UserAvatar';
+import { MemberRole, Role } from '@prisma/client';
 import { Plus } from 'lucide-react';
 
-const ProjectTeamLists = () => {
+type MemberItem = {
+  role: MemberRole;
+  user: {
+    id: string;
+    email: string;
+    role: Role;
+    image: string | null;
+    name: string | null;
+  };
+};
+
+type Props = {
+  members?: MemberItem[];
+};
+
+const ProjectTeamLists = ({ members }: Props) => {
+  // console.log('MEMBERS', members);
+
   return (
     <div className="flex items-center gap-2 w-fit ml-auto sm:ml-0 ">
       <div className="*:data-[slot=avatar]:ring-background flex hover:space-x-0.5 -space-x-2 *:data-[slot=avatar]:ring-2 ">
-        <Avatar className="transition-all duration-500 ease-in-out ">
-          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
-        <Avatar className="transition-all duration-500 ease-in-out ">
-          <AvatarImage src="https://github.com/leerob.png" alt="@leerob" />
-          <AvatarFallback>LR</AvatarFallback>
-        </Avatar>
-        <Avatar className="transition-all duration-500 ease-in-out ">
-          <AvatarImage
-            src="https://github.com/evilrabbit.png"
-            alt="@evilrabbit"
-          />
-          <AvatarFallback>ER</AvatarFallback>
-        </Avatar>
-        <Avatar>
-          <AvatarFallback>+5</AvatarFallback>
-        </Avatar>
+        {members?.map((member) => {
+          const user = {
+            id: member.user.id,
+            name: member.user.name,
+            image: member.user.image,
+          };
+          return <UserAvatar key={member.user.id} user={user} />;
+        })}
       </div>
       <div>
-        <Button className="flex items-center" size={'sm'}>
-          <Plus /> <span>Invite</span>
-        </Button>
+        <button className="flex items-center gap-1 text-xs border rounded-sm px-2 py-1 bg-background shadow hover:bg-muted hover:cursor-pointer">
+          <Plus size={12} /> <span>Invite</span>
+        </button>
       </div>
     </div>
   );

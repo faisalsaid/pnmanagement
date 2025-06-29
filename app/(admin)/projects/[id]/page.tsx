@@ -17,10 +17,12 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
   const { id } = await params;
   const projetDetail = await getProjectById({ id });
 
+  // console.log(projetDetail);
+
   return (
     <div className="bg-primary-foreground rounded-lg p-4 space-y-6">
       <div className="sm:flex sm:flex-row-reverse items-center justify-between space-y-2 ">
-        <ProjectTeamLists />
+        <ProjectTeamLists members={projetDetail?.members} />
         <h1 className="text-2xl font-semibold">{projetDetail?.name}</h1>
       </div>
       <div className="space-y-6">

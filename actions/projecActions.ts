@@ -212,6 +212,22 @@ export const getProjectById = async ({ id }: GetPorjectById) => {
 
     const project = await prisma.project.findUnique({
       where: { id },
+      include: {
+        members: {
+          select: {
+            user: {
+              select: {
+                id: true,
+                email: true,
+                role: true,
+                image: true,
+                name: true,
+              },
+            },
+            role: true,
+          },
+        },
+      },
     });
 
     return project;

@@ -54,7 +54,7 @@ interface ProjectUser {
   image: string | null;
 }
 
-const CreateNewProjects = ({ userId }: { userId: string }) => {
+const CreateNewProjects = ({ userId }: { userId: string | undefined }) => {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [users, setUsers] = useState<ProjectUser[]>([]);
