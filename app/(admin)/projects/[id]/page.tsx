@@ -25,7 +25,12 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
     <div className="bg-primary-foreground rounded-lg p-4 space-y-6">
       <div className="sm:flex sm:flex-row-reverse items-center justify-between space-y-2 gap-4 ">
         <ProjectTeamLists members={projetDetail?.members} />
-        <ProjectTitle title={projetDetail?.name} id={id} />
+        <ProjectTitle
+          title={
+            typeof projetDetail?.name === 'string' ? projetDetail?.name : ''
+          }
+          id={id}
+        />
       </div>
       <div className="space-y-6">
         <div className="grid md:grid-cols-3 md:grid-rows-3 gap-4 max-h-fit">

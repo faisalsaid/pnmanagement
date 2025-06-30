@@ -24,14 +24,14 @@ const FormSchema = z.object({
 });
 
 interface Props {
-  title: string | undefined;
+  title: string;
   id: string;
 }
 
 const ProjectTitle = ({ title, id }: Props) => {
-  const [editMode, setEditMode] = useState<boolean>(false);
-  const [displayTitle, setDisplayTitle] = useState<string | undefined>(title);
-  const [permission, setPermission] = useState<boolean>(false);
+  const [editMode, setEditMode] = useState(false);
+  const [displayTitle, setDisplayTitle] = useState(title);
+  const [permission, setPermission] = useState(false);
 
   useEffect(() => {
     const fetchSession = async () => {
