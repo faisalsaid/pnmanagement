@@ -16,7 +16,7 @@ import {
 import { z } from 'zod';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import { updateSingleFieldById } from '@/actions/projecActions';
+import { updateProjectSingleFieldById } from '@/actions/projecActions';
 
 interface Props {
   description?: string;
@@ -55,7 +55,7 @@ const ProjectDetailDescription = ({ description, id }: Props) => {
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
-      const result = await updateSingleFieldById({
+      const result = await updateProjectSingleFieldById({
         field: 'description',
         data: data.description,
         id,
@@ -73,6 +73,8 @@ const ProjectDetailDescription = ({ description, id }: Props) => {
       console.error('onSubmit error:', error);
     }
   }
+
+  console.log('displayDescription', displayDescription);
 
   return (
     <div className="text-sm text-muted-foreground">
@@ -120,7 +122,9 @@ const ProjectDetailDescription = ({ description, id }: Props) => {
         </Form>
       ) : (
         <span>
-          {displayDescription ? displayDescription : 'No description'}{' '}
+          {!displayDescription || displayDescription === ''
+            ? 'No description'
+            : displayDescription}{' '}
         </span>
       )}
 

@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { toast } from 'sonner';
-import { updateProjecNameById } from '@/actions/projecActions';
+import { updateProjectSingleFieldById } from '@/actions/projecActions';
 import { getSession } from 'next-auth/react';
 
 const FormSchema = z.object({
@@ -63,14 +63,19 @@ const ProjectTitle = ({ title, id }: Props) => {
     }
 
     try {
-      const result = await updateProjecNameById({ name: data.title, id });
-      if (result.message === 'success') {
-        setDisplayTitle(result.result.name);
+      const result = await updateProjectSingleFieldById({
+        data: data.title,
+        field: 'name',
+        id,
+      });
+      if (result.status === 'success') {
+        setDisplayTitle(result.data?.name as string);
         toast.success('Project name updated');
         setEditMode(false);
       }
       console.log(result);
     } catch (error) {
+      setEditMode(false);
       toast.error('Fail');
     }
   }
