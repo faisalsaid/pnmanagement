@@ -280,3 +280,52 @@ export const updateProjecNameById = async ({
     );
   }
 };
+
+// UPDATE single field by id
+
+interface UpdateSingleFieldByIdProps {
+  field: 'description' | 'name';
+  data: string;
+  id: string;
+}
+
+export const updateSingleFieldById = async ({
+  field,
+  data,
+  id,
+}: UpdateSingleFieldByIdProps) => {
+  try {
+    const session = await auth();
+    const user = session?.user;
+
+    if (!user?.id) throw new Error('Unauthorized');
+
+    const dbUser = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: { role: true },
+    });
+
+    if (!dbUser || dbUser.role === 'USER') {
+      throw new Error('Forbidden: Access denied');
+    }
+
+    // Validasi field yang diizinkan
+    const allowedFields = ['description', 'name'];
+    if (!allowedFields.includes(field)) {
+      return { status: 'failed', message: 'Field not allowed' };
+    }
+
+    // Bangun data update secara dinamis
+    const updateData: Record<string, any> = {};
+    updateData[field] = data;
+
+    const updatedProject = await prisma.project.update({
+      where: { id },
+      data: updateData,
+    });
+
+    return { status: 'success', data: updatedProject };
+  } catch (error: any) {
+    return { status: 'error', message: error.message };
+  }
+};

@@ -4,6 +4,7 @@ import ProjectProgress from '../_components/ProjectProgress';
 import ProjectDetailsInfo from '../_components/ProjectDetailsInfo';
 import ProjectTab from '../_components/ProjectTab';
 import ProjectTitle from '../_components/ProjectTitle';
+import ProjectDetailDescription from '../_components/ProjectDetailDescription';
 
 type Params = Promise<{ id: string }>;
 
@@ -29,11 +30,14 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
       <div className="space-y-6">
         <div className="grid md:grid-cols-3 md:grid-rows-3 gap-4 max-h-fit">
           <div className="p-4 bg-muted rounded-md md:col-span-2 ">
-            <p className="text-sm text-muted-foreground">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum
-              eum at iure voluptatibus similique, velit illum. Explicabo rem
-              suscipit nulla impedit, commodi totam.
-            </p>
+            <ProjectDetailDescription
+              description={
+                typeof projetDetail?.description === 'string'
+                  ? projetDetail.description
+                  : ''
+              }
+              id={id}
+            />
           </div>
           <div className="p-4 bg-muted rounded-md md:row-span-3 ">
             <ProjectProgress goals={allGoals} />
