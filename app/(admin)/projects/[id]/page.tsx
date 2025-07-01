@@ -5,6 +5,7 @@ import ProjectDetailsInfo from '../_components/ProjectDetailsInfo';
 import ProjectTab from '../_components/ProjectTab';
 import ProjectTitle from '../_components/ProjectTitle';
 import ProjectDetailDescription from '../_components/ProjectDetailDescription';
+import { Skeleton } from '@/components/ui/skeleton';
 
 type Params = Promise<{ id: string }>;
 
@@ -24,7 +25,17 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
   return (
     <div className="bg-primary-foreground rounded-lg p-4 space-y-6">
       <div className="sm:flex sm:flex-row-reverse items-center justify-between space-y-2 gap-4 ">
-        <ProjectTeamLists members={projetDetail?.members} />
+        {projetDetail?.createdById || projetDetail?.ownerId ? (
+          <ProjectTeamLists
+            members={projetDetail?.members}
+            projectId={id}
+            creatorId={projetDetail.createdById}
+            ownerId={projetDetail.ownerId}
+          />
+        ) : (
+          <MemberListSkeleton />
+        )}
+
         <ProjectTitle
           title={
             typeof projetDetail?.name === 'string' ? projetDetail?.name : ''
@@ -60,3 +71,12 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
 };
 
 export default ProjectDetailsPage;
+
+const MemberListSkeleton = () => {
+  return (
+    <div className="flex items-center gap-2">
+      <Skeleton className="h-6 w-20" />
+      <Skeleton className="h-6 w-6" />
+    </div>
+  );
+};

@@ -4,6 +4,15 @@ import UserAvatar from '@/components/UserAvatar';
 import { MemberRole, Role } from '@prisma/client';
 import { Plus } from 'lucide-react';
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+
 type MemberItem = {
   role: MemberRole;
   user: {
@@ -17,9 +26,17 @@ type MemberItem = {
 
 type Props = {
   members?: MemberItem[];
+  projectId: string;
+  creatorId: string;
+  ownerId: string;
 };
 
-const ProjectTeamLists = ({ members }: Props) => {
+const ProjectTeamLists = ({
+  members,
+  creatorId,
+  ownerId,
+  projectId,
+}: Props) => {
   // console.log('MEMBERS', members);
 
   return (
@@ -35,9 +52,19 @@ const ProjectTeamLists = ({ members }: Props) => {
         })}
       </div>
       <div>
-        <button className="flex items-center gap-1 text-xs border rounded-sm px-2 py-1 bg-background shadow hover:bg-muted hover:cursor-pointer">
-          <Plus size={12} /> <span>Invite</span>
-        </button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <button className="flex items-center gap-1 text-xs border rounded-sm px-2 py-1 bg-background shadow hover:bg-muted hover:cursor-pointer">
+              <Plus size={12} /> <span>Invite</span>
+            </button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Are you absolutely sure?</DialogTitle>
+            </DialogHeader>
+            <div></div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
