@@ -299,22 +299,62 @@ export async function addMembersToProject({
 }) {
   console.log(projectId, members);
 
-  // try {
-  //   await prisma.$transaction(
-  //     members.map((member) =>
-  //       prisma.projectTeamMember.create({
-  //         data: {
-  //           userId: member.userId,
-  //           projectId,
-  //           role: member.role,
-  //         },
-  //       })
-  //     )
-  //   );
-  //   revalidatePath(`/projects/${projectId}`);
-  //   return { success: true };
-  // } catch (error) {
-  //   console.error('Failed to add members:', error);
-  //   throw new Error('Error adding project members');
-  // }
+  try {
+    if (!members.length) return { success: true }; // tidak ada yang perlu ditambahkan
+
+    // Ambil anggota yang sudah ada
+    const existingMembers = await prisma.teamMember.findMany({
+      where: {
+        projectId,
+        userId: {
+          in: members.map((m) => m.userId),
+        },
+      },
+      select: { userId: true },
+    });
+
+    const existingUserIds = new Set(existingMembers.map((m) => m.userId));
+
+    // Filter hanya user yang belum tergabung
+    const newMembers = members.filter((m) => !existingUserIds.has(m.userId));
+
+    if (newMembers.length === 0) {
+      return { success: true, message: 'No new members to add' };
+    }
+
+    // Validasi semua userId ada di tabel User
+    const validUsers = await prisma.user.findMany({
+      where: {
+        id: { in: newMembers.map((m) => m.userId) },
+      },
+      select: { id: true },
+    });
+
+    const validUserIds = new Set(validUsers.map((u) => u.id));
+
+    const finalMembers = newMembers.filter((m) => validUserIds.has(m.userId));
+
+    if (finalMembers.length === 0) {
+      throw new Error('No valid users to add');
+    }
+
+    // Simpan ke database
+    await prisma.$transaction(
+      finalMembers.map((member) =>
+        prisma.teamMember.create({
+          data: {
+            userId: member.userId,
+            projectId,
+            role: member.role,
+          },
+        }),
+      ),
+    );
+
+    revalidatePath(`/projects/${projectId}`);
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to add members:', error);
+    throw new Error('Error adding project members');
+  }
 }
