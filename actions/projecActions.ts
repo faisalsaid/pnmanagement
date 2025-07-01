@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { auth } from '@/auth';
 import prisma from '@/lib/prisma';
 import { CreateProjectSchema } from '@/lib/zod';
+import { MemberRole, Role } from '@prisma/client';
 // import { Role } from '@prisma/client';
 
 // CREATE Project
@@ -287,3 +288,33 @@ export const updateProjectSingleFieldById = async ({
     return { status: 'error', message: error.message };
   }
 };
+
+// /actions/projectActions.ts
+export async function addMembersToProject({
+  projectId,
+  members,
+}: {
+  projectId: string;
+  members: { userId: string; role: MemberRole }[];
+}) {
+  console.log(projectId, members);
+
+  // try {
+  //   await prisma.$transaction(
+  //     members.map((member) =>
+  //       prisma.projectTeamMember.create({
+  //         data: {
+  //           userId: member.userId,
+  //           projectId,
+  //           role: member.role,
+  //         },
+  //       })
+  //     )
+  //   );
+  //   revalidatePath(`/projects/${projectId}`);
+  //   return { success: true };
+  // } catch (error) {
+  //   console.error('Failed to add members:', error);
+  //   throw new Error('Error adding project members');
+  // }
+}
