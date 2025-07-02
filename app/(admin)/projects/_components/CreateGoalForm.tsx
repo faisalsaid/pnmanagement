@@ -86,7 +86,7 @@ const CreateGoalForm = ({
           )}
         />
 
-        <FormField
+        {/* <FormField
           control={form.control}
           name="status"
           render={({ field }) => (
@@ -112,7 +112,7 @@ const CreateGoalForm = ({
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
         <FormField
           control={form.control}

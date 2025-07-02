@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Plus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 import {
   Dialog,
@@ -16,6 +17,7 @@ import CreateGoalForm from './CreateGoalForm';
 import { GoalFormValues } from '@/lib/zod';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { createGoal } from '@/actions/projecActions';
 
 interface GoalsItem {
   title: string;
@@ -34,13 +36,40 @@ const ProjectProgress = ({
   projectId,
 }: ProjectProgressProps) => {
   const finishGoals = goals.filter((goal) => goal.value === 100);
+  const router = useRouter();
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [createLoading, setCreateLoading] = useState<boolean>(false);
 
-  const handleSubmit = (data: GoalFormValues) => {
-    console.log(data);
+  const handleSubmit = async (data: GoalFormValues) => {
+    setCreateLoading(true);
+    try {
+      const formData = new FormData();
 
-    toast(data.title);
+      formData.append('title', data.title);
+      formData.append('status', data.status);
+      formData.append('projectId', data.projectId);
+      formData.append('createdById', data.createdById);
+      if (data.description) formData.append('description', data.description);
+      if (data.dueDate) formData.append('dueDate', data.dueDate.toISOString());
+
+      const result = await createGoal(formData);
+
+      console.log(result);
+
+      if (result.success) {
+        toast.success(`Goal "${data.title}" was successfully created.`);
+        router.refresh();
+      } else {
+        toast.error('Goal creation failed.');
+      }
+    } catch (error) {
+      toast.error('Unable to create goal.');
+      console.error(error);
+    } finally {
+      setCreateLoading(false);
+      setDialogOpen(false);
+    }
   };
   return (
     <div className="w-full space-y-3">

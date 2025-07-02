@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { auth } from '@/auth';
 import prisma from '@/lib/prisma';
-import { CreateProjectSchema } from '@/lib/zod';
+import { CreateProjectSchema, GoalFormSchema } from '@/lib/zod';
 import { MemberRole, Role } from '@prisma/client';
 // import { Role } from '@prisma/client';
 
@@ -385,4 +385,53 @@ export async function removeProjectMember({
       },
     },
   });
+}
+
+// POST create goals
+
+export async function createGoal(formData: FormData) {
+  // validate user
+  const session = await auth();
+  const user = session?.user;
+
+  if (!user?.id) throw new Error('Unauthorized');
+
+  const dbUser = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { role: true },
+  });
+
+  if (!dbUser || dbUser.role === 'USER') {
+    throw new Error('Forbidden: Access denied');
+  }
+
+  // 1. Parse & validate input
+  const raw = Object.fromEntries(formData.entries());
+
+  const result = GoalFormSchema.safeParse(raw);
+  if (!result.success) {
+    return { error: 'Invalid input', issues: result.error.flatten() };
+  }
+
+  const { title, description, dueDate, status, projectId, createdById } =
+    result.data;
+
+  try {
+    // 2. Create goal in DB
+    const result = await prisma.goal.create({
+      data: {
+        title,
+        description,
+        dueDate,
+        status,
+        projectId,
+        createdById,
+      },
+    });
+
+    return { success: true, result };
+  } catch (err) {
+    console.error('Failed to create goal', err);
+    return { error: 'Server error. Please try again later.' };
+  }
 }
