@@ -358,3 +358,42 @@ export async function addMembersToProject({
     throw new Error('Error adding project members');
   }
 }
+
+export async function updateMemberRole({
+  projectId,
+  userId,
+  role,
+}: {
+  projectId: string;
+  userId: string;
+  role: MemberRole;
+}) {
+  return await prisma.teamMember.update({
+    where: {
+      userId_projectId: {
+        userId,
+        projectId,
+      },
+    },
+    data: {
+      role,
+    },
+  });
+}
+
+export async function removeProjectMember({
+  projectId,
+  userId,
+}: {
+  projectId: string;
+  userId: string;
+}) {
+  return await prisma.teamMember.delete({
+    where: {
+      userId_projectId: {
+        userId,
+        projectId,
+      },
+    },
+  });
+}

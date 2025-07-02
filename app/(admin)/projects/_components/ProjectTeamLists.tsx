@@ -4,6 +4,8 @@ import UserAvatar from '@/components/UserAvatar';
 import { MemberRole, Role } from '@prisma/client';
 import { Plus } from 'lucide-react';
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import {
   Dialog,
   DialogContent,
@@ -15,6 +17,7 @@ import {
 import AddProjectMembersForm from './AddProjectMembersForm';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import EditProjectMembers from './EditProjectMembers';
 
 type MemberItem = {
   role: MemberRole;
@@ -66,15 +69,35 @@ const ProjectTeamLists = ({
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Invate some user to be project members</DialogTitle>
+              <DialogTitle>Manage project member</DialogTitle>
             </DialogHeader>
-            <AddProjectMembersForm
-              projectId={projectId}
-              excludedUserIds={[creatorId, ownerId]}
-              existingMemberIds={memeberId}
-              open={open}
-              onSuccess={() => setOpen(false)}
-            />
+
+            <Tabs defaultValue="add" className="">
+              <TabsList className="w-full">
+                <TabsTrigger value="add">Add</TabsTrigger>
+                <TabsTrigger value="manage">Manage</TabsTrigger>
+              </TabsList>
+              <TabsContent value="add">
+                <AddProjectMembersForm
+                  projectId={projectId}
+                  excludedUserIds={[creatorId, ownerId]}
+                  existingMemberIds={memeberId}
+                  open={open}
+                  onSuccess={() => setOpen(false)}
+                />
+              </TabsContent>
+              <TabsContent value="manage">
+                {members && members.length > 0 ? (
+                  <EditProjectMembers
+                    members={members}
+                    projectId={projectId}
+                    creatorId={creatorId}
+                  />
+                ) : (
+                  <div>Empty member</div>
+                )}
+              </TabsContent>
+            </Tabs>
           </DialogContent>
         </Dialog>
       </div>
