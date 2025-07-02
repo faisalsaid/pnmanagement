@@ -129,7 +129,7 @@ const AddProjectMembersForm = ({
     }
   };
   return (
-    <div className="max-h-[75svh]">
+    <div className="">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField

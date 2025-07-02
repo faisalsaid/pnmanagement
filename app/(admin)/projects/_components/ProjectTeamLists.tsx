@@ -2,7 +2,7 @@
 
 import UserAvatar from '@/components/UserAvatar';
 import { MemberRole, Role } from '@prisma/client';
-import { Plus } from 'lucide-react';
+import { Plus, Settings } from 'lucide-react';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -64,40 +64,41 @@ const ProjectTeamLists = ({
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <button className="flex items-center gap-1 text-xs border rounded-sm px-2 py-1 bg-background shadow hover:bg-muted hover:cursor-pointer">
-              <Plus size={12} /> <span>Invite</span>
+              <Settings size={12} /> <span>Manage</span>
             </button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Manage project member</DialogTitle>
             </DialogHeader>
-
-            <Tabs defaultValue="add" className="">
-              <TabsList className="w-full">
-                <TabsTrigger value="add">Add</TabsTrigger>
-                <TabsTrigger value="manage">Manage</TabsTrigger>
-              </TabsList>
-              <TabsContent value="add">
-                <AddProjectMembersForm
-                  projectId={projectId}
-                  excludedUserIds={[creatorId, ownerId]}
-                  existingMemberIds={memeberId}
-                  open={open}
-                  onSuccess={() => setOpen(false)}
-                />
-              </TabsContent>
-              <TabsContent value="manage">
-                {members && members.length > 0 ? (
-                  <EditProjectMembers
-                    members={members}
+            <div className="max-h-[75svh]">
+              <Tabs defaultValue="add" className="">
+                <TabsList className="w-full">
+                  <TabsTrigger value="add">Add</TabsTrigger>
+                  <TabsTrigger value="manage">Manage</TabsTrigger>
+                </TabsList>
+                <TabsContent value="add">
+                  <AddProjectMembersForm
                     projectId={projectId}
-                    creatorId={creatorId}
+                    excludedUserIds={[creatorId, ownerId]}
+                    existingMemberIds={memeberId}
+                    open={open}
+                    onSuccess={() => setOpen(false)}
                   />
-                ) : (
-                  <div>Empty member</div>
-                )}
-              </TabsContent>
-            </Tabs>
+                </TabsContent>
+                <TabsContent value="manage">
+                  {members && members.length > 0 ? (
+                    <EditProjectMembers
+                      members={members}
+                      projectId={projectId}
+                      creatorId={creatorId}
+                    />
+                  ) : (
+                    <div>Empty member</div>
+                  )}
+                </TabsContent>
+              </Tabs>
+            </div>
           </DialogContent>
         </Dialog>
       </div>
