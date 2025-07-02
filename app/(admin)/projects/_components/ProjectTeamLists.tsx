@@ -34,16 +34,12 @@ type Props = {
   members?: MemberItem[];
   projectId: string;
   creatorId: string;
-  ownerId: string;
 };
 
-const ProjectTeamLists = ({
-  members,
-  creatorId,
-  ownerId,
-  projectId,
-}: Props) => {
+const ProjectTeamLists = ({ members, creatorId, projectId }: Props) => {
   // console.log('MEMBERS', members);
+
+  console.log(members);
 
   const [open, setOpen] = useState(false);
   const memeberId = members?.map((member) => member.user.id) ?? [];
@@ -80,7 +76,7 @@ const ProjectTeamLists = ({
                 <TabsContent value="add">
                   <AddProjectMembersForm
                     projectId={projectId}
-                    excludedUserIds={[creatorId, ownerId]}
+                    excludedUserIds={[creatorId]}
                     existingMemberIds={memeberId}
                     open={open}
                     onSuccess={() => setOpen(false)}

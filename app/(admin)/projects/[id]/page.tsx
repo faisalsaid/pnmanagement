@@ -19,9 +19,9 @@ const allGoals = [
 
 const ProjectDetailsPage = async ({ params }: { params: Params }) => {
   const { id } = await params;
-  const projetDetail = await getProjectById({ id });
+  const projectDetail = await getProjectById({ id });
 
-  if (!projetDetail) {
+  if (!projectDetail) {
     redirect('/projects');
   }
   // console.log(projetDetail);
@@ -29,11 +29,11 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
   return (
     <div className="bg-primary-foreground rounded-lg p-4 space-y-6">
       <div className="sm:flex sm:flex-row-reverse items-center justify-between space-y-2 gap-4 ">
-        {projetDetail?.createdById ? (
+        {projectDetail?.createdById ? (
           <ProjectTeamLists
-            members={projetDetail?.members}
+            members={projectDetail.members}
             projectId={id}
-            creatorId={projetDetail.createdById}
+            creatorId={projectDetail.createdById}
           />
         ) : (
           <MemberListSkeleton />
@@ -41,7 +41,7 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
 
         <ProjectTitle
           title={
-            typeof projetDetail?.name === 'string' ? projetDetail?.name : ''
+            typeof projectDetail?.name === 'string' ? projectDetail?.name : ''
           }
           id={id}
         />
@@ -51,8 +51,8 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
           <div className="p-4 bg-muted rounded-md md:col-span-2 ">
             <ProjectDetailDescription
               description={
-                typeof projetDetail?.description === 'string'
-                  ? projetDetail.description
+                typeof projectDetail?.description === 'string'
+                  ? projectDetail.description
                   : ''
               }
               id={id}

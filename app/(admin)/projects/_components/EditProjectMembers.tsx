@@ -98,7 +98,7 @@ const EditProjectMembers = ({ members, projectId, creatorId }: Props) => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {(['OWNER', 'EDITOR', 'VIEWER'] as MemberRole[]).map((role) => (
+                {(['ADMIN', 'EDITOR', 'VIEWER'] as MemberRole[]).map((role) => (
                   <SelectItem key={role} value={role}>
                     {role}
                   </SelectItem>
