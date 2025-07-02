@@ -15,7 +15,7 @@ import { MoreHorizontal } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 type Props = {
-  projectOwner: {
+  projectCreator: {
     id: string;
     name: string | null;
     email: string;
@@ -31,7 +31,7 @@ type Props = {
 };
 
 const ProjectsActionsCell = ({
-  projectOwner,
+  projectCreator,
   currentUser,
   projectId,
 }: Props) => {
@@ -40,7 +40,8 @@ const ProjectsActionsCell = ({
 
   useEffect(() => {
     if (currentUser) {
-      const isAllowed = currentUser.id === projectOwner.id;
+      const isAllowed =
+        currentUser.id === projectCreator.id || currentUser.role === 'ADMIN';
       setPermission(isAllowed);
     }
   }, [currentUser]);

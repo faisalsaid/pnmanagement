@@ -68,20 +68,14 @@ export const columns: ColumnDef<ProjectsTable>[] = [
   {
     id: 'action',
     header: 'Actions',
-    // cell: ({ row, table }) => {
-    //   const ownerData = {
-    //     id: row.original.owner.id,
-    //     name: row.original.owner.name,
-    //     email: row.original.owner.email,
-    //     role: row.original.owner.role,
-    //   };
-    //   return (
-    //     <ProjectsActionsCell
-    //       projectOwner={ownerData}
-    //       currentUser={table.options.meta?.currentUser}
-    //       projectId={row.original.id}
-    //     />
-    //   );
-    // },
+    cell: ({ row, table }) => {
+      return (
+        <ProjectsActionsCell
+          projectCreator={row.original.createdBy}
+          currentUser={table.options.meta?.currentUser}
+          projectId={row.original.id}
+        />
+      );
+    },
   },
 ];
