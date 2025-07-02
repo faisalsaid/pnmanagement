@@ -47,9 +47,9 @@ export async function createProject({
       });
     }
 
-    // Tambahkan creator sebagai ADMIN jika belum ada
+    // Tambahkan creator sebagai OWNER jika belum ada
     if (!memberMap.has(user.id)) {
-      memberMap.set(user.id, { userId: user.id, role: 'ADMIN' });
+      memberMap.set(user.id, { userId: user.id, role: 'OWNER' });
     }
 
     const finalTeam = Array.from(memberMap.values());
