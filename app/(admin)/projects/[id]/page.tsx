@@ -59,7 +59,11 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
             />
           </div>
           <div className="p-4 bg-muted rounded-md md:row-span-3 ">
-            <ProjectProgress goals={allGoals} />
+            <ProjectProgress
+              goals={allGoals}
+              createdById={projectDetail.createdById}
+              projectId={projectDetail.id}
+            />
           </div>
           <div className="p-4 bg-muted rounded-md md:col-span-2 md:row-span-2 ">
             <ProjectDetailsInfo />

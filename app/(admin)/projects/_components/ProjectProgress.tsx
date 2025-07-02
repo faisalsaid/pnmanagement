@@ -12,6 +12,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import CreateGoalForm from './CreateGoalForm';
+import { GoalFormValues } from '@/lib/zod';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface GoalsItem {
   title: string;
@@ -20,10 +24,24 @@ interface GoalsItem {
 
 interface ProjectProgressProps {
   goals: GoalsItem[];
+  projectId: string;
+  createdById: string;
 }
 
-const ProjectProgress = ({ goals }: ProjectProgressProps) => {
+const ProjectProgress = ({
+  goals,
+  createdById,
+  projectId,
+}: ProjectProgressProps) => {
   const finishGoals = goals.filter((goal) => goal.value === 100);
+
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+
+  const handleSubmit = (data: GoalFormValues) => {
+    console.log(data);
+
+    toast(data.title);
+  };
   return (
     <div className="w-full space-y-3">
       <div className="flex items-center justify-between gap-2 text-sm">
@@ -34,17 +52,24 @@ const ProjectProgress = ({ goals }: ProjectProgressProps) => {
           </div>
         </div>
 
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button size={'icon'}>
-              <Plus size={18} />
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
+        <Button onClick={() => setDialogOpen(true)} size={'icon'}>
+          <Plus size={18} />
+        </Button>
+
+        {/* DIALOG CREATE GOAL FORM */}
+        <Dialog open={dialogOpen}>
+          <DialogContent className="">
             <DialogHeader>
               <DialogTitle>Add Goals</DialogTitle>
             </DialogHeader>
-            <div className="max-h-[75svh]"></div>
+            <div className="max-h-[75svh] ">
+              <CreateGoalForm
+                createdById={createdById}
+                projectId={projectId}
+                onSubmit={handleSubmit}
+                onClose={() => setDialogOpen(false)}
+              />
+            </div>
           </DialogContent>
         </Dialog>
       </div>

@@ -88,3 +88,18 @@ export const CreateProjectSchema = z.object({
     )
     .optional(),
 });
+
+// CREATE GOAL SHCEMA
+
+export const GoalStatusEnum = z.enum(['PENDING', 'IN_PROGRESS', 'COMPLETED']);
+
+export const GoalFormSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  description: z.string().optional(),
+  dueDate: z.coerce.date().optional(),
+  status: z.enum(['PENDING', 'IN_PROGRESS', 'COMPLETED']),
+  projectId: z.string(),
+  createdById: z.string(),
+});
+
+export type GoalFormValues = z.infer<typeof GoalFormSchema>;
