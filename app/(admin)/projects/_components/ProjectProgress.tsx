@@ -108,6 +108,11 @@ const ProjectProgress = ({
         </Dialog>
       </div>
       <div className="space-y-2.5">
+        <Progress value={10} fullColor />
+        <Progress value={30} fullColor />
+        <Progress value={55} fullColor />
+        <Progress value={80} fullColor />
+        <Progress value={100} fullColor />
         {goals.length > 0 ? (
           goals.map((goal, i) => (
             <ProgressCard key={i} title={goal.title} progress={goal.progress} />
@@ -134,7 +139,7 @@ const ProgressCard = ({ title, progress }: ProgressCardProps) => {
         <p>{title}</p>
         <p>{progress}%</p>
       </div>
-      <Progress value={progress} />
+      <Progress value={progress} variant={'high'} />
     </div>
   );
 };
