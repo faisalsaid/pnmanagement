@@ -29,7 +29,6 @@ model User {
 
   //relasi project
   createdProjects Project[]    @relation("CreatedProjects")
-  ownedProjects    Project[]   @relation("OwnedProjects")
   teamMemberships TeamMember[]
  
   createdAt DateTime @default(now())
@@ -270,8 +269,6 @@ model Project {
   createdBy   User            @relation("CreatedProjects", fields: [createdById], references: [id])
   createdById String
 
-  owner       User            @relation("OwnedProjects", fields: [ownerId], references: [id])
-  ownerId     String
   members     TeamMember[]
 
   createdAt   DateTime        @default(now())
