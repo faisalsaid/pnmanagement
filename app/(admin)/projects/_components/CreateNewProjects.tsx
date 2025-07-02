@@ -67,9 +67,7 @@ const CreateNewProjects = ({ userId }: { userId: string | undefined }) => {
       try {
         const usersData = await getUserToOwnerProject();
         // Filter: eliminate creator and selected owner
-        const filtered = usersData.filter(
-          (user) => user.id !== userId && user.id !== form.getValues('ownerId'),
-        );
+        const filtered = usersData.filter((user) => user.id !== userId);
 
         setUsers(filtered);
       } catch (error) {
@@ -90,7 +88,7 @@ const CreateNewProjects = ({ userId }: { userId: string | undefined }) => {
     defaultValues: {
       name: '',
       description: '',
-      ownerId: userId,
+
       deadline: '',
       teamMembers: [],
     },
@@ -101,7 +99,6 @@ const CreateNewProjects = ({ userId }: { userId: string | undefined }) => {
       form.reset({
         name: '',
         description: '',
-        ownerId: userId,
       });
     }
   }, [open, form, userId]);
@@ -192,77 +189,13 @@ const CreateNewProjects = ({ userId }: { userId: string | undefined }) => {
 
               <FormField
                 control={form.control}
-                name="ownerId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Owner</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      disabled={isPending || isLoadingUsers}
-                    >
-                      <FormControl className="w-full">
-                        <SelectTrigger>
-                          <SelectValue className="" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {isLoadingUsers ? (
-                          <SelectItem value="loading" disabled>
-                            Loading users...
-                          </SelectItem>
-                        ) : users.length === 0 ? (
-                          <SelectItem value="no-users" disabled>
-                            No users available
-                          </SelectItem>
-                        ) : (
-                          users.map((user) => (
-                            <SelectItem key={user.id} value={user.id}>
-                              <div className="flex items-center gap-2">
-                                <Avatar>
-                                  <AvatarImage
-                                    src={user.image || undefined}
-                                    alt="user image"
-                                  />
-                                  <AvatarFallback>
-                                    {transformNameToInitials(user.name)}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <div>
-                                  <span className="font-medium">
-                                    {user.name || user.email}
-                                  </span>
-                                  <span className="text-muted-foreground ml-2 text-xs">
-                                    ({user.role.toLowerCase()})
-                                  </span>
-                                </div>
-                              </div>
-                            </SelectItem>
-                          ))
-                        )}
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      You may assign someone else as the project owner.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
                 name="teamMembers"
                 render={() => (
                   <FormItem>
                     <FormLabel>Team Members</FormLabel>
                     <div className="space-y-2">
                       {users
-                        .filter(
-                          (user) =>
-                            user.id !== userId &&
-                            user.id !== form.watch('ownerId'), // Filter creator & selected owner
-                        )
+                        .filter((user) => user.id !== userId)
                         .map((user) => (
                           <div
                             key={user.id}

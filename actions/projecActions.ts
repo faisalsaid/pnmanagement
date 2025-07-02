@@ -28,33 +28,14 @@ export async function createProject({
     const {
       name,
       description,
-      ownerId,
+
       deadline,
       teamMembers = [],
     } = parsed.data;
 
-    // Validasi owner
-    const owner = await prisma.user.findUnique({
-      where: { id: ownerId },
-      select: { role: true },
-    });
-
-    if (!owner) throw new Error('Invalid owner: User not found');
-    if (owner.role === 'USER' || owner.role === 'TESTER') {
-      throw new Error('Invalid owner: Must have elevated privileges');
-    }
-
     // Gabungkan creator & owner ke teamMembers (hindari duplikat)
     const allMembersMap = new Map<string, { userId: string; role: any }>();
     teamMembers.forEach((m) => allMembersMap.set(m.userId, m));
-
-    allMembersMap.set(ownerId, { userId: ownerId, role: 'OWNER' });
-    if (ownerId !== session.user.id) {
-      allMembersMap.set(session.user.id, {
-        userId: session.user.id,
-        role: 'ADMIN',
-      });
-    }
 
     const finalTeam = Array.from(allMembersMap.values());
 

@@ -78,7 +78,6 @@ export const UpdateAssetInfoSchema = z.object({
 export const CreateProjectSchema = z.object({
   name: z.string().min(3),
   description: z.string().optional(),
-  ownerId: z.string(),
   deadline: z.string().optional(), // ISO Date string
   teamMembers: z
     .array(
