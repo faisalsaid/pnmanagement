@@ -39,7 +39,7 @@ type Props = {
 const ProjectTeamLists = ({ members, creatorId, projectId }: Props) => {
   // console.log('MEMBERS', members);
 
-  console.log(members);
+  // console.log(members);
 
   const [open, setOpen] = useState(false);
   const memeberId = members?.map((member) => member.user.id) ?? [];
