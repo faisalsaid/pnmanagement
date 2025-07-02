@@ -8,6 +8,15 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Trash2 } from 'lucide-react';
+
 type MemberItem = {
   role: MemberRole; // Role di team (EDITOR, VIEWER, dll)
   user: {
@@ -72,37 +81,39 @@ const EditProjectMembers = ({ members, projectId, creatorId }: Props) => {
             <UserAvatar user={member.user} />
             <div>
               <p className="text-sm">{member.user.name || member.user.email}</p>
-              <p className="text-xs text-muted-foreground">
-                {member.user.role}
+              <p className="text-xs text-muted-foreground capitalize">
+                {member.user.role.toLocaleLowerCase()}
               </p>
             </div>
           </div>
 
           <div className="flex gap-2 items-center">
-            <select
+            <Select
               value={member.role}
-              onChange={(e) =>
-                handleChangeRole(member.user.id, e.target.value as MemberRole)
+              onValueChange={(value) =>
+                handleChangeRole(member.user.id, value as MemberRole)
               }
-              className="border rounded px-2 text-sm"
             >
-              {(['OWNER', 'ADMIN', 'EDITOR', 'VIEWER'] as MemberRole[]).map(
-                (role) => (
-                  <option key={role} value={role}>
+              <SelectTrigger className="w-[100px] h-8 text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {(['OWNER', 'EDITOR', 'VIEWER'] as MemberRole[]).map((role) => (
+                  <SelectItem key={role} value={role}>
                     {role}
-                  </option>
-                ),
-              )}
-            </select>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
             <Button
               variant="ghost"
-              size="sm"
+              size="icon"
               onClick={() => handleRemove(member.user.id)}
               disabled={updating}
               className="text-destructive"
             >
-              Remove
+              <Trash2 />
             </Button>
           </div>
         </div>
