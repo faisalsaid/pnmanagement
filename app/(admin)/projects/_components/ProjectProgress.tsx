@@ -1,6 +1,17 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { Plus } from 'lucide-react';
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 interface GoalsItem {
   title: string;
@@ -15,11 +26,27 @@ const ProjectProgress = ({ goals }: ProjectProgressProps) => {
   const finishGoals = goals.filter((goal) => goal.value === 100);
   return (
     <div className="w-full space-y-3">
-      <div className="flex items-center justify-between">
-        <h2 className="font-bolds">Goals Progress</h2>
-        <div className="text-sm text-primary bg-orange-400/20 border border-orange-500 px-2 rounded-md">
-          {finishGoals.length}/{goals.length} Goals
+      <div className="flex items-center justify-between gap-2 text-sm">
+        <div className="flex items-center gap-2">
+          <h2 className="font-bolds">Progress</h2>
+          <div className=" text-primary bg-orange-400/20 border border-orange-500 px-2 rounded-md">
+            {finishGoals.length}/{goals.length} Goals
+          </div>
         </div>
+
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button size={'icon'}>
+              <Plus size={18} />
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add Goals</DialogTitle>
+            </DialogHeader>
+            <div className="max-h-[75svh]"></div>
+          </DialogContent>
+        </Dialog>
       </div>
       <div className="space-y-2.5">
         {goals.length > 0 ? (
