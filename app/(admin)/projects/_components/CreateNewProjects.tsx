@@ -104,7 +104,7 @@ const CreateNewProjects = ({ userId }: { userId: string | undefined }) => {
   }, [open, form, userId]);
 
   async function onSubmit(payload: z.infer<typeof CreateProjectSchema>) {
-    console.log('PAYLOAD', payload);
+    // console.log('PAYLOAD', payload);
 
     const finalPayload = {
       ...payload,
@@ -112,7 +112,7 @@ const CreateNewProjects = ({ userId }: { userId: string | undefined }) => {
         ? new Date(payload.deadline).toISOString()
         : undefined,
     };
-    console.log('FINAL PAYLOAD', finalPayload);
+    // console.log('FINAL PAYLOAD', finalPayload);
 
     startTransition(async () => {
       try {

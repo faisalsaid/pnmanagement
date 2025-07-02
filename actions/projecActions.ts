@@ -16,8 +16,17 @@ export async function createProject({
 }) {
   try {
     const session = await auth();
-    if (!session?.user?.id) {
-      throw new Error('Unauthorized: User not authenticated');
+    const user = session?.user;
+
+    if (!user?.id) throw new Error('Unauthorized');
+
+    const dbUser = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: { role: true },
+    });
+
+    if (!dbUser || dbUser.role === 'USER') {
+      throw new Error('Forbidden: Access denied');
     }
 
     const parsed = CreateProjectSchema.safeParse(payload);
@@ -25,19 +34,25 @@ export async function createProject({
       throw new Error(`Invalid data: ${parsed.error.message}`);
     }
 
-    const {
-      name,
-      description,
+    const { name, description, deadline, teamMembers = [] } = parsed.data;
 
-      deadline,
-      teamMembers = [],
-    } = parsed.data;
+    // Map untuk memastikan tidak ada duplikat member
+    const memberMap = new Map<string, { userId: string; role: any }>();
 
-    // Gabungkan creator & owner ke teamMembers (hindari duplikat)
-    const allMembersMap = new Map<string, { userId: string; role: any }>();
-    teamMembers.forEach((m) => allMembersMap.set(m.userId, m));
+    // Tambahkan member dari payload
+    for (const member of teamMembers) {
+      memberMap.set(member.userId, {
+        userId: member.userId,
+        role: member.role,
+      });
+    }
 
-    const finalTeam = Array.from(allMembersMap.values());
+    // Tambahkan creator sebagai ADMIN jika belum ada
+    if (!memberMap.has(user.id)) {
+      memberMap.set(user.id, { userId: user.id, role: 'ADMIN' });
+    }
+
+    const finalTeam = Array.from(memberMap.values());
 
     // Buat project dan sekaligus tambahkan team member
     const data = await prisma.project.create({
@@ -45,7 +60,7 @@ export async function createProject({
         name,
         description: description || null,
         deadline: deadline ? new Date(deadline) : null,
-        createdBy: { connect: { id: session.user.id } },
+        createdBy: { connect: { id: user.id } },
         members: {
           create: finalTeam.map((member) => ({
             user: { connect: { id: member.userId } },
