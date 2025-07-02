@@ -65,7 +65,6 @@ export async function createProject({
         description: description || null,
         deadline: deadline ? new Date(deadline) : null,
         createdBy: { connect: { id: session.user.id } },
-        owner: { connect: { id: ownerId } },
         members: {
           create: finalTeam.map((member) => ({
             user: { connect: { id: member.userId } },
@@ -162,21 +161,6 @@ export const getAllProjects = async () => {
             },
           },
         },
-        owner: {
-          select: {
-            id: true,
-            email: true,
-            name: true,
-            role: true,
-            image: true,
-            articles: {
-              select: {
-                id: true,
-              },
-            },
-          },
-        },
-        // Tambahkan field lain jika diperlukan
       },
     });
 

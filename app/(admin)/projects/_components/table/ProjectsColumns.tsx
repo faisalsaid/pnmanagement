@@ -31,20 +31,6 @@ export type ProjectsTable = Prisma.ProjectGetPayload<{
         };
       };
     };
-    owner: {
-      select: {
-        id: true;
-        email: true;
-        name: true;
-        role: true;
-        image: true;
-        articles: {
-          select: {
-            id: true;
-          };
-        };
-      };
-    };
   };
 }>;
 
@@ -68,21 +54,7 @@ export const columns: ColumnDef<ProjectsTable>[] = [
       );
     },
   },
-  {
-    accessorKey: 'owner',
-    header: 'Owner',
-    cell: ({ row }) => {
-      const owner = row.original.owner;
-      return (
-        <HoverCard>
-          <HoverCardTrigger>{owner?.name ?? owner.name}</HoverCardTrigger>
-          <HoverCardContent className="p-0">
-            <AuthorCard author={owner} />
-          </HoverCardContent>
-        </HoverCard>
-      );
-    },
-  },
+
   {
     accessorKey: 'createdAt',
     header: 'Created At',
@@ -96,20 +68,20 @@ export const columns: ColumnDef<ProjectsTable>[] = [
   {
     id: 'action',
     header: 'Actions',
-    cell: ({ row, table }) => {
-      const ownerData = {
-        id: row.original.owner.id,
-        name: row.original.owner.name,
-        email: row.original.owner.email,
-        role: row.original.owner.role,
-      };
-      return (
-        <ProjectsActionsCell
-          projectOwner={ownerData}
-          currentUser={table.options.meta?.currentUser}
-          projectId={row.original.id}
-        />
-      );
-    },
+    // cell: ({ row, table }) => {
+    //   const ownerData = {
+    //     id: row.original.owner.id,
+    //     name: row.original.owner.name,
+    //     email: row.original.owner.email,
+    //     role: row.original.owner.role,
+    //   };
+    //   return (
+    //     <ProjectsActionsCell
+    //       projectOwner={ownerData}
+    //       currentUser={table.options.meta?.currentUser}
+    //       projectId={row.original.id}
+    //     />
+    //   );
+    // },
   },
 ];
