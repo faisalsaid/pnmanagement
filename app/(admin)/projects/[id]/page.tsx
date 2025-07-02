@@ -21,6 +21,8 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
   const { id } = await params;
   const projectDetail = await getProjectById({ id });
 
+  // console.log(projectDetail);
+
   if (!projectDetail) {
     redirect('/projects');
   }
@@ -60,7 +62,7 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
           </div>
           <div className="p-4 bg-muted rounded-md md:row-span-3 ">
             <ProjectProgress
-              goals={allGoals}
+              goals={projectDetail.goals}
               createdById={projectDetail.createdById}
               projectId={projectDetail.id}
             />

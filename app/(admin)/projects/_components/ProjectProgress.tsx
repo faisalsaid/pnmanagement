@@ -8,21 +8,26 @@ import { useRouter } from 'next/navigation';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
+  // DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  // DialogTrigger,
 } from '@/components/ui/dialog';
 import CreateGoalForm from './CreateGoalForm';
 import { GoalFormValues } from '@/lib/zod';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { createGoal } from '@/actions/projecActions';
+import { Prisma } from '@prisma/client';
 
-interface GoalsItem {
-  title: string;
-  value: number;
-}
+// interface GoalsItem {
+//   title: string;
+//   value: number;
+// }
+
+type GoalsItem = Prisma.GoalGetPayload<true> & {
+  progress: number;
+};
 
 interface ProjectProgressProps {
   goals: GoalsItem[];
@@ -35,7 +40,6 @@ const ProjectProgress = ({
   createdById,
   projectId,
 }: ProjectProgressProps) => {
-  const finishGoals = goals.filter((goal) => goal.value === 100);
   const router = useRouter();
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -55,7 +59,7 @@ const ProjectProgress = ({
 
       const result = await createGoal(formData);
 
-      console.log(result);
+      // console.log(result);
 
       if (result.success) {
         toast.success(`Goal "${data.title}" was successfully created.`);
@@ -77,7 +81,8 @@ const ProjectProgress = ({
         <div className="flex items-center gap-2">
           <h2 className="font-bolds">Progress</h2>
           <div className=" text-primary bg-orange-400/20 border border-orange-500 px-2 rounded-md">
-            {finishGoals.length}/{goals.length} Goals
+            {goals.filter((goal) => goal.progress === 100).length}/
+            {goals.length} Goals
           </div>
         </div>
 
@@ -105,7 +110,7 @@ const ProjectProgress = ({
       <div className="space-y-2.5">
         {goals.length > 0 ? (
           goals.map((goal, i) => (
-            <ProgressCard key={i} value={goal.value} title={goal.title} />
+            <ProgressCard key={i} title={goal.title} progress={goal.progress} />
           ))
         ) : (
           <div>no goals</div>
@@ -119,17 +124,17 @@ export default ProjectProgress;
 
 interface ProgressCardProps {
   title: string;
-  value: number;
+  progress: number;
 }
 
-const ProgressCard = ({ value, title }: ProgressCardProps) => {
+const ProgressCard = ({ title, progress }: ProgressCardProps) => {
   return (
     <div className="space-y-1">
       <div className="text-sm flex items-center justify-between">
         <p>{title}</p>
-        <p>{value}%</p>
+        <p>{progress}%</p>
       </div>
-      <Progress value={value} />
+      <Progress value={progress} />
     </div>
   );
 };

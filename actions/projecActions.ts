@@ -8,6 +8,24 @@ import { CreateProjectSchema, GoalFormSchema } from '@/lib/zod';
 import { MemberRole, Role } from '@prisma/client';
 // import { Role } from '@prisma/client';
 
+export async function validateAdminUser() {
+  const session = await auth();
+  const user = session?.user;
+
+  if (!user?.id) throw new Error('Unauthorized');
+
+  const dbUser = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { role: true },
+  });
+
+  if (!dbUser || dbUser.role === 'USER') {
+    throw new Error('Forbidden: Access denied');
+  }
+
+  return user;
+}
+
 // CREATE Project
 export async function createProject({
   payload,
@@ -217,10 +235,36 @@ export const getProjectById = async ({ id }: GetPorjectById) => {
             name: true,
           },
         },
+        goals: {
+          include: {
+            tasks: true,
+          },
+        },
       },
     });
 
-    return project;
+    if (!project) throw new Error('Project not found');
+
+    // Add progress per goal
+    const goalsWithProgress = project.goals.map((goal) => {
+      const totalTasks = goal.tasks.length;
+      const doneTasks = goal.tasks.filter(
+        (task) => task.status === 'DONE',
+      ).length;
+
+      const progress =
+        totalTasks === 0 ? 0 : Math.round((doneTasks / totalTasks) * 100);
+
+      return {
+        ...goal,
+        progress,
+      };
+    });
+
+    return {
+      ...project,
+      goals: goalsWithProgress,
+    };
   } catch (error) {
     console.error('Error find Project:', error);
     throw new Error(
@@ -391,19 +435,7 @@ export async function removeProjectMember({
 
 export async function createGoal(formData: FormData) {
   // validate user
-  const session = await auth();
-  const user = session?.user;
-
-  if (!user?.id) throw new Error('Unauthorized');
-
-  const dbUser = await prisma.user.findUnique({
-    where: { id: user.id },
-    select: { role: true },
-  });
-
-  if (!dbUser || dbUser.role === 'USER') {
-    throw new Error('Forbidden: Access denied');
-  }
+  await validateAdminUser();
 
   // 1. Parse & validate input
   const raw = Object.fromEntries(formData.entries());
