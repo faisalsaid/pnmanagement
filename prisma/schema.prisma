@@ -17,20 +17,27 @@ model User {
   role          Role @default(USER)
   accounts      Account[]
   sessions      Session[]
+
   // Optional for WebAuthn support
   Authenticator Authenticator[]
   pageVisits PageVisit[]
 
   // relasi articel
-  articles     Article[]      @relation("AuthorArticles")
-  comments     Comment[]
+  articles      Article[]      @relation("AuthorArticles")
+  comments      Comment[]
   uploadedMedia MediaAsset[] 
-  revisions Revision[]  // relasi balik, opsional
+  revisions     Revision[]  // relasi balik, opsional
 
   //relasi project
   createdProjects Project[]    @relation("CreatedProjects")
   teamMemberships TeamMember[]
- 
+
+  // relasi goals 
+  goals         Goal[] @relation("CreatedGoals")
+
+  // relasi task
+  task          Task[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
@@ -271,6 +278,8 @@ model Project {
 
   members     TeamMember[]
 
+  goals       Goal[]
+
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
 }
@@ -290,6 +299,59 @@ model TeamMember {
   joinedAt   DateTime    @default(now())
 
   @@unique([userId, projectId]) 
+}
+
+
+model Goal {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  status      GoalStatus   @default(PENDING) // Enum: PENDING, IN_PROGRESS, COMPLETED
+  dueDate     DateTime?
+
+  project     Project      @relation(fields: [projectId], references: [id])
+  projectId   String
+
+  createdBy   User         @relation("CreatedGoals", fields: [createdById], references: [id])
+  createdById String
+
+  tasks       Task[]       // Relasi ke Task
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+
+model Task {
+  id          String      @id @default(cuid())
+  title       String
+  description String?
+  status      TaskStatus  @default(TODO) // Enum: TODO, IN_PROGRESS, DONE
+  dueDate     DateTime?
+
+  goal        Goal        @relation(fields: [goalId], references: [id])
+  goalId      String
+
+  assignedTo  User?       @relation(fields: [assignedToId], references: [id])
+  assignedToId String?
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  REVIEW
+  DONE
+}
+
+
+enum GoalStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
 }
 
 enum MemberRole {
