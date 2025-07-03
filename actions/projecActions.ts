@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { auth } from '@/auth';
 import prisma from '@/lib/prisma';
-import { CreateProjectSchema, GoalFormSchema } from '@/lib/zod';
+import { CreateProjectSchema, GoalFormSchema, GoalFormValues } from '@/lib/zod';
 import { MemberRole, Role } from '@prisma/client';
 // import { Role } from '@prisma/client';
 
@@ -465,5 +465,38 @@ export async function createGoal(formData: FormData) {
   } catch (err) {
     console.error('Failed to create goal', err);
     return { error: 'Server error. Please try again later.' };
+  }
+}
+
+// UPDATE GOAL
+
+export interface UpdateGoalParams extends GoalFormValues {
+  id: string;
+}
+
+export async function updateGoal(data: UpdateGoalParams) {
+  await validateAdminUser();
+
+  const result = GoalFormSchema.safeParse(data);
+  if (!result.success) {
+    return {
+      success: false,
+      error: 'Invalid input',
+      issues: result.error.flatten(),
+    };
+  }
+
+  const { id, ...goalData } = data;
+
+  try {
+    const updatedGoal = await prisma.goal.update({
+      where: { id },
+      data: goalData,
+    });
+
+    return { success: true, result: updatedGoal };
+  } catch (error) {
+    console.error('Failed to update goal:', error);
+    return { success: false, error: 'Server error. Please try again later.' };
   }
 }

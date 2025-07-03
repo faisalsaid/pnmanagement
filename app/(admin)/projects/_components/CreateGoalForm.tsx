@@ -34,14 +34,18 @@ import { DateTime } from 'luxon';
 interface GoalFormProps {
   projectId: string;
   createdById: string;
+  initialData?: Partial<GoalFormValues>;
   onSubmit: (data: GoalFormValues) => void;
   onClose: () => void;
+  submitLabel?: string;
 }
 const CreateGoalForm = ({
   projectId,
   createdById,
   onSubmit,
   onClose,
+  submitLabel = 'Create',
+  initialData,
 }: GoalFormProps) => {
   const form = useForm<GoalFormValues>({
     resolver: zodResolver(GoalFormSchema),
@@ -52,6 +56,7 @@ const CreateGoalForm = ({
       status: 'PENDING',
       projectId,
       createdById,
+      ...initialData,
     },
   });
 
@@ -86,33 +91,35 @@ const CreateGoalForm = ({
           )}
         />
 
-        {/* <FormField
-          control={form.control}
-          name="status"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Status</FormLabel>
-              <FormControl>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {GoalStatusEnum.options.map((status) => (
-                      <SelectItem key={status} value={status}>
-                        {status}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
+        {submitLabel === 'Update' && (
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Status</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {GoalStatusEnum.options.map((status) => (
+                        <SelectItem key={status} value={status}>
+                          {status}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <FormField
           control={form.control}
@@ -158,7 +165,7 @@ const CreateGoalForm = ({
             Cancel
           </Button>
           <Button className="" type="submit">
-            Create Goal
+            {submitLabel} Goal
           </Button>
         </div>
       </form>

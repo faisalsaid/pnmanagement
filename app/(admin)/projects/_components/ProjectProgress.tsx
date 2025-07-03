@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Plus } from 'lucide-react';
+import { Ellipsis, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import {
@@ -17,8 +17,9 @@ import CreateGoalForm from './CreateGoalForm';
 import { GoalFormValues } from '@/lib/zod';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { createGoal } from '@/actions/projecActions';
+import { createGoal, updateGoal } from '@/actions/projecActions';
 import { Prisma } from '@prisma/client';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 // interface GoalsItem {
 //   title: string;
@@ -107,20 +108,15 @@ const ProjectProgress = ({
           </DialogContent>
         </Dialog>
       </div>
-      <div className="space-y-2.5">
-        <Progress value={10} fullColor />
-        <Progress value={30} fullColor />
-        <Progress value={55} fullColor />
-        <Progress value={80} fullColor />
-        <Progress value={100} fullColor />
-        {goals.length > 0 ? (
-          goals.map((goal, i) => (
-            <ProgressCard key={i} title={goal.title} progress={goal.progress} />
-          ))
-        ) : (
-          <div>no goals</div>
-        )}
-      </div>
+      <ScrollArea className="h-[250px]">
+        <div className="space-y-2.5">
+          {goals.length > 0 ? (
+            goals.map((goal, i) => <GoalCard key={i} goal={goal} />)
+          ) : (
+            <div>no goals</div>
+          )}
+        </div>
+      </ScrollArea>
     </div>
   );
 };
@@ -128,18 +124,68 @@ const ProjectProgress = ({
 export default ProjectProgress;
 
 interface ProgressCardProps {
-  title: string;
-  progress: number;
+  goal: GoalsItem;
 }
 
-const ProgressCard = ({ title, progress }: ProgressCardProps) => {
+const GoalCard = ({ goal }: ProgressCardProps) => {
+  const router = useRouter();
+
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+
+  const handleUpdateGoal = async (data: GoalFormValues) => {
+    try {
+      const result = await updateGoal({ ...data, id: goal.id });
+
+      if (result.success) {
+        toast.success(`Goal "${data.title}" updated successfully.`);
+        router.refresh();
+      } else {
+        toast.error('Goal update failed.');
+      }
+    } catch (error) {
+      toast.error('Unable to update goal.');
+      console.error(error);
+    } finally {
+      setDialogOpen(false);
+    }
+  };
+
   return (
-    <div className="space-y-1">
-      <div className="text-sm flex items-center justify-between">
-        <p>{title}</p>
-        <p>{progress}%</p>
+    <div className="flex gap-2 items-center justify-between">
+      <div className="space-y-1 w-full">
+        <div className="text-sm flex items-center justify-between">
+          <p>{goal.title}</p>
+          <p>{goal.progress}%</p>
+        </div>
+        <Progress value={goal.progress} variant={'high'} />
       </div>
-      <Progress value={progress} variant={'high'} />
+      <div>
+        <Button onClick={() => setDialogOpen(true)} variant={'ghost'}>
+          <Ellipsis />
+        </Button>
+      </div>
+
+      <Dialog open={dialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Update Goal</DialogTitle>
+          </DialogHeader>
+          <div className="max-h-[75svh] ">
+            <CreateGoalForm
+              projectId={goal.projectId}
+              createdById={goal.createdById}
+              initialData={{
+                ...goal,
+                description: goal.description ?? undefined, // convert null to undefined
+                dueDate: goal.dueDate ? new Date(goal.dueDate) : undefined,
+              }}
+              submitLabel="Update"
+              onSubmit={handleUpdateGoal}
+              onClose={() => setDialogOpen(false)}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

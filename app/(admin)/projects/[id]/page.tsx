@@ -21,13 +21,15 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
   const { id } = await params;
   const projectDetail = await getProjectById({ id });
 
-  // console.log(projectDetail);
+  console.log(projectDetail.goals);
 
   if (!projectDetail) {
     redirect('/projects');
   }
   // console.log(projetDetail);
-
+  const sortedGoals = projectDetail.goals.sort((a, b) => {
+    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+  });
   return (
     <div className="bg-primary-foreground rounded-lg p-4 space-y-6">
       <div className="sm:flex sm:flex-row-reverse items-center justify-between space-y-2 gap-4 ">
@@ -62,7 +64,7 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
           </div>
           <div className="p-4 bg-muted rounded-md md:row-span-3 ">
             <ProjectProgress
-              goals={projectDetail.goals}
+              goals={sortedGoals}
               createdById={projectDetail.createdById}
               projectId={projectDetail.id}
             />
