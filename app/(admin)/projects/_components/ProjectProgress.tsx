@@ -20,6 +20,7 @@ import { toast } from 'sonner';
 import { createGoal, updateGoal } from '@/actions/projecActions';
 import { Prisma } from '@prisma/client';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import GoalCard from './GoalCard';
 
 // interface GoalsItem {
 //   title: string;
@@ -44,10 +45,9 @@ const ProjectProgress = ({
   const router = useRouter();
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  const [createLoading, setCreateLoading] = useState<boolean>(false);
+  // const [createLoading, setCreateLoading] = useState<boolean>(false);
 
   const handleSubmit = async (data: GoalFormValues) => {
-    setCreateLoading(true);
     try {
       const formData = new FormData();
 
@@ -72,7 +72,6 @@ const ProjectProgress = ({
       toast.error('Unable to create goal.');
       console.error(error);
     } finally {
-      setCreateLoading(false);
       setDialogOpen(false);
     }
   };
@@ -122,70 +121,3 @@ const ProjectProgress = ({
 };
 
 export default ProjectProgress;
-
-interface ProgressCardProps {
-  goal: GoalsItem;
-}
-
-const GoalCard = ({ goal }: ProgressCardProps) => {
-  const router = useRouter();
-
-  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-
-  const handleUpdateGoal = async (data: GoalFormValues) => {
-    try {
-      const result = await updateGoal({ ...data, id: goal.id });
-
-      if (result.success) {
-        toast.success(`Goal "${data.title}" updated successfully.`);
-        router.refresh();
-      } else {
-        toast.error('Goal update failed.');
-      }
-    } catch (error) {
-      toast.error('Unable to update goal.');
-      console.error(error);
-    } finally {
-      setDialogOpen(false);
-    }
-  };
-
-  return (
-    <div className="flex gap-2 items-center justify-between">
-      <div className="space-y-1 w-full">
-        <div className="text-sm flex items-center justify-between">
-          <p>{goal.title}</p>
-          <p>{goal.progress}%</p>
-        </div>
-        <Progress value={goal.progress} variant={'high'} />
-      </div>
-      <div>
-        <Button onClick={() => setDialogOpen(true)} variant={'ghost'}>
-          <Ellipsis />
-        </Button>
-      </div>
-
-      <Dialog open={dialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Update Goal</DialogTitle>
-          </DialogHeader>
-          <div className="max-h-[75svh] ">
-            <CreateGoalForm
-              projectId={goal.projectId}
-              createdById={goal.createdById}
-              initialData={{
-                ...goal,
-                description: goal.description ?? undefined, // convert null to undefined
-                dueDate: goal.dueDate ? new Date(goal.dueDate) : undefined,
-              }}
-              submitLabel="Update"
-              onSubmit={handleUpdateGoal}
-              onClose={() => setDialogOpen(false)}
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
-    </div>
-  );
-};

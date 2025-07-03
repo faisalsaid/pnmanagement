@@ -500,3 +500,25 @@ export async function updateGoal(data: UpdateGoalParams) {
     return { success: false, error: 'Server error. Please try again later.' };
   }
 }
+
+// DELETE PROJECT GOAL
+
+export async function deleteGoal(id: string) {
+  try {
+    // Pastikan user adalah admin
+    await validateAdminUser();
+
+    // Hapus goal
+    await prisma.goal.delete({
+      where: { id },
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to delete goal:', error);
+    return {
+      success: false,
+      error: 'Failed to delete goal. Please try again later.',
+    };
+  }
+}

@@ -10,18 +10,18 @@ import { redirect } from 'next/navigation';
 
 type Params = Promise<{ id: string }>;
 
-const allGoals = [
-  { title: 'Posting Arcticle Headline', value: 100 },
-  { title: 'Exclusive Interview', value: 100 },
-  { title: 'Podcast Youtube', value: 23 },
-  { title: 'Publish Soccial Media', value: 76 },
-];
+// const allGoals = [
+//   { title: 'Posting Arcticle Headline', value: 100 },
+//   { title: 'Exclusive Interview', value: 100 },
+//   { title: 'Podcast Youtube', value: 23 },
+//   { title: 'Publish Soccial Media', value: 76 },
+// ];
 
 const ProjectDetailsPage = async ({ params }: { params: Params }) => {
   const { id } = await params;
   const projectDetail = await getProjectById({ id });
 
-  console.log(projectDetail.goals);
+  // console.log(projectDetail.goals);
 
   if (!projectDetail) {
     redirect('/projects');
