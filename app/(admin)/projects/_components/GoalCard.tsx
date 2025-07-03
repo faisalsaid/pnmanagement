@@ -47,6 +47,7 @@ const GoalCard = ({ goal }: ProgressCardProps) => {
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
 
   const handleUpdateGoal = async (data: GoalFormValues) => {
     try {
@@ -67,20 +68,23 @@ const GoalCard = ({ goal }: ProgressCardProps) => {
   };
 
   const handleDeleteGoal = async (goalId: string, goalTitle: string) => {
+    // toast.success(goalTitle);
     setLoading(true);
-    toast.success(goalTitle);
-
     try {
       const result = await deleteGoal(goalId);
       if (result.success) {
         toast.success(`Success delete ${goalTitle} goal`);
         router.refresh();
+        setLoading(false);
       }
     } catch (error: any) {
       toast.error('Failed to delete asset');
       console.log(error);
+      setLoading(false);
     }
   };
+
+  if (loading) return <div>loading</div>;
 
   return (
     <div className="flex gap-2 items-center justify-between">
@@ -100,37 +104,41 @@ const GoalCard = ({ goal }: ProgressCardProps) => {
         <Progress value={goal.progress} variant={'high'} />
       </div>
       <div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant={'ghost'}>
-              <Ellipsis />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Setting</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Button
-                className="w-full"
-                size={'sm'}
-                onClick={() => setDialogOpen(true)}
-                variant={'ghost'}
-              >
-                <Pencil /> <span>Update</span>
+        {!loading ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant={'ghost'}>
+                <Ellipsis />
               </Button>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Button
-                size={'sm'}
-                onClick={() => handleDeleteGoal(goal.id, goal.title)}
-                variant={'ghost'}
-                className="text-red-500 hover:text-red-500 w-full"
-              >
-                <Trash2 className="text-red-500" /> <span>Delete</span>
-              </Button>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>Setting</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Button
+                  className="w-full"
+                  size={'sm'}
+                  onClick={() => setDialogOpen(true)}
+                  variant={'ghost'}
+                >
+                  <Pencil /> <span>Update</span>
+                </Button>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Button
+                  size={'sm'}
+                  onClick={() => setConfirmOpen(true)}
+                  variant={'ghost'}
+                  className="text-red-500 hover:text-red-500 w-full"
+                >
+                  <Trash2 className="text-red-500" /> <span>Delete</span>
+                </Button>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <div>loading</div>
+        )}
       </div>
 
       <Dialog open={dialogOpen}>
@@ -154,6 +162,28 @@ const GoalCard = ({ goal }: ProgressCardProps) => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={(open) => {
+          setConfirmOpen(open);
+          // if (!open) setPendingRole(null);
+        }}
+        title={`Do you really want to delete the goal? `}
+        description={
+          <span>
+            The goal <span className="font-bold italic">"{goal.title}"</span>{' '}
+            will be permanently deleted and{' '}
+            <span className="text-red-700 font-bold">cannot be undone!</span> .
+          </span>
+        }
+        confirmLabel="Yes, Delete"
+        cancelLabel="Cancel"
+        onConfirm={() => {
+          handleDeleteGoal(goal.id, goal.title);
+          // setPendingRole(null);
+        }}
+      />
     </div>
   );
 };
