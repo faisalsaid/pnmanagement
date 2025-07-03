@@ -21,7 +21,7 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
   const { id } = await params;
   const projectDetail = await getProjectById({ id });
 
-  // console.log(projectDetail.goals);
+  console.log(projectDetail.members);
 
   if (!projectDetail) {
     redirect('/projects');
@@ -75,7 +75,11 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
         </div>
       </div>
       <div>
-        <ProjectTab />
+        <ProjectTab
+          goals={sortedGoals}
+          projectId={projectDetail.id}
+          projectMembers={projectDetail.members}
+        />
       </div>
     </div>
   );

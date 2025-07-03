@@ -4,7 +4,12 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { auth } from '@/auth';
 import prisma from '@/lib/prisma';
-import { CreateProjectSchema, GoalFormSchema, GoalFormValues } from '@/lib/zod';
+import {
+  CreateProjectSchema,
+  GoalFormSchema,
+  GoalFormValues,
+  TaskFormSchema,
+} from '@/lib/zod';
 import { MemberRole, Role } from '@prisma/client';
 // import { Role } from '@prisma/client';
 
@@ -520,5 +525,96 @@ export async function deleteGoal(id: string) {
       success: false,
       error: 'Failed to delete goal. Please try again later.',
     };
+  }
+}
+
+// CREATE Task
+
+export async function createTask(formData: FormData) {
+  await validateAdminUser();
+
+  const raw = Object.fromEntries(formData.entries());
+  const result = TaskFormSchema.safeParse(raw);
+
+  if (!result.success) {
+    return {
+      success: false,
+      error: 'Invalid input',
+      issues: result.error.flatten(),
+    };
+  }
+
+  const { title, description, status, dueDate, goalId, assignedToId } =
+    result.data;
+
+  try {
+    const task = await prisma.task.create({
+      data: {
+        title,
+        description: description || undefined,
+        status,
+        dueDate: dueDate ? new Date(dueDate) : undefined,
+        goalId,
+        assignedToId: assignedToId || undefined,
+      },
+    });
+
+    return { success: true, result: task };
+  } catch (error) {
+    console.error('Create task error:', error);
+    return { success: false, error: 'Server error' };
+  }
+}
+
+// UPDATE Task
+
+export async function updateTask(id: string, formData: FormData) {
+  await validateAdminUser();
+
+  const raw = Object.fromEntries(formData.entries());
+  const result = TaskFormSchema.safeParse(raw);
+
+  if (!result.success) {
+    return {
+      success: false,
+      error: 'Invalid input',
+      issues: result.error.flatten(),
+    };
+  }
+
+  const { title, description, status, dueDate, goalId, assignedToId } =
+    result.data;
+
+  try {
+    const updated = await prisma.task.update({
+      where: { id },
+      data: {
+        title,
+        description: description || undefined,
+        status,
+        dueDate: dueDate ? new Date(dueDate) : undefined,
+        goalId,
+        assignedToId: assignedToId || undefined,
+      },
+    });
+
+    return { success: true, result: updated };
+  } catch (error) {
+    console.error('Update task error:', error);
+    return { success: false, error: 'Server error' };
+  }
+}
+
+// DELETE Task
+
+export async function deleteTask(id: string) {
+  await validateAdminUser();
+
+  try {
+    await prisma.task.delete({ where: { id } });
+    return { success: true };
+  } catch (error) {
+    console.error('Delete task error:', error);
+    return { success: false, error: 'Failed to delete task' };
   }
 }
