@@ -109,7 +109,7 @@ const GoalCard = ({ goal }: ProgressCardProps) => {
 
           <p>{goal.progress}%</p>
         </div>
-        <Progress value={goal.progress} variant={'high'} />
+        <Progress value={goal.progress} variant={'high'} fullColor />
       </div>
       <div>
         {!loading ? (

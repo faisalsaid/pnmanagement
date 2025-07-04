@@ -27,7 +27,7 @@ function getVariantFromValue(
   value: number | null | undefined,
 ): VariantProps<typeof progressVariants>['variant'] {
   const safeValue = value ?? 0;
-  if (safeValue < 10) return 'empty';
+  if (safeValue < 20) return 'empty';
   if (safeValue < 40) return 'low';
   if (safeValue < 70) return 'moderate';
   if (safeValue < 100) return 'high';
