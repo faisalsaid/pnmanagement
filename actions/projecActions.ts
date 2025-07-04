@@ -9,6 +9,7 @@ import {
   GoalFormSchema,
   GoalFormValues,
   TaskFormSchema,
+  TaskFormValues,
 } from '@/lib/zod';
 import { MemberRole, Role } from '@prisma/client';
 // import { Role } from '@prisma/client';
@@ -530,11 +531,10 @@ export async function deleteGoal(id: string) {
 
 // CREATE Task
 
-export async function createTask(formData: FormData) {
+export async function createTask(formData: TaskFormValues) {
   await validateAdminUser();
 
-  const raw = Object.fromEntries(formData.entries());
-  const result = TaskFormSchema.safeParse(raw);
+  const result = TaskFormSchema.safeParse(formData);
 
   if (!result.success) {
     return {

@@ -21,7 +21,7 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
   const { id } = await params;
   const projectDetail = await getProjectById({ id });
 
-  console.log(projectDetail.members);
+  // console.log(projectDetail.members);
 
   if (!projectDetail) {
     redirect('/projects');
@@ -51,8 +51,8 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
         />
       </div>
       <div className="space-y-6">
-        <div className="grid md:grid-cols-3 md:grid-rows-3 gap-4 max-h-fit">
-          <div className="p-4 bg-muted rounded-md md:col-span-2 ">
+        <div className="grid md:grid-cols-2 md:grid-rows-3 gap-4 max-h-fit">
+          <div className="p-4 bg-muted rounded-md ">
             <ProjectDetailDescription
               description={
                 typeof projectDetail?.description === 'string'
@@ -69,7 +69,7 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
               projectId={projectDetail.id}
             />
           </div>
-          <div className="p-4 bg-muted rounded-md md:col-span-2 md:row-span-2 ">
+          <div className="p-4 bg-muted rounded-md md:row-span-2 ">
             <ProjectDetailsInfo />
           </div>
         </div>

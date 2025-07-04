@@ -15,6 +15,8 @@ import { GoalsItemWithProgress, UserMemberProject } from './ProjectTab';
 import { TaskFormValues } from '@/lib/zod';
 import { useState } from 'react';
 import { Separator } from '@/components/ui/separator';
+import { createTask } from '@/actions/projecActions';
+import { toast } from 'sonner';
 
 interface Props {
   goals: GoalsItemWithProgress[];
@@ -25,8 +27,19 @@ interface Props {
 const ProjectOverview = ({ goals, projectId, projectMember }: Props) => {
   const [openFormDialog, setOpenFormDialog] = useState<boolean>(false);
 
-  const onSubmit = (data: TaskFormValues) => {
-    console.log(data);
+  const onSubmit = async (data: TaskFormValues) => {
+    try {
+      const result = await createTask(data);
+      if (result.success) {
+        toast.success(`Success created ${data.title} task`);
+      } else {
+        toast.error('Fail created task');
+      }
+      setOpenFormDialog(false);
+    } catch (error: any) {
+      toast.error('Fail, something wrong');
+      setOpenFormDialog(false);
+    }
   };
   return (
     <div>
@@ -36,6 +49,7 @@ const ProjectOverview = ({ goals, projectId, projectMember }: Props) => {
           <Button onClick={() => setOpenFormDialog(true)}>
             <Plus /> <span>Create Task</span>
           </Button>
+          {/* TASK FORM DIALOG */}
           <Dialog open={openFormDialog}>
             <DialogContent>
               <DialogHeader>

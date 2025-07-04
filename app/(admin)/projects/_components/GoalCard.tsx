@@ -34,15 +34,16 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import { GoalsItemOnProject } from './ProjectProgress';
+import SircleProgressCard from '@/components/SircleProgressCard';
 
-type GoalsItem = Prisma.GoalGetPayload<true> & {
-  progress: number;
-};
 interface ProgressCardProps {
-  goal: GoalsItem;
+  goal: GoalsItemOnProject;
 }
 
 const GoalCard = ({ goal }: ProgressCardProps) => {
+  // console.log(goal);
+
   const router = useRouter();
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -86,8 +87,15 @@ const GoalCard = ({ goal }: ProgressCardProps) => {
 
   if (loading) return <div>loading</div>;
 
+  const finishTask = goal.tasks.filter((task) => task.status === 'DONE');
+
   return (
     <div className="flex gap-2 items-center justify-between">
+      <SircleProgressCard
+        totalTask={goal.tasks.length}
+        finishTask={finishTask.length}
+      />
+
       <div className="space-y-1 w-full">
         <div className="text-sm flex items-center justify-between">
           <Tooltip>

@@ -27,12 +27,16 @@ import GoalCard from './GoalCard';
 //   value: number;
 // }
 
-type GoalsItem = Prisma.GoalGetPayload<true> & {
+export type GoalsItemOnProject = Prisma.GoalGetPayload<{
+  include: {
+    tasks: true;
+  };
+}> & {
   progress: number;
 };
 
 interface ProjectProgressProps {
-  goals: GoalsItem[];
+  goals: GoalsItemOnProject[];
   projectId: string;
   createdById: string;
 }

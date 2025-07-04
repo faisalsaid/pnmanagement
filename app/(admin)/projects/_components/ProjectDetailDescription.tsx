@@ -74,7 +74,7 @@ const ProjectDetailDescription = ({ description, id }: Props) => {
     }
   }
 
-  console.log('displayDescription', displayDescription);
+  // console.log('displayDescription', displayDescription);
 
   return (
     <div className="text-sm text-muted-foreground">
