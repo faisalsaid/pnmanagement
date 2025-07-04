@@ -78,9 +78,9 @@ const ProjectTeamLists = ({
             image: member.user.image,
           };
           return (
-            <Tooltip>
+            <Tooltip key={member.user.id}>
               <TooltipTrigger>
-                <UserAvatar key={member.user.id} user={user} />
+                <UserAvatar user={user} />
               </TooltipTrigger>
               <TooltipContent>
                 <p>
