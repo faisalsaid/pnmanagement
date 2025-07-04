@@ -19,6 +19,12 @@ import { useState } from 'react';
 // import { toast } from 'sonner';
 import EditProjectMembers from './EditProjectMembers';
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+
 type MemberItem = {
   role: MemberRole;
   user: {
@@ -71,7 +77,18 @@ const ProjectTeamLists = ({
             name: member.user.name,
             image: member.user.image,
           };
-          return <UserAvatar key={member.user.id} user={user} />;
+          return (
+            <Tooltip>
+              <TooltipTrigger>
+                <UserAvatar key={member.user.id} user={user} />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>
+                  {member.role} | {member.user.name}
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          );
         })}
       </div>
       <div>
