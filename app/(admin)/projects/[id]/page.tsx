@@ -95,6 +95,7 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
           goals={sortedGoals}
           projectId={projectDetail.id}
           projectMembers={projectDetail.members}
+          userPermision={isAllowed}
         />
       </div>
     </div>
