@@ -2,14 +2,14 @@
 
 import UserAvatar from '@/components/UserAvatar';
 import { MemberRole, Role } from '@prisma/client';
-import { Plus, Settings } from 'lucide-react';
+import { Settings } from 'lucide-react';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
+  // DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -34,9 +34,15 @@ type Props = {
   members?: MemberItem[];
   projectId: string;
   creatorId: string;
+  userPermision: boolean;
 };
 
-const ProjectTeamLists = ({ members, creatorId, projectId }: Props) => {
+const ProjectTeamLists = ({
+  members,
+  creatorId,
+  projectId,
+  userPermision,
+}: Props) => {
   // console.log('MEMBERS', members);
 
   // console.log(members);
@@ -57,46 +63,48 @@ const ProjectTeamLists = ({ members, creatorId, projectId }: Props) => {
         })}
       </div>
       <div>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <button className="flex items-center gap-1 text-xs border rounded-sm px-2 py-1 bg-background shadow hover:bg-muted hover:cursor-pointer">
-              <Settings size={12} /> <span>Manage</span>
-            </button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Manage project member</DialogTitle>
-            </DialogHeader>
-            <div className="max-h-[75svh]">
-              <Tabs defaultValue="add" className="">
-                <TabsList className="w-full">
-                  <TabsTrigger value="add">Add</TabsTrigger>
-                  <TabsTrigger value="manage">Manage</TabsTrigger>
-                </TabsList>
-                <TabsContent value="add">
-                  <AddProjectMembersForm
-                    projectId={projectId}
-                    excludedUserIds={[creatorId]}
-                    existingMemberIds={memeberId}
-                    open={open}
-                    onSuccess={() => setOpen(false)}
-                  />
-                </TabsContent>
-                <TabsContent value="manage">
-                  {members && members.length > 0 ? (
-                    <EditProjectMembers
-                      members={members}
+        {userPermision && (
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <button className="flex items-center gap-1 text-xs border rounded-sm px-2 py-1 bg-background shadow hover:bg-muted hover:cursor-pointer">
+                <Settings size={12} /> <span>Manage</span>
+              </button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Manage project member</DialogTitle>
+              </DialogHeader>
+              <div className="max-h-[75svh]">
+                <Tabs defaultValue="add" className="">
+                  <TabsList className="w-full">
+                    <TabsTrigger value="add">Add</TabsTrigger>
+                    <TabsTrigger value="manage">Manage</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="add">
+                    <AddProjectMembersForm
                       projectId={projectId}
-                      creatorId={creatorId}
+                      excludedUserIds={[creatorId]}
+                      existingMemberIds={memeberId}
+                      open={open}
+                      onSuccess={() => setOpen(false)}
                     />
-                  ) : (
-                    <div>Empty member</div>
-                  )}
-                </TabsContent>
-              </Tabs>
-            </div>
-          </DialogContent>
-        </Dialog>
+                  </TabsContent>
+                  <TabsContent value="manage">
+                    {members && members.length > 0 ? (
+                      <EditProjectMembers
+                        members={members}
+                        projectId={projectId}
+                        creatorId={creatorId}
+                      />
+                    ) : (
+                      <div>Empty member</div>
+                    )}
+                  </TabsContent>
+                </Tabs>
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
     </div>
   );

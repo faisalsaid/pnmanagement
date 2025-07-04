@@ -1,7 +1,11 @@
 import { Badge } from '@/components/ui/badge';
 import { Flag } from 'lucide-react';
 
-const ProjectDetailsInfo = () => {
+interface Props {
+  userPermision: boolean;
+}
+
+const ProjectDetailsInfo = ({ userPermision }: Props) => {
   return (
     <div className="w-full text-sm space-y-2 text-muted-foreground">
       <div className="flex gap-2 items-center ">

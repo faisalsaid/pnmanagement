@@ -53,7 +53,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         // remove hashPassord before send
         const { hashPassword, ...cleanUser } = user;
-        console.log('authCredentials ==>>', cleanUser);
+        // console.log('authCredentials ==>>', cleanUser);
 
         return cleanUser;
       },

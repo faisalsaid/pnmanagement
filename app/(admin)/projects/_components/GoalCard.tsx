@@ -37,11 +37,12 @@ import ConfirmDialog from '@/components/ConfirmDialog';
 import { GoalsItemOnProject } from './ProjectProgress';
 import SircleProgressCard from '@/components/SircleProgressCard';
 
-interface ProgressCardProps {
+interface Props {
   goal: GoalsItemOnProject;
+  userPermision: boolean;
 }
 
-const GoalCard = ({ goal }: ProgressCardProps) => {
+const GoalCard = ({ goal, userPermision }: Props) => {
   // console.log(goal);
 
   const router = useRouter();
@@ -114,11 +115,14 @@ const GoalCard = ({ goal }: ProgressCardProps) => {
       <div>
         {!loading ? (
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant={'ghost'}>
-                <Ellipsis />
-              </Button>
-            </DropdownMenuTrigger>
+            {userPermision && (
+              <DropdownMenuTrigger asChild>
+                <Button variant={'ghost'}>
+                  <Ellipsis />
+                </Button>
+              </DropdownMenuTrigger>
+            )}
+
             <DropdownMenuContent>
               <DropdownMenuLabel>Setting</DropdownMenuLabel>
               <DropdownMenuSeparator />

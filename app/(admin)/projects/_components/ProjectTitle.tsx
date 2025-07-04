@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Pen } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -15,7 +15,8 @@ import {
 } from '@/components/ui/form';
 import { toast } from 'sonner';
 import { updateProjectSingleFieldById } from '@/actions/projecActions';
-import { getSession } from 'next-auth/react';
+// import { getSession } from 'next-auth/react';
+// import { MemberRole, Prisma, Role } from '@prisma/client';
 
 const FormSchema = z.object({
   title: z.string().min(3, {
@@ -23,29 +24,27 @@ const FormSchema = z.object({
   }),
 });
 
+// export type UserProjectMember = {
+//   role: MemberRole;
+//   user: {
+//     name: string | null;
+//     id: string;
+//     role: Role;
+//     email: string;
+//     image: string | null;
+//   };
+// };
+
 interface Props {
   title: string;
   id: string;
+  // currentUser: UserProjectMember;
+  userPermision: boolean;
 }
 
-const ProjectTitle = ({ title, id }: Props) => {
+const ProjectTitle = ({ title, id, userPermision }: Props) => {
   const [editMode, setEditMode] = useState(false);
   const [displayTitle, setDisplayTitle] = useState(title);
-  const [permission, setPermission] = useState(false);
-
-  useEffect(() => {
-    const fetchSession = async () => {
-      const currentSession = await getSession();
-      if (currentSession?.user) {
-        const isAllowed = ['ADMIN', 'PEMRED', 'REDAKTUR', 'REPORTER'].includes(
-          currentSession.user.role,
-        );
-        setPermission(isAllowed);
-      }
-    };
-
-    fetchSession();
-  }, [id]);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -113,7 +112,7 @@ const ProjectTitle = ({ title, id }: Props) => {
         <h1 className="text-2xl font-semibold">{displayTitle}</h1>
       )}
 
-      {permission && !editMode && (
+      {userPermision && !editMode && (
         <button
           onClick={() => setEditMode(true)}
           className="hover:cursor-pointer bg-green-500 p-1 rounded-full"

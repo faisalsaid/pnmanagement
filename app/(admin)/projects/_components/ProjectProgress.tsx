@@ -35,17 +35,19 @@ export type GoalsItemOnProject = Prisma.GoalGetPayload<{
   progress: number;
 };
 
-interface ProjectProgressProps {
+interface Props {
   goals: GoalsItemOnProject[];
   projectId: string;
   createdById: string;
+  userPermision: boolean;
 }
 
 const ProjectProgress = ({
   goals,
   createdById,
   projectId,
-}: ProjectProgressProps) => {
+  userPermision,
+}: Props) => {
   const router = useRouter();
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -89,10 +91,11 @@ const ProjectProgress = ({
             {goals.length} Goals
           </div>
         </div>
-
-        <Button onClick={() => setDialogOpen(true)} size={'icon'}>
-          <Plus size={18} />
-        </Button>
+        {userPermision && (
+          <Button onClick={() => setDialogOpen(true)} size={'icon'}>
+            <Plus size={18} />
+          </Button>
+        )}
 
         {/* DIALOG CREATE GOAL FORM */}
         <Dialog open={dialogOpen}>
@@ -114,7 +117,9 @@ const ProjectProgress = ({
       <ScrollArea className="h-[250px]">
         <div className="space-y-2.5">
           {goals.length > 0 ? (
-            goals.map((goal, i) => <GoalCard key={i} goal={goal} />)
+            goals.map((goal, i) => (
+              <GoalCard key={i} goal={goal} userPermision={userPermision} />
+            ))
           ) : (
             <div>no goals</div>
           )}

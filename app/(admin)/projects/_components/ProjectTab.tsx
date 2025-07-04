@@ -28,9 +28,15 @@ interface Props {
   goals: GoalsItemWithProgress[];
   projectId: string;
   projectMembers: UserMemberProject[];
+  userPermision: boolean;
 }
 
-const ProjectTab = ({ goals, projectId, projectMembers }: Props) => {
+const ProjectTab = ({
+  goals,
+  projectId,
+  projectMembers,
+  userPermision,
+}: Props) => {
   return (
     <div>
       <Tabs defaultValue="overview">
@@ -45,6 +51,7 @@ const ProjectTab = ({ goals, projectId, projectMembers }: Props) => {
             goals={goals}
             projectId={projectId}
             projectMember={projectMembers}
+            userPermision={userPermision}
           />
         </TabsContent>
         <TabsContent value="board">

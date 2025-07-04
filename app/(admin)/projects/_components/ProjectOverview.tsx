@@ -22,9 +22,15 @@ interface Props {
   goals: GoalsItemWithProgress[];
   projectId: string;
   projectMember: UserMemberProject[];
+  userPermision: boolean;
 }
 
-const ProjectOverview = ({ goals, projectId, projectMember }: Props) => {
+const ProjectOverview = ({
+  goals,
+  projectId,
+  projectMember,
+  userPermision,
+}: Props) => {
   const [openFormDialog, setOpenFormDialog] = useState<boolean>(false);
 
   const onSubmit = async (data: TaskFormValues) => {
@@ -46,9 +52,11 @@ const ProjectOverview = ({ goals, projectId, projectMember }: Props) => {
       <div className="flex gap-4 items-center justify-between">
         <h1>Overview</h1>
         <div>
-          <Button onClick={() => setOpenFormDialog(true)}>
-            <Plus /> <span>Create Task</span>
-          </Button>
+          {userPermision && (
+            <Button onClick={() => setOpenFormDialog(true)}>
+              <Plus /> <span>Create Task</span>
+            </Button>
+          )}
           {/* TASK FORM DIALOG */}
           <Dialog open={openFormDialog}>
             <DialogContent>

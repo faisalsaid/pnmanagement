@@ -3,8 +3,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Pen, Upload } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { useEffect, useMemo, useState } from 'react';
-import { getSession } from 'next-auth/react';
+import { useState } from 'react';
+
 import {
   Form,
   FormControl,
@@ -21,30 +21,21 @@ import { updateProjectSingleFieldById } from '@/actions/projecActions';
 interface Props {
   description?: string;
   id: string;
+  userPermision: boolean;
 }
 
 const FormSchema = z.object({
   description: z.string(),
 });
 
-const ProjectDetailDescription = ({ description, id }: Props) => {
+const ProjectDetailDescription = ({
+  description,
+  id,
+  userPermision,
+}: Props) => {
   const [editMode, setEditMode] = useState(false);
-  const [permission, setPermission] = useState(false);
+
   const [displayDescription, setDisplayDesctiption] = useState(description);
-
-  useEffect(() => {
-    const fetchSession = async () => {
-      const currentSession = await getSession();
-      if (currentSession?.user) {
-        const isAllowed = ['ADMIN', 'PEMRED', 'REDAKTUR', 'REPORTER'].includes(
-          currentSession.user.role,
-        );
-        setPermission(isAllowed);
-      }
-    };
-
-    fetchSession();
-  }, [id]);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -128,7 +119,7 @@ const ProjectDetailDescription = ({ description, id }: Props) => {
         </span>
       )}
 
-      {permission && !editMode && (
+      {userPermision && !editMode && (
         <button
           onClick={() => setEditMode(true)}
           className="hover:cursor-pointer bg-green-500 p-1 rounded-full"
