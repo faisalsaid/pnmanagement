@@ -21,6 +21,7 @@ import { createGoal, updateGoal } from '@/actions/projecActions';
 import { Prisma } from '@prisma/client';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import GoalCard from './GoalCard';
+import { ProjectCurentUser } from './ProjectTeamLists';
 
 // interface GoalsItem {
 //   title: string;
@@ -39,14 +40,14 @@ interface Props {
   goals: GoalsItemOnProject[];
   projectId: string;
   createdById: string;
-  userPermision: boolean;
+  currentUser: ProjectCurentUser;
 }
 
 const ProjectProgress = ({
   goals,
   createdById,
   projectId,
-  userPermision,
+  currentUser,
 }: Props) => {
   const router = useRouter();
 
@@ -91,7 +92,7 @@ const ProjectProgress = ({
             {goals.length} Goals
           </div>
         </div>
-        {userPermision && (
+        {currentUser.permission && (
           <Button onClick={() => setDialogOpen(true)} size={'icon'}>
             <Plus size={18} />
           </Button>
@@ -118,7 +119,7 @@ const ProjectProgress = ({
         <div className="space-y-2.5">
           {goals.length > 0 ? (
             goals.map((goal, i) => (
-              <GoalCard key={i} goal={goal} userPermision={userPermision} />
+              <GoalCard key={i} goal={goal} currentUser={currentUser} />
             ))
           ) : (
             <div>no goals</div>

@@ -17,19 +17,20 @@ import { useState } from 'react';
 import { Separator } from '@/components/ui/separator';
 import { createTask } from '@/actions/projecActions';
 import { toast } from 'sonner';
+import { ProjectCurentUser } from './ProjectTeamLists';
 
 interface Props {
   goals: GoalsItemWithProgress[];
   projectId: string;
   projectMember: UserMemberProject[];
-  userPermision: boolean;
+  currentUser: ProjectCurentUser;
 }
 
 const ProjectOverview = ({
   goals,
   projectId,
   projectMember,
-  userPermision,
+  currentUser,
 }: Props) => {
   const [openFormDialog, setOpenFormDialog] = useState<boolean>(false);
 
@@ -52,7 +53,7 @@ const ProjectOverview = ({
       <div className="flex gap-4 items-center justify-between">
         <h1>Overview</h1>
         <div>
-          {userPermision && (
+          {currentUser.permission && (
             <Button onClick={() => setOpenFormDialog(true)}>
               <Plus /> <span>Create Task</span>
             </Button>

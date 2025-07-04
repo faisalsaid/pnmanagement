@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/form';
 import { toast } from 'sonner';
 import { updateProjectSingleFieldById } from '@/actions/projecActions';
+import { ProjectCurentUser } from './ProjectTeamLists';
 // import { getSession } from 'next-auth/react';
 // import { MemberRole, Prisma, Role } from '@prisma/client';
 
@@ -24,25 +25,13 @@ const FormSchema = z.object({
   }),
 });
 
-// export type UserProjectMember = {
-//   role: MemberRole;
-//   user: {
-//     name: string | null;
-//     id: string;
-//     role: Role;
-//     email: string;
-//     image: string | null;
-//   };
-// };
-
 interface Props {
   title: string;
   id: string;
-  // currentUser: UserProjectMember;
-  userPermision: boolean;
+  currentUser: ProjectCurentUser;
 }
 
-const ProjectTitle = ({ title, id, userPermision }: Props) => {
+const ProjectTitle = ({ title, id, currentUser }: Props) => {
   const [editMode, setEditMode] = useState(false);
   const [displayTitle, setDisplayTitle] = useState(title);
 
@@ -112,7 +101,7 @@ const ProjectTitle = ({ title, id, userPermision }: Props) => {
         <h1 className="text-2xl font-semibold">{displayTitle}</h1>
       )}
 
-      {userPermision && !editMode && (
+      {currentUser.permission && !editMode && (
         <button
           onClick={() => setEditMode(true)}
           className="hover:cursor-pointer bg-green-500 p-1 rounded-full"

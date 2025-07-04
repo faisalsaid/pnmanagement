@@ -17,22 +17,19 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { updateProjectSingleFieldById } from '@/actions/projecActions';
+import { ProjectCurentUser } from './ProjectTeamLists';
 
 interface Props {
   description?: string;
   id: string;
-  userPermision: boolean;
+  currentUser: ProjectCurentUser;
 }
 
 const FormSchema = z.object({
   description: z.string(),
 });
 
-const ProjectDetailDescription = ({
-  description,
-  id,
-  userPermision,
-}: Props) => {
+const ProjectDetailDescription = ({ description, id, currentUser }: Props) => {
   const [editMode, setEditMode] = useState(false);
 
   const [displayDescription, setDisplayDesctiption] = useState(description);
@@ -119,7 +116,7 @@ const ProjectDetailDescription = ({
         </span>
       )}
 
-      {userPermision && !editMode && (
+      {currentUser.permission && !editMode && (
         <button
           onClick={() => setEditMode(true)}
           className="hover:cursor-pointer bg-green-500 p-1 rounded-full"

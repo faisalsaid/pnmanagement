@@ -1,11 +1,12 @@
 import { Badge } from '@/components/ui/badge';
 import { Flag } from 'lucide-react';
+import { ProjectCurentUser } from './ProjectTeamLists';
 
 interface Props {
-  userPermision: boolean;
+  currentUser: ProjectCurentUser;
 }
 
-const ProjectDetailsInfo = ({ userPermision }: Props) => {
+const ProjectDetailsInfo = ({ currentUser }: Props) => {
   return (
     <div className="w-full text-sm space-y-2 text-muted-foreground">
       <div className="flex gap-2 items-center ">

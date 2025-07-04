@@ -36,13 +36,14 @@ import {
 import ConfirmDialog from '@/components/ConfirmDialog';
 import { GoalsItemOnProject } from './ProjectProgress';
 import SircleProgressCard from '@/components/SircleProgressCard';
+import { ProjectCurentUser } from './ProjectTeamLists';
 
 interface Props {
   goal: GoalsItemOnProject;
-  userPermision: boolean;
+  currentUser: ProjectCurentUser;
 }
 
-const GoalCard = ({ goal, userPermision }: Props) => {
+const GoalCard = ({ goal, currentUser }: Props) => {
   // console.log(goal);
 
   const router = useRouter();
@@ -115,7 +116,7 @@ const GoalCard = ({ goal, userPermision }: Props) => {
       <div>
         {!loading ? (
           <DropdownMenu>
-            {userPermision && (
+            {currentUser.permission && (
               <DropdownMenuTrigger asChild>
                 <Button variant={'ghost'}>
                   <Ellipsis />

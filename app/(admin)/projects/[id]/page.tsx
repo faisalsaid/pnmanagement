@@ -22,21 +22,24 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
   const session = await auth();
   const { id } = await params;
   const projectDetail = await getProjectById({ id });
-  const currentUser = projectDetail.members.filter(
+  const member = projectDetail.members.filter(
     (member) => member.user.id === session?.user.id,
   )[0];
 
   if (!projectDetail) {
     redirect('/projects');
   }
-  if (!currentUser) {
+  if (!member) {
     redirect('/projects');
   }
 
   const isAllowed =
     ['ADMIN', 'PEMRED', 'REDAKTUR', 'REPORTER', 'TESTER'].includes(
-      currentUser.user.role,
-    ) && ['OWNER', 'ADMIN'].includes(currentUser.role);
+      member.user.role,
+    ) && ['OWNER', 'ADMIN'].includes(member.role);
+
+  const currentUser = { ...member, permission: isAllowed };
+  // console.log(curentUser);
 
   const sortedGoals = projectDetail.goals.sort((a, b) => {
     return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
@@ -49,7 +52,7 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
             members={projectDetail.members}
             projectId={id}
             creatorId={projectDetail.createdById}
-            userPermision={isAllowed}
+            currentUser={currentUser}
           />
         ) : (
           <MemberListSkeleton />
@@ -61,7 +64,7 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
           }
           id={id}
           // currentUser={currentUser}
-          userPermision={isAllowed}
+          currentUser={currentUser}
         />
       </div>
       <div className="space-y-6">
@@ -74,7 +77,7 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
                   : ''
               }
               id={id}
-              userPermision={isAllowed}
+              currentUser={currentUser}
             />
           </div>
           <div className="p-4 bg-muted rounded-md md:row-span-3 ">
@@ -82,11 +85,11 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
               goals={sortedGoals}
               createdById={projectDetail.createdById}
               projectId={projectDetail.id}
-              userPermision={isAllowed}
+              currentUser={currentUser}
             />
           </div>
           <div className="p-4 bg-muted rounded-md md:row-span-2 ">
-            <ProjectDetailsInfo userPermision={isAllowed} />
+            <ProjectDetailsInfo currentUser={currentUser} />
           </div>
         </div>
       </div>
@@ -95,7 +98,7 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
           goals={sortedGoals}
           projectId={projectDetail.id}
           projectMembers={projectDetail.members}
-          userPermision={isAllowed}
+          currentUser={currentUser}
         />
       </div>
     </div>

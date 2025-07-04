@@ -30,18 +30,30 @@ type MemberItem = {
   };
 };
 
+export type ProjectCurentUser = {
+  permission: boolean;
+  role: MemberRole;
+  user: {
+    id: string;
+    email: string;
+    role: Role;
+    image: string | null;
+    name: string | null;
+  };
+};
+
 type Props = {
   members?: MemberItem[];
   projectId: string;
   creatorId: string;
-  userPermision: boolean;
+  currentUser: ProjectCurentUser;
 };
 
 const ProjectTeamLists = ({
   members,
   creatorId,
   projectId,
-  userPermision,
+  currentUser,
 }: Props) => {
   // console.log('MEMBERS', members);
 
@@ -63,7 +75,7 @@ const ProjectTeamLists = ({
         })}
       </div>
       <div>
-        {userPermision && (
+        {currentUser.permission && (
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <button className="flex items-center gap-1 text-xs border rounded-sm px-2 py-1 bg-background shadow hover:bg-muted hover:cursor-pointer">

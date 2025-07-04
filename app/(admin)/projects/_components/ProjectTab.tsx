@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ProjectKanbanBoard from './ProjectKanbanBoard';
 import ProjectOverview from './ProjectOverview';
 import { Prisma } from '@prisma/client';
+import { ProjectCurentUser } from './ProjectTeamLists';
 
 export type GoalsItemWithProgress = Prisma.GoalGetPayload<true> & {
   progress: number;
@@ -28,14 +29,14 @@ interface Props {
   goals: GoalsItemWithProgress[];
   projectId: string;
   projectMembers: UserMemberProject[];
-  userPermision: boolean;
+  currentUser: ProjectCurentUser;
 }
 
 const ProjectTab = ({
   goals,
   projectId,
   projectMembers,
-  userPermision,
+  currentUser,
 }: Props) => {
   return (
     <div>
@@ -51,7 +52,7 @@ const ProjectTab = ({
             goals={goals}
             projectId={projectId}
             projectMember={projectMembers}
-            userPermision={userPermision}
+            currentUser={currentUser}
           />
         </TabsContent>
         <TabsContent value="board">
