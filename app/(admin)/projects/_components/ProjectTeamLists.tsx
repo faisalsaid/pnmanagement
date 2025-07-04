@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/dialog';
 import AddProjectMembersForm from './AddProjectMembersForm';
 import { useState } from 'react';
-import { toast } from 'sonner';
+// import { toast } from 'sonner';
 import EditProjectMembers from './EditProjectMembers';
 
 type MemberItem = {

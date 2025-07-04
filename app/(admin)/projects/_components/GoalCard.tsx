@@ -76,11 +76,11 @@ const GoalCard = ({ goal }: ProgressCardProps) => {
       if (result.success) {
         toast.success(`Success delete ${goalTitle} goal`);
         router.refresh();
-        setLoading(false);
       }
     } catch (error: any) {
       toast.error('Failed to delete asset');
       console.log(error);
+    } finally {
       setLoading(false);
     }
   };

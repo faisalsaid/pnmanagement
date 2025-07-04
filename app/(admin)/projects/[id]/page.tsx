@@ -7,6 +7,7 @@ import ProjectTitle from '../_components/ProjectTitle';
 import ProjectDetailDescription from '../_components/ProjectDetailDescription';
 import { Skeleton } from '@/components/ui/skeleton';
 import { redirect } from 'next/navigation';
+import { auth } from '@/auth';
 
 type Params = Promise<{ id: string }>;
 
@@ -18,8 +19,16 @@ type Params = Promise<{ id: string }>;
 // ];
 
 const ProjectDetailsPage = async ({ params }: { params: Params }) => {
+  const session = await auth();
   const { id } = await params;
   const projectDetail = await getProjectById({ id });
+  const curentUser = session?.user;
+  const member = projectDetail.members;
+  const isMember = member.some((m) => m.user.id === curentUser?.id);
+
+  if (!isMember) {
+    redirect('/projects');
+  }
 
   // console.log(projectDetail.members);
 

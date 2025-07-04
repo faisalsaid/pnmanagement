@@ -125,6 +125,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         { prefix: '/posts', roles: roleRedaksi },
         { prefix: '/asset', roles: roleRedaksi },
         { prefix: '/profile', roles: roleRedaksi },
+        { prefix: '/projects', roles: roleRedaksi },
       ];
 
       const blockedWhenLoggedIn = ['/auth'];
