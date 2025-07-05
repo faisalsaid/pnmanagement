@@ -71,15 +71,7 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
         <div className="space-y-6">
           <div className="grid md:grid-cols-2 md:grid-rows-3 gap-4 max-h-fit">
             <div className="p-4 bg-muted rounded-md ">
-              <ProjectDetailDescription
-                description={
-                  typeof projectDetail?.description === 'string'
-                    ? projectDetail.description
-                    : ''
-                }
-                id={id}
-                currentUser={currentUser}
-              />
+              <ProjectDetailDescription />
             </div>
             <div className="p-4 bg-muted rounded-md md:row-span-3 ">
               <ProjectProgress

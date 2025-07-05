@@ -17,22 +17,21 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { updateProjectSingleFieldById } from '@/actions/projecActions';
-import { ProjectCurentUser } from './ProjectTeamLists';
-
-interface Props {
-  description?: string;
-  id: string;
-  currentUser: ProjectCurentUser;
-}
+import { useProjectDetails } from '../[id]/context/ProjectDetailContex';
 
 const FormSchema = z.object({
   description: z.string(),
 });
 
-const ProjectDetailDescription = ({ description, id, currentUser }: Props) => {
+const ProjectDetailDescription = () => {
+  const { currentProjectMember, projectDetail } = useProjectDetails();
+  const { description, id } = projectDetail;
+
   const [editMode, setEditMode] = useState(false);
 
-  const [displayDescription, setDisplayDesctiption] = useState(description);
+  const [displayDescription, setDisplayDesctiption] = useState(
+    description as string,
+  );
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -61,8 +60,6 @@ const ProjectDetailDescription = ({ description, id, currentUser }: Props) => {
       console.error('onSubmit error:', error);
     }
   }
-
-  // console.log('displayDescription', displayDescription);
 
   return (
     <div className="text-sm text-muted-foreground">
@@ -116,7 +113,7 @@ const ProjectDetailDescription = ({ description, id, currentUser }: Props) => {
         </span>
       )}
 
-      {currentUser.permission && !editMode && (
+      {currentProjectMember.permission && !editMode && (
         <button
           onClick={() => setEditMode(true)}
           className="hover:cursor-pointer bg-green-500 p-1 rounded-full"
