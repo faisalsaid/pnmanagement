@@ -20,9 +20,16 @@ type Params = Promise<{ id: string }>;
 // ];
 
 const ProjectDetailsPage = async ({ params }: { params: Params }) => {
+  // get session
   const session = await auth();
+
+  // get projectId form url params
   const { id } = await params;
+
+  // fetch porject detail by project id
   const projectDetail = await getProjectById({ id });
+
+  // filter list members match session curent user to setup permission
   const member = projectDetail.members.filter(
     (member) => member.user.id === session?.user.id,
   )[0];
@@ -34,13 +41,14 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
     redirect('/projects');
   }
 
+  // settup permision by user role and member role
   const isAllowed =
     ['ADMIN', 'PEMRED', 'REDAKTUR', 'REPORTER', 'TESTER'].includes(
       member.user.role,
     ) && ['OWNER', 'ADMIN'].includes(member.role);
 
+  // set curentuser access project detail
   const currentUser = { ...member, permission: isAllowed };
-  // console.log(curentUser);
 
   const sortedGoals = projectDetail.goals.sort((a, b) => {
     return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
@@ -58,14 +66,7 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
             <MemberListSkeleton />
           )}
 
-          <ProjectTitle
-            title={
-              typeof projectDetail?.name === 'string' ? projectDetail?.name : ''
-            }
-            id={id}
-            // currentUser={currentUser}
-            currentUser={currentUser}
-          />
+          <ProjectTitle />
         </div>
         <div className="space-y-6">
           <div className="grid md:grid-cols-2 md:grid-rows-3 gap-4 max-h-fit">

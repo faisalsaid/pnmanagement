@@ -15,9 +15,8 @@ import {
 } from '@/components/ui/form';
 import { toast } from 'sonner';
 import { updateProjectSingleFieldById } from '@/actions/projecActions';
-import { ProjectCurentUser } from './ProjectTeamLists';
-// import { getSession } from 'next-auth/react';
-// import { MemberRole, Prisma, Role } from '@prisma/client';
+
+import { useProjectDetails } from '../[id]/context/ProjectDetailContex';
 
 const FormSchema = z.object({
   title: z.string().min(3, {
@@ -25,15 +24,12 @@ const FormSchema = z.object({
   }),
 });
 
-interface Props {
-  title: string;
-  id: string;
-  currentUser: ProjectCurentUser;
-}
+const ProjectTitle = () => {
+  const { currentProjectMember, projectDetail } = useProjectDetails();
+  const { name, id } = projectDetail;
 
-const ProjectTitle = ({ title, id, currentUser }: Props) => {
   const [editMode, setEditMode] = useState(false);
-  const [displayTitle, setDisplayTitle] = useState(title);
+  const [displayTitle, setDisplayTitle] = useState(name);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -45,7 +41,7 @@ const ProjectTitle = ({ title, id, currentUser }: Props) => {
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     // handle if project name never change
     const payloadName = data.title.trim();
-    if (title === payloadName) {
+    if (projectDetail.name === payloadName) {
       setEditMode(false);
       return;
     }
@@ -101,7 +97,7 @@ const ProjectTitle = ({ title, id, currentUser }: Props) => {
         <h1 className="text-2xl font-semibold">{displayTitle}</h1>
       )}
 
-      {currentUser.permission && !editMode && (
+      {currentProjectMember.permission && !editMode && (
         <button
           onClick={() => setEditMode(true)}
           className="hover:cursor-pointer bg-green-500 p-1 rounded-full"
