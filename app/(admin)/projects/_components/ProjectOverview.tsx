@@ -19,6 +19,7 @@ import { toast } from 'sonner';
 
 // icons
 import { Plus } from 'lucide-react';
+import AllTaskByProject from './AllTaskByProject';
 
 const ProjectOverview = () => {
   const { currentProjectMember } = useProjectDetails();
@@ -70,6 +71,10 @@ const ProjectOverview = () => {
             </DialogContent>
           </Dialog>
         </div>
+      </div>
+
+      <div>
+        <AllTaskByProject />
       </div>
     </div>
   );

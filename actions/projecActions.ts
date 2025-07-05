@@ -618,3 +618,27 @@ export async function deleteTask(id: string) {
     return { success: false, error: 'Failed to delete task' };
   }
 }
+
+export const getTasksByProjectId = async (projectId: string) => {
+  try {
+    const tasks = await prisma.task.findMany({
+      where: {
+        goal: {
+          projectId,
+        },
+      },
+      include: {
+        goal: true,
+        assignedTo: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return tasks;
+  } catch (error) {
+    console.error('Failed to fetch tasks by projectId:', error);
+    return [];
+  }
+};
