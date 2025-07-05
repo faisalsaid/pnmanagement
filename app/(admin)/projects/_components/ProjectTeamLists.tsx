@@ -46,7 +46,9 @@ const ProjectTeamLists = () => {
           };
           return (
             <Tooltip key={member.user.id}>
-              <TooltipTrigger>
+              <TooltipTrigger
+                className={`transition-all duration-500 ease-in-out`}
+              >
                 <UserAvatar user={user} />
               </TooltipTrigger>
               <TooltipContent>

@@ -628,8 +628,23 @@ export const getTasksByProjectId = async (projectId: string) => {
         },
       },
       include: {
-        goal: true,
-        assignedTo: true,
+        goal: {
+          select: {
+            title: true,
+          },
+        },
+        assignedTo: {
+          include: {
+            teamMemberships: {
+              where: {
+                projectId: projectId,
+              },
+              select: {
+                role: true,
+              },
+            },
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',

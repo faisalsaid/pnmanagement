@@ -1,18 +1,54 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useProjectDetails } from '../[id]/context/ProjectDetailContex';
+import { TaskColumns } from './table/TasksColumns';
+import { DataTable } from './table/TasksProjectTable';
+import { getTasksByProjectId } from '@/actions/projecActions';
+import { Prisma } from '@prisma/client';
+
+export type TaskItem = Prisma.TaskGetPayload<{
+  include: {
+    goal: {
+      select: {
+        title: true;
+      };
+    };
+    assignedTo: {
+      include: {
+        teamMemberships: {
+          select: {
+            role: true;
+          };
+        };
+      };
+    };
+  };
+}>;
 
 const AllTaskByProject = () => {
-  // get project detail to get id
   const { projectDetail } = useProjectDetails();
-
-  //   fetch all task
-
+  const [tasks, setTasks] = useState<TaskItem[]>();
   useEffect(() => {
-    console.log(projectDetail.id);
+    const fetchTask = async () => {
+      const result = await getTasksByProjectId(projectDetail.id);
+      setTasks(result);
+    };
+
+    fetchTask();
   }, [projectDetail.id]);
-  return <div>AllTaskByProject</div>;
+
+  console.log(tasks);
+
+  return (
+    <div className="container mx-auto py-10">
+      {tasks ? (
+        <DataTable columns={TaskColumns} data={tasks} />
+      ) : (
+        <div>Loading...</div>
+      )}
+    </div>
+  );
 };
 
 export default AllTaskByProject;

@@ -3,11 +3,11 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { transformNameToInitials } from '@/lib/helper/formatAvatarName';
 
-interface User {
+type User = {
   id: string;
   name: string | null;
   image: string | null;
-}
+};
 
 interface Props {
   user: User;
