@@ -12,7 +12,7 @@ const progressVariants = cva('h-full w-full flex-1 transition-all', {
       default: 'bg-primary',
       empty: 'bg-red-600',
       low: 'bg-orange-400',
-      moderate: 'bg-yellow-300',
+      moderate: 'bg-yellow-400',
       high: 'bg-green-500',
       full: 'bg-green-600',
     },

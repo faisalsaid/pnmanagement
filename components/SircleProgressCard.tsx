@@ -9,7 +9,7 @@ const SircleProgressCard = ({ totalTask = 0, finishTask = 0 }: Props) => {
   const percentage = (finishTask / totalTask) * 100;
 
   return (
-    <div className="rounded-sm bg-primary-foreground  ">
+    <div className="">
       <ProgressCircle
         size="medium"
         percentage={percentage}
@@ -58,14 +58,18 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({
     circumference - (safePercentage / 100) * circumference;
 
   // 🎨 Warna berdasarkan persentase
-  let strokeColor = 'red'; // merah (default)
-  if (safePercentage > 90) strokeColor = 'ligh-green'; // hijau
-  else if (safePercentage > 60) strokeColor = '#3b82f6'; // biru
-  else if (safePercentage > 30) strokeColor = '#f97316'; // oranye
+  let strokeColor = '#00a63e'; // green (default)
+  if (safePercentage < 20) strokeColor = '#e7000b'; // bg-red-600
+  else if (safePercentage < 40) strokeColor = '#ff8904'; // bg-orange-400
+  else if (safePercentage < 70) strokeColor = '#fcc800'; // bg-yellow-400
+  else if (safePercentage < 100) strokeColor = '#00c951'; // ligh green
 
   return (
-    <div className="relative  " style={{ width: pixelSize, height: pixelSize }}>
-      <svg className="rotate-[-90deg]" width={pixelSize} height={pixelSize}>
+    <div
+      className="relative   "
+      style={{ width: pixelSize, height: pixelSize }}
+    >
+      <svg className="rotate-[-90deg] " width={pixelSize} height={pixelSize}>
         <circle
           cx={pixelSize / 2}
           cy={pixelSize / 2}
