@@ -82,7 +82,7 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
               />
             </div>
             <div className="p-4 bg-muted rounded-md md:row-span-2 ">
-              <ProjectDetailsInfo currentUser={currentUser} />
+              <ProjectDetailsInfo />
             </div>
           </div>
         </div>
