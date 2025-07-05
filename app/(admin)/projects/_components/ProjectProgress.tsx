@@ -1,28 +1,26 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Ellipsis, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useProjectDetails } from '../[id]/context/ProjectDetailContex';
+import { createGoal } from '@/actions/projecActions';
+import { GoalFormValues } from '@/lib/zod';
 
+// components
 import {
   Dialog,
   DialogContent,
-  // DialogDescription,
   DialogHeader,
   DialogTitle,
-  // DialogTrigger,
 } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import CreateGoalForm from './CreateGoalForm';
-import { GoalFormValues } from '@/lib/zod';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { createGoal } from '@/actions/projecActions';
-import { Prisma } from '@prisma/client';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import GoalCard from './GoalCard';
 
-import { useProjectDetails } from '../[id]/context/ProjectDetailContex';
+// icons
+import { Plus } from 'lucide-react';
 
 const ProjectProgress = () => {
   const { currentProjectMember, projectDetail } = useProjectDetails();
@@ -33,10 +31,7 @@ const ProjectProgress = () => {
     return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
   });
 
-  // console.log(sortedGoals);
-
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  // const [createLoading, setCreateLoading] = useState<boolean>(false);
 
   const handleSubmit = async (data: GoalFormValues) => {
     try {

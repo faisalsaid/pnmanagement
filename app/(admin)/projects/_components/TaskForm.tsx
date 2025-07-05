@@ -3,10 +3,11 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TaskFormSchema, TaskFormValues } from '@/lib/zod';
-import { useEffect, useState } from 'react';
-import { Prisma } from '@prisma/client';
-import { GoalsItemWithProgress, UserMemberProject } from './ProjectTab';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
+import { useProjectDetails } from '../[id]/context/ProjectDetailContex';
 
+// components
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import {
@@ -16,6 +17,7 @@ import {
   FormMessage,
   FormControl,
   FormLabel,
+  FormDescription,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -26,12 +28,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-
-import { format } from 'date-fns';
-import { Calendar as CalendarIcon } from 'lucide-react';
-
-import { cn } from '@/lib/utils';
-
 import { Calendar } from '@/components/ui/calendar';
 import {
   Popover,
@@ -40,21 +36,18 @@ import {
 } from '@/components/ui/popover';
 import UserAvatar from '@/components/UserAvatar';
 
+// icons
+import { Calendar as CalendarIcon } from 'lucide-react';
+
 type TaskFormProps = {
-  projectId: string;
   onSubmit: (data: TaskFormValues) => void;
   onCancel: () => void;
-  goals: GoalsItemWithProgress[];
-  projectMember: UserMemberProject[];
 
   initialData?: Partial<TaskFormValues>;
   submitLabel?: string;
 };
 
 export const TaskForm = ({
-  projectId,
-  goals,
-  projectMember,
   onSubmit,
   onCancel,
   initialData,
@@ -72,12 +65,13 @@ export const TaskForm = ({
       ...initialData,
     },
   });
+  const { projectDetail } = useProjectDetails();
 
-  const {
-    // register,
-    handleSubmit,
-    formState: { errors },
-  } = form;
+  const sortedGoals = projectDetail.goals.sort((a, b) => {
+    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+  });
+
+  const { handleSubmit } = form;
 
   const goalId = form.watch('goalId');
   const isDisabled = !goalId;
@@ -98,13 +92,18 @@ export const TaskForm = ({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {goals.map((goal) => (
+                  {sortedGoals.map((goal) => (
                     <SelectItem key={goal.id} value={goal.id}>
                       {goal.title}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+              {!field.value && (
+                <FormDescription className="text-xs">
+                  Select a goal before assigning a task.
+                </FormDescription>
+              )}
               <FormMessage />
             </FormItem>
           )}
@@ -239,7 +238,7 @@ export const TaskForm = ({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {projectMember.map((member) => (
+                    {projectDetail.members.map((member) => (
                       <SelectItem key={member.user.id} value={member.user.id}>
                         <div className="flex gap-4 items-center">
                           <UserAvatar user={member.user} size={18} />
@@ -271,7 +270,9 @@ export const TaskForm = ({
             Cancel
           </Button>
           <Button
-            className="bg-green-400 text-green-950 hover:bg-green-300"
+            className={`bg-green-400 text-green-950 hover:bg-green-300 ${
+              isDisabled ? 'bg-muted' : ''
+            }`}
             disabled={isDisabled}
             type="submit"
           >

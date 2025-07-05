@@ -1,38 +1,27 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Plus, X } from 'lucide-react';
+import { useState } from 'react';
+import { useProjectDetails } from '../[id]/context/ProjectDetailContex';
+import { createTask } from '@/actions/projecActions';
+import { TaskFormValues } from '@/lib/zod';
 
+// components
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { TaskForm } from './TaskForm';
-import { GoalsItemWithProgress, UserMemberProject } from './ProjectTab';
-import { TaskFormValues } from '@/lib/zod';
-import { useState } from 'react';
 import { Separator } from '@/components/ui/separator';
-import { createTask } from '@/actions/projecActions';
 import { toast } from 'sonner';
-import { ProjectCurentUser } from './ProjectTeamLists';
 
-interface Props {
-  goals: GoalsItemWithProgress[];
-  projectId: string;
-  projectMember: UserMemberProject[];
-  currentUser: ProjectCurentUser;
-}
+// icons
+import { Plus } from 'lucide-react';
 
-const ProjectOverview = ({
-  goals,
-  projectId,
-  projectMember,
-  currentUser,
-}: Props) => {
+const ProjectOverview = () => {
+  const { currentProjectMember } = useProjectDetails();
   const [openFormDialog, setOpenFormDialog] = useState<boolean>(false);
 
   const onSubmit = async (data: TaskFormValues) => {
@@ -54,7 +43,7 @@ const ProjectOverview = ({
       <div className="flex gap-4 items-center justify-between">
         <h1>Overview</h1>
         <div>
-          {currentUser.permission && (
+          {currentProjectMember.permission && (
             <Button onClick={() => setOpenFormDialog(true)}>
               <Plus /> <span>Create Task</span>
             </Button>
@@ -74,9 +63,6 @@ const ProjectOverview = ({
               <Separator />
               <div>
                 <TaskForm
-                  goals={goals}
-                  projectId={projectId}
-                  projectMember={projectMember}
                   onCancel={() => setOpenFormDialog(false)}
                   onSubmit={onSubmit}
                 />

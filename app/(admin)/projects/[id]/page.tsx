@@ -12,13 +12,6 @@ import { ProjectDetailProvider } from './context/ProjectDetailContex';
 
 type Params = Promise<{ id: string }>;
 
-// const allGoals = [
-//   { title: 'Posting Arcticle Headline', value: 100 },
-//   { title: 'Exclusive Interview', value: 100 },
-//   { title: 'Podcast Youtube', value: 23 },
-//   { title: 'Publish Soccial Media', value: 76 },
-// ];
-
 const ProjectDetailsPage = async ({ params }: { params: Params }) => {
   // get session
   const session = await auth();
@@ -50,9 +43,6 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
   // set curentuser access project detail
   const currentUser = { ...member, permission: isAllowed };
 
-  const sortedGoals = projectDetail.goals.sort((a, b) => {
-    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-  });
   return (
     <ProjectDetailProvider
       projectDetail={projectDetail}
@@ -82,12 +72,7 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
           </div>
         </div>
         <div>
-          <ProjectTab
-            goals={sortedGoals}
-            projectId={projectDetail.id}
-            projectMembers={projectDetail.members}
-            currentUser={currentUser}
-          />
+          <ProjectTab />
         </div>
       </div>
     </ProjectDetailProvider>

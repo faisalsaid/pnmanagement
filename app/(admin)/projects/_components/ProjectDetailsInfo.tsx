@@ -1,9 +1,12 @@
 'use client';
 
-import { Badge } from '@/components/ui/badge';
-import { Flag } from 'lucide-react';
-
 import { useProjectDetails } from '../[id]/context/ProjectDetailContex';
+
+// components
+import { Badge } from '@/components/ui/badge';
+
+// icons
+import { Flag } from 'lucide-react';
 
 const ProjectDetailsInfo = () => {
   const { currentProjectMember, projectDetail } = useProjectDetails();

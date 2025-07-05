@@ -1,11 +1,13 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Pen } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { updateProjectSingleFieldById } from '@/actions/projecActions';
+import { useProjectDetails } from '../[id]/context/ProjectDetailContex';
 
+// components
 import {
   Form,
   FormControl,
@@ -13,10 +15,10 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/ui/form';
-import { toast } from 'sonner';
-import { updateProjectSingleFieldById } from '@/actions/projecActions';
 
-import { useProjectDetails } from '../[id]/context/ProjectDetailContex';
+// icons
+import { toast } from 'sonner';
+import { Pen } from 'lucide-react';
 
 const FormSchema = z.object({
   title: z.string().min(3, {
