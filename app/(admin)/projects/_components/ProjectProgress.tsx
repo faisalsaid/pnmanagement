@@ -17,39 +17,23 @@ import CreateGoalForm from './CreateGoalForm';
 import { GoalFormValues } from '@/lib/zod';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { createGoal, updateGoal } from '@/actions/projecActions';
+import { createGoal } from '@/actions/projecActions';
 import { Prisma } from '@prisma/client';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import GoalCard from './GoalCard';
-import { ProjectCurentUser } from './ProjectTeamLists';
 
-// interface GoalsItem {
-//   title: string;
-//   value: number;
-// }
+import { useProjectDetails } from '../[id]/context/ProjectDetailContex';
 
-export type GoalsItemOnProject = Prisma.GoalGetPayload<{
-  include: {
-    tasks: true;
-  };
-}> & {
-  progress: number;
-};
+const ProjectProgress = () => {
+  const { currentProjectMember, projectDetail } = useProjectDetails();
 
-interface Props {
-  goals: GoalsItemOnProject[];
-  projectId: string;
-  createdById: string;
-  currentUser: ProjectCurentUser;
-}
-
-const ProjectProgress = ({
-  goals,
-  createdById,
-  projectId,
-  currentUser,
-}: Props) => {
   const router = useRouter();
+
+  const sortedGoals = projectDetail.goals.sort((a, b) => {
+    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+  });
+
+  // console.log(sortedGoals);
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   // const [createLoading, setCreateLoading] = useState<boolean>(false);
@@ -88,11 +72,11 @@ const ProjectProgress = ({
         <div className="flex items-center gap-2">
           <h2 className="font-bolds">Progress</h2>
           <div className=" text-primary bg-orange-400/20 border border-orange-500 px-2 rounded-md">
-            {goals.filter((goal) => goal.progress === 100).length}/
-            {goals.length} Goals
+            {sortedGoals.filter((goal) => goal.progress === 100).length}/
+            {sortedGoals.length} Goals
           </div>
         </div>
-        {currentUser.permission && (
+        {currentProjectMember.permission && (
           <Button onClick={() => setDialogOpen(true)} size={'icon'}>
             <Plus size={18} />
           </Button>
@@ -106,8 +90,6 @@ const ProjectProgress = ({
             </DialogHeader>
             <div className="max-h-[75svh] ">
               <CreateGoalForm
-                createdById={createdById}
-                projectId={projectId}
                 onSubmit={handleSubmit}
                 onClose={() => setDialogOpen(false)}
               />
@@ -117,9 +99,13 @@ const ProjectProgress = ({
       </div>
       <ScrollArea className="h-[250px]">
         <div className="space-y-2.5">
-          {goals.length > 0 ? (
-            goals.map((goal, i) => (
-              <GoalCard key={i} goal={goal} currentUser={currentUser} />
+          {projectDetail.goals.length > 0 ? (
+            projectDetail.goals.map((goal, i) => (
+              <GoalCard
+                key={i}
+                goal={goal}
+                currentUser={currentProjectMember}
+              />
             ))
           ) : (
             <div>no goals</div>

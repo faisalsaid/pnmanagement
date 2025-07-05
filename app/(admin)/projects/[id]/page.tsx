@@ -74,12 +74,7 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
               <ProjectDetailDescription />
             </div>
             <div className="p-4 bg-muted rounded-md md:row-span-3 ">
-              <ProjectProgress
-                goals={sortedGoals}
-                createdById={projectDetail.createdById}
-                projectId={projectDetail.id}
-                currentUser={currentUser}
-              />
+              <ProjectProgress />
             </div>
             <div className="p-4 bg-muted rounded-md md:row-span-2 ">
               <ProjectDetailsInfo />

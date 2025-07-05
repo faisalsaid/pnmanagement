@@ -31,22 +31,21 @@ import {
 } from '@/components/ui/popover';
 import { DateTime } from 'luxon';
 
+import { useProjectDetails } from '../[id]/context/ProjectDetailContex';
+
 interface GoalFormProps {
-  projectId: string;
-  createdById: string;
   initialData?: Partial<GoalFormValues>;
   onSubmit: (data: GoalFormValues) => void;
   onClose: () => void;
   submitLabel?: string;
 }
 const CreateGoalForm = ({
-  projectId,
-  createdById,
   onSubmit,
   onClose,
   submitLabel = 'Create',
   initialData,
 }: GoalFormProps) => {
+  const { currentProjectMember, projectDetail } = useProjectDetails();
   const form = useForm<GoalFormValues>({
     resolver: zodResolver(GoalFormSchema),
     defaultValues: {
@@ -54,8 +53,8 @@ const CreateGoalForm = ({
       description: '',
       dueDate: undefined,
       status: 'PENDING',
-      projectId,
-      createdById,
+      projectId: projectDetail.id,
+      createdById: currentProjectMember.user.id,
       ...initialData,
     },
   });

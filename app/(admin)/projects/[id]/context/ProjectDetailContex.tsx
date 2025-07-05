@@ -3,7 +3,7 @@
 import { createContext, useContext } from 'react';
 import { Prisma, MemberRole, Role } from '@prisma/client';
 
-type ProjectDetailProps = Prisma.ProjectGetPayload<{
+type ProjectDetailBase = Prisma.ProjectGetPayload<{
   include: {
     members: {
       select: {
@@ -35,6 +35,15 @@ type ProjectDetailProps = Prisma.ProjectGetPayload<{
     };
   };
 }>;
+
+// custom getPojectPaylod add progress: number
+type GoalWithProgress = ProjectDetailBase['goals'][number] & {
+  progress: number;
+};
+
+export type ProjectDetailProps = Omit<ProjectDetailBase, 'goals'> & {
+  goals: GoalWithProgress[];
+};
 
 export type CurrentProjectMember = {
   permission: boolean;
