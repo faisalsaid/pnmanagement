@@ -1,10 +1,11 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -59,7 +60,13 @@ const ProjectOverview = ({
             </Button>
           )}
           {/* TASK FORM DIALOG */}
-          <Dialog open={openFormDialog}>
+          <Dialog
+            open={openFormDialog}
+            onOpenChange={setOpenFormDialog}
+            // modal={true}
+          >
+            {/* modal={true} disabled closed if click out of dialog */}
+            {/* <DialogContent onInteractOutside={(e) => e.preventDefault()}> */}
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Assign new task</DialogTitle>

@@ -74,7 +74,7 @@ export const TaskForm = ({
   });
 
   const {
-    register,
+    // register,
     handleSubmit,
     formState: { errors },
   } = form;
@@ -117,7 +117,7 @@ export const TaskForm = ({
           disabled={isDisabled}
           render={({ field }) => (
             <FormItem>
-              <Label className={`${isDisabled ? 'text-muted-foreground' : ''}`}>
+              <Label className={`${isDisabled ? 'text-muted' : ''}`}>
                 Title
               </Label>
               <FormControl>
@@ -135,7 +135,7 @@ export const TaskForm = ({
           disabled={isDisabled}
           render={({ field }) => (
             <FormItem>
-              <Label className={`${isDisabled ? 'text-muted-foreground' : ''}`}>
+              <Label className={`${isDisabled ? 'text-muted' : ''}`}>
                 Description
               </Label>
               <FormControl>
@@ -179,9 +179,7 @@ export const TaskForm = ({
             name="dueDate"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel
-                  className={`${isDisabled ? 'text-muted-foreground' : ''}`}
-                >
+                <FormLabel className={`${isDisabled ? 'text-muted' : ''}`}>
                   Due Date
                 </FormLabel>
                 <Popover>
@@ -227,9 +225,7 @@ export const TaskForm = ({
             name="assignedToId"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel
-                  className={`${isDisabled ? 'text-muted-foreground' : ''}`}
-                >
+                <FormLabel className={`${isDisabled ? 'text-muted' : ''}`}>
                   Assigned to
                 </FormLabel>
                 <Select
@@ -266,10 +262,19 @@ export const TaskForm = ({
 
         {/* Buttons */}
         <div className="flex items-center justify-end gap-2">
-          <Button type="button" variant="secondary" onClick={onCancel}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={onCancel}
+            className="text-red-500"
+          >
             Cancel
           </Button>
-          <Button disabled={isDisabled} type="submit">
+          <Button
+            className="bg-green-400 text-green-950 hover:bg-green-300"
+            disabled={isDisabled}
+            type="submit"
+          >
             {submitLabel}
           </Button>
         </div>

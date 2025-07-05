@@ -1,77 +1,44 @@
 'use client';
 
+import { useState } from 'react';
+import { useProjectDetails } from '../[id]/context/ProjectDetailContex';
+
+// components
 import UserAvatar from '@/components/UserAvatar';
-import { MemberRole, Role } from '@prisma/client';
-import { Settings } from 'lucide-react';
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-
 import {
   Dialog,
   DialogContent,
-  // DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
 import AddProjectMembersForm from './AddProjectMembersForm';
-import { useState } from 'react';
-// import { toast } from 'sonner';
 import EditProjectMembers from './EditProjectMembers';
-
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 
-type MemberItem = {
-  role: MemberRole;
-  user: {
-    id: string;
-    email: string;
-    role: Role;
-    image: string | null;
-    name: string | null;
-  };
-};
+// icons
+import { Settings } from 'lucide-react';
 
-export type ProjectCurentUser = {
-  permission: boolean;
-  role: MemberRole;
-  user: {
-    id: string;
-    email: string;
-    role: Role;
-    image: string | null;
-    name: string | null;
-  };
-};
-
-type Props = {
-  members?: MemberItem[];
-  projectId: string;
-  creatorId: string;
-  currentUser: ProjectCurentUser;
-};
-
-const ProjectTeamLists = ({
-  members,
-  creatorId,
-  projectId,
-  currentUser,
-}: Props) => {
-  // console.log('MEMBERS', members);
-
-  // console.log(members);
+const ProjectTeamLists = () => {
+  const { currentProjectMember, projectDetail } = useProjectDetails();
 
   const [open, setOpen] = useState(false);
-  const memeberId = members?.map((member) => member.user.id) ?? [];
+  const memeberId =
+    projectDetail.members?.map((member) => member.user.id) ?? [];
+
+  const listMembers = projectDetail.members.filter(
+    (member) => member.user.id !== currentProjectMember.user.id,
+  );
 
   return (
     <div className="flex items-center gap-2 w-fit ml-auto sm:ml-0 ">
       <div className="*:data-[slot=avatar]:ring-background flex hover:space-x-0.5 -space-x-2 *:data-[slot=avatar]:ring-2 ">
-        {members?.map((member) => {
+        {projectDetail.members?.map((member) => {
           const user = {
             id: member.user.id,
             name: member.user.name,
@@ -92,7 +59,7 @@ const ProjectTeamLists = ({
         })}
       </div>
       <div>
-        {currentUser.permission && (
+        {currentProjectMember.permission && (
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <button className="flex items-center gap-1 text-xs border rounded-sm px-2 py-1 bg-background shadow hover:bg-muted hover:cursor-pointer">
@@ -111,19 +78,20 @@ const ProjectTeamLists = ({
                   </TabsList>
                   <TabsContent value="add">
                     <AddProjectMembersForm
-                      projectId={projectId}
-                      excludedUserIds={[creatorId]}
+                      projectId={projectDetail.id}
+                      excludedUserIds={[projectDetail.createdById]}
                       existingMemberIds={memeberId}
                       open={open}
                       onSuccess={() => setOpen(false)}
                     />
                   </TabsContent>
                   <TabsContent value="manage">
-                    {members && members.length > 0 ? (
+                    {projectDetail.members &&
+                    projectDetail.members.length > 0 ? (
                       <EditProjectMembers
-                        members={members}
-                        projectId={projectId}
-                        creatorId={creatorId}
+                        members={listMembers}
+                        projectId={projectDetail.id}
+                        creatorId={projectDetail.id}
                       />
                     ) : (
                       <div>Empty member</div>
