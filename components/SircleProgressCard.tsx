@@ -42,7 +42,6 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({
   size = 'base',
   label,
 }) => {
-  // Validate input first
   const validSizes: Size[] = ['small', 'medium', 'base', 'large', 'extraLarge'];
   const safeSize: Size = validSizes.includes(size) ? size : 'base';
   const pixelSize = sizeMap[safeSize];
@@ -58,21 +57,14 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({
   const strokeDashoffset =
     circumference - (safePercentage / 100) * circumference;
 
-  //   if (isNaN(strokeDashoffset)) {
-  //     console.error('❌ strokeDashoffset NaN:', {
-  //       size,
-  //       pixelSize,
-  //       strokeWidth,
-  //       radius,
-  //       circumference,
-  //       percentage,
-  //       safePercentage,
-  //       strokeDashoffset,
-  //     });
-  //   }
+  // 🎨 Warna berdasarkan persentase
+  let strokeColor = 'red'; // merah (default)
+  if (safePercentage > 90) strokeColor = 'ligh-green'; // hijau
+  else if (safePercentage > 60) strokeColor = '#3b82f6'; // biru
+  else if (safePercentage > 30) strokeColor = '#f97316'; // oranye
 
   return (
-    <div className="relative" style={{ width: pixelSize, height: pixelSize }}>
+    <div className="relative  " style={{ width: pixelSize, height: pixelSize }}>
       <svg className="rotate-[-90deg]" width={pixelSize} height={pixelSize}>
         <circle
           cx={pixelSize / 2}
@@ -86,18 +78,18 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({
           cx={pixelSize / 2}
           cy={pixelSize / 2}
           r={radius}
-          stroke="#3b82f6"
+          stroke={strokeColor}
           strokeWidth={strokeWidth}
           fill="transparent"
           strokeDasharray={circumference.toString()}
-          strokeDashoffset={strokeDashoffset.toString()} // 👈 cast to string!
+          strokeDashoffset={strokeDashoffset.toString()}
           strokeLinecap="round"
           style={{ transition: 'stroke-dashoffset 0.5s ease' }}
         />
       </svg>
 
       <div
-        className={`absolute inset-0 flex items-center justify-center font-bold text-blue-500 ${
+        className={`absolute inset-0 flex items-center justify-center font-bold ${
           size === 'small'
             ? 'text-xs'
             : size === 'medium'
@@ -108,6 +100,7 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({
             ? 'text-2xl'
             : 'text-base'
         }`}
+        style={{ color: strokeColor }}
       >
         {label ?? `${safePercentage}%`}
       </div>

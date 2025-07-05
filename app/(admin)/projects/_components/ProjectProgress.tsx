@@ -96,11 +96,7 @@ const ProjectProgress = () => {
         <div className="space-y-2.5">
           {projectDetail.goals.length > 0 ? (
             projectDetail.goals.map((goal, i) => (
-              <GoalCard
-                key={i}
-                goal={goal}
-                currentUser={currentProjectMember}
-              />
+              <GoalCard key={i} goal={goal} />
             ))
           ) : (
             <div>no goals</div>

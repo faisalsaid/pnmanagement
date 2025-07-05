@@ -1,30 +1,28 @@
 'use client';
 
+import { useProjectDetails } from '../[id]/context/ProjectDetailContex';
+import { GoalFormValues } from '@/lib/zod';
+import { useRouter } from 'next/navigation';
+import { Prisma } from '@prisma/client';
+import { deleteGoal, updateGoal } from '@/actions/projecActions';
+import { useState } from 'react';
+
+// components
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Ellipsis, Pencil, Trash2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-
 import {
   Dialog,
   DialogContent,
-  // DialogDescription,
   DialogHeader,
   DialogTitle,
-  // DialogTrigger,
 } from '@/components/ui/dialog';
 import CreateGoalForm from './CreateGoalForm';
-import { GoalFormValues } from '@/lib/zod';
-import { useState } from 'react';
 import { toast } from 'sonner';
-import { deleteGoal, updateGoal } from '@/actions/projecActions';
-import { Prisma } from '@prisma/client';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,18 +32,27 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import ConfirmDialog from '@/components/ConfirmDialog';
-import { GoalsItemOnProject } from './ProjectProgress';
 import SircleProgressCard from '@/components/SircleProgressCard';
-import { ProjectCurentUser } from './ProjectTeamLists';
+
+// icons
+import { Ellipsis, Pencil, Trash2 } from 'lucide-react';
+
+type GoalItem = Prisma.GoalGetPayload<{
+  include: {
+    tasks: true;
+  };
+}> & {
+  progress: number;
+};
 
 interface Props {
-  goal: GoalsItemOnProject;
-  currentUser: ProjectCurentUser;
+  goal: GoalItem;
 }
 
-const GoalCard = ({ goal, currentUser }: Props) => {
+const GoalCard = ({ goal }: Props) => {
   // console.log(goal);
 
+  const { currentProjectMember } = useProjectDetails();
   const router = useRouter();
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -116,7 +123,7 @@ const GoalCard = ({ goal, currentUser }: Props) => {
       <div>
         {!loading ? (
           <DropdownMenu>
-            {currentUser.permission && (
+            {currentProjectMember.permission && (
               <DropdownMenuTrigger asChild>
                 <Button variant={'ghost'}>
                   <Ellipsis />
@@ -161,8 +168,6 @@ const GoalCard = ({ goal, currentUser }: Props) => {
           </DialogHeader>
           <div className="max-h-[75svh] ">
             <CreateGoalForm
-              projectId={goal.projectId}
-              createdById={goal.createdById}
               initialData={{
                 ...goal,
                 description: goal.description ?? undefined, // convert null to undefined
