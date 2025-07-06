@@ -13,37 +13,62 @@ import { ProjectDetailProvider } from './context/ProjectDetailContex';
 type Params = Promise<{ id: string }>;
 
 const ProjectDetailsPage = async ({ params }: { params: Params }) => {
-  // get session
-  const session = await auth();
-
   // get projectId form url params
   const { id } = await params;
 
   // fetch porject detail by project id
   const projectDetail = await getProjectById({ id });
 
-  // filter list members match session curent user to setup permission
-  const member = projectDetail.members.filter(
-    (member) => member.user.id === session?.user.id,
-  )[0];
+  // console.log(projectDetail);
 
+  // Redirect if project is not found
   if (!projectDetail) {
-    redirect('/projects');
+    return redirect('/projects');
   }
 
-  if (!member) {
-    redirect('/projects');
+  // Get the current session and user
+  const session = await auth();
+
+  // Check if the user is a member of the project
+  const isMember = projectDetail.members.some(
+    (member) => member.user.id === session?.user.id,
+  );
+
+  // Redirect if the user is neither a member nor has ADMIN role
+  if (!isMember && session?.user.role !== 'ADMIN') {
+    return redirect('/projects');
   }
 
-  // settup permision by user role and member role
-  const isAllowed =
-    ['ADMIN', 'PEMRED', 'REDAKTUR', 'REPORTER', 'TESTER'].includes(
-      member.user.role,
-    ) && ['OWNER', 'ADMIN'].includes(member.role);
+  // Get memberRole if user is member
+  const memberRole = isMember
+    ? projectDetail.members.find(
+        (member) => member.user.id === session?.user.id,
+      )?.role
+    : undefined;
 
-  // set curentuser access project detail
-  const currentUser = { ...member, permission: isAllowed };
+  // ✅ Determine if the user has CRUD permissions
+  // Allowed if:
+  // - The user is a project member with one of the roles: ['ADMIN', 'OWNER', 'EDITOR']
+  // - OR the user is not a member but has global ADMIN role
+  const hasCrudAccess =
+    session?.user.role === 'ADMIN' ||
+    projectDetail.members.some(
+      (member) =>
+        member.user.id === session?.user.id &&
+        ['ADMIN', 'OWNER', 'EDITOR'].includes(member.role),
+    );
 
+  // Construct currentUser object
+  const currentUser = {
+    id: session?.user.id,
+    name: session?.user.name,
+    email: session?.user.email,
+    role: session?.user.role,
+    image: session?.user.image,
+    isMember,
+    memberRole,
+    hasCrudAccess,
+  };
   return (
     <ProjectDetailProvider
       projectDetail={projectDetail}
@@ -51,11 +76,7 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
     >
       <div className="bg-primary-foreground rounded-lg p-4 space-y-6">
         <div className="sm:flex sm:flex-row-reverse items-center justify-between space-y-2 gap-4 ">
-          {projectDetail?.createdById ? (
-            <ProjectTeamLists />
-          ) : (
-            <MemberListSkeleton />
-          )}
+          <ProjectTeamLists />
 
           <ProjectTitle />
         </div>

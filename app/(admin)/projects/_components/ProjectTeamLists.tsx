@@ -32,7 +32,7 @@ const ProjectTeamLists = () => {
     projectDetail.members?.map((member) => member.user.id) ?? [];
 
   const listMembers = projectDetail.members.filter(
-    (member) => member.user.id !== currentProjectMember.user.id,
+    (member) => member.role !== 'OWNER',
   );
 
   return (
@@ -61,7 +61,7 @@ const ProjectTeamLists = () => {
         })}
       </div>
       <div>
-        {currentProjectMember.permission && (
+        {currentProjectMember.hasCrudAccess && (
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <button className="flex items-center gap-1 text-xs border rounded-sm px-2 py-1 bg-background shadow hover:bg-muted hover:cursor-pointer">

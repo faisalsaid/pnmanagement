@@ -46,15 +46,14 @@ export type ProjectDetailProps = Omit<ProjectDetailBase, 'goals'> & {
 };
 
 export type CurrentProjectMember = {
-  permission: boolean;
-  role: MemberRole;
-  user: {
-    id: string;
-    email: string;
-    role: Role;
-    image: string | null;
-    name: string | null;
-  };
+  id: string | undefined;
+  name: string | null | undefined;
+  email: string | null | undefined;
+  role: string | undefined;
+  image: string | null | undefined;
+  isMember: boolean;
+  memberRole: MemberRole | undefined;
+  hasCrudAccess: boolean;
 };
 
 type ProjectContextValue = {
