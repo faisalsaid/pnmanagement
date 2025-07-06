@@ -8,7 +8,10 @@ import ProjectDetailDescription from '../_components/ProjectDetailDescription';
 import { Skeleton } from '@/components/ui/skeleton';
 import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
-import { ProjectDetailProvider } from './context/ProjectDetailContex';
+import {
+  CurrentProjectMember,
+  ProjectDetailProvider,
+} from './context/ProjectDetailContex';
 
 type Params = Promise<{ id: string }>;
 
@@ -58,8 +61,18 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
         ['ADMIN', 'OWNER'].includes(member.role),
     );
 
+  if (
+    !session?.user?.id ||
+    !session.user.email ||
+    !session.user.name ||
+    !session.user.role ||
+    !session.user.image
+  ) {
+    return redirect('/projects');
+  }
+
   // Construct currentUser object
-  const currentUser = {
+  const currentUser: CurrentProjectMember = {
     id: session?.user.id,
     name: session?.user.name,
     email: session?.user.email,

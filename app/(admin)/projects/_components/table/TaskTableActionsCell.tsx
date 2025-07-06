@@ -28,12 +28,15 @@ import { TaskItem } from '../AllTaskByProject';
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { deleteTask } from '@/actions/projecActions';
+import { useProjectDetails } from '../../[id]/context/ProjectDetailContex';
 
 const TaskTableActionsCell = ({ task }: { task: TaskItem }) => {
   const router = useRouter();
   const [opeConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
   const [openUpdateDialog, setOpenUpdateDialog] = useState<boolean>(false);
   const [isPending, startTransition] = useTransition();
+
+  const { currentProjectMember } = useProjectDetails();
 
   const handleDelete = () => {
     startTransition(async () => {
@@ -66,13 +69,16 @@ const TaskTableActionsCell = ({ task }: { task: TaskItem }) => {
           >
             Update
           </DropdownMenuItem>
-          <DropdownMenuItem
-            variant="destructive"
-            onClick={() => setOpenConfirmDialog(true)}
-            className="hover:cursor-pointer"
-          >
-            Delete
-          </DropdownMenuItem>
+
+          {currentProjectMember.id && (
+            <DropdownMenuItem
+              variant="destructive"
+              onClick={() => setOpenConfirmDialog(true)}
+              className="hover:cursor-pointer"
+            >
+              Delete
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
 
