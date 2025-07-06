@@ -29,6 +29,11 @@ export type TaskItem = Prisma.TaskGetPayload<{
 const AllTaskByProject = () => {
   const { projectDetail } = useProjectDetails();
   const [tasks, setTasks] = useState<TaskItem[]>();
+
+  //get all tasks count to triger task table
+  const taskCount = projectDetail.goals.flatMap((goal) => goal.tasks).length;
+  // console.log(taskCount);
+
   useEffect(() => {
     const fetchTask = async () => {
       const result = await getTasksByProjectId(projectDetail.id);
@@ -36,7 +41,7 @@ const AllTaskByProject = () => {
     };
 
     fetchTask();
-  }, [projectDetail.id]);
+  }, [projectDetail.id, taskCount]);
 
   console.log(tasks);
 
