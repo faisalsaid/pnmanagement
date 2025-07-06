@@ -115,7 +115,7 @@ const ProjectDetailDescription = () => {
         </span>
       )}
 
-      {currentProjectMember.permission && !editMode && (
+      {currentProjectMember.hasCrudAccess && !editMode && (
         <button
           onClick={() => setEditMode(true)}
           className="hover:cursor-pointer bg-green-500 p-1 rounded-full"
