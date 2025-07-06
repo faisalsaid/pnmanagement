@@ -99,7 +99,7 @@ const ProjectTitle = () => {
         <h1 className="text-2xl font-semibold">{displayTitle}</h1>
       )}
 
-      {currentProjectMember.permission && !editMode && (
+      {currentProjectMember.hasCrudAccess && !editMode && (
         <button
           onClick={() => setEditMode(true)}
           className="hover:cursor-pointer bg-green-500 p-1 rounded-full"
