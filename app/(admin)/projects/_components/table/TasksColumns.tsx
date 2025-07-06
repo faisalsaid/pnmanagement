@@ -2,16 +2,16 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { TaskItem } from '../AllTaskByProject';
-import { Ellipsis, GripHorizontal } from 'lucide-react';
+import { GripHorizontal } from 'lucide-react';
 import UserAvatar from '@/components/UserAvatar';
-import { id } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+import TaskTableActionsCell from './TaskTableActionsCell';
 
 export const TaskColumns: ColumnDef<TaskItem>[] = [
   {
     id: 'sort',
     header: () => <GripHorizontal size={16} />,
-    cell: ({ row }) => <GripHorizontal size={16} />,
+    cell: () => <GripHorizontal size={16} />,
   },
   {
     accessorKey: 'title',
@@ -26,12 +26,6 @@ export const TaskColumns: ColumnDef<TaskItem>[] = [
         ...row.original.assignedTo,
         memberRole: row.original.assignedTo?.teamMemberships[0].role,
       };
-      const userAvatar = {
-        id: user.id,
-        name: user.name,
-        image: user.image,
-      };
-      console.log(user);
 
       if (row.original.assignedTo) {
         return (
@@ -87,10 +81,6 @@ export const TaskColumns: ColumnDef<TaskItem>[] = [
   {
     id: 'action',
     header: 'Actions',
-    cell: ({ row }) => (
-      <div>
-        <Ellipsis size={20} />
-      </div>
-    ),
+    cell: ({ row }) => <TaskTableActionsCell task={row.original} />,
   },
 ];
