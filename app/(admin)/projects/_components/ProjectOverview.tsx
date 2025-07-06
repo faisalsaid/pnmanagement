@@ -44,7 +44,7 @@ const ProjectOverview = () => {
       <div className="flex gap-4 items-center justify-between">
         <h1>Overview</h1>
         <div>
-          {currentProjectMember.permission && (
+          {currentProjectMember.hasCrudAccess && (
             <Button onClick={() => setOpenFormDialog(true)}>
               <Plus /> <span>Create Task</span>
             </Button>

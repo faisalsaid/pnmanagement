@@ -71,10 +71,10 @@ export const TaskForm = ({
   });
 
   useEffect(() => {
-    if (currentProjectMember?.user?.id) {
-      form.setValue('createdById', currentProjectMember.user.id);
+    if (currentProjectMember?.id) {
+      form.setValue('createdById', currentProjectMember.id);
     }
-  }, [currentProjectMember?.user?.id, form]);
+  }, [currentProjectMember?.id, form]);
 
   const sortedGoals = projectDetail.goals.sort((a, b) => {
     return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
