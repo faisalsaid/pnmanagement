@@ -71,7 +71,7 @@ const ProjectProgress = () => {
             {sortedGoals.length} Goals
           </div>
         </div>
-        {currentProjectMember.permission && (
+        {currentProjectMember.hasCrudAccess && (
           <Button onClick={() => setDialogOpen(true)} size={'icon'}>
             <Plus size={18} />
           </Button>

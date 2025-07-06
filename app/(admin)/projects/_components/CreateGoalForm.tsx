@@ -54,7 +54,7 @@ const CreateGoalForm = ({
       dueDate: undefined,
       status: 'PENDING',
       projectId: projectDetail.id,
-      createdById: currentProjectMember.user.id,
+      createdById: currentProjectMember.id,
       ...initialData,
     },
   });

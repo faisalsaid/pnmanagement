@@ -123,7 +123,7 @@ const GoalCard = ({ goal }: Props) => {
       <div>
         {!loading ? (
           <DropdownMenu>
-            {currentProjectMember.permission && (
+            {currentProjectMember.hasCrudAccess && (
               <DropdownMenuTrigger asChild>
                 <Button variant={'ghost'}>
                   <Ellipsis />

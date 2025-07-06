@@ -48,14 +48,14 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
 
   // ✅ Determine if the user has CRUD permissions
   // Allowed if:
-  // - The user is a project member with one of the roles: ['ADMIN', 'OWNER', 'EDITOR']
+  // - The user is a project member with one of the roles: ['ADMIN', 'OWNER']
   // - OR the user is not a member but has global ADMIN role
   const hasCrudAccess =
     session?.user.role === 'ADMIN' ||
     projectDetail.members.some(
       (member) =>
         member.user.id === session?.user.id &&
-        ['ADMIN', 'OWNER', 'EDITOR'].includes(member.role),
+        ['ADMIN', 'OWNER'].includes(member.role),
     );
 
   // Construct currentUser object
