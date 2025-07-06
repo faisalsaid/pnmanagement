@@ -32,6 +32,7 @@ import { deleteTask } from '@/actions/projecActions';
 const TaskTableActionsCell = ({ task }: { task: TaskItem }) => {
   const router = useRouter();
   const [opeConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
+  const [openUpdateDialog, setOpenUpdateDialog] = useState<boolean>(false);
   const [isPending, startTransition] = useTransition();
 
   const handleDelete = () => {
@@ -59,6 +60,12 @@ const TaskTableActionsCell = ({ task }: { task: TaskItem }) => {
             Actions
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onClick={() => setOpenUpdateDialog(true)}
+            className="hover:cursor-pointer"
+          >
+            Update
+          </DropdownMenuItem>
           <DropdownMenuItem
             variant="destructive"
             onClick={() => setOpenConfirmDialog(true)}
@@ -89,6 +96,8 @@ const TaskTableActionsCell = ({ task }: { task: TaskItem }) => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* UPDATE FORM */}
     </div>
   );
 };

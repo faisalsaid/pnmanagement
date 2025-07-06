@@ -181,6 +181,19 @@ export const getAllProjects = async () => {
             },
           },
         },
+        members: {
+          select: {
+            role: true,
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                image: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -576,11 +589,14 @@ export async function createTask(formData: TaskFormValues) {
 
 // UPDATE Task
 
-export async function updateTask(id: string, formData: FormData) {
+// export async function updateTask(id: string, formData: FormData) {
+//   await validateAdminUser();
+
+//   const raw = Object.fromEntries(formData.entries());
+export async function updateTask(id: string, data: typeof TaskFormSchema) {
   await validateAdminUser();
 
-  const raw = Object.fromEntries(formData.entries());
-  const result = TaskFormSchema.safeParse(raw);
+  const result = TaskFormSchema.safeParse(data);
 
   if (!result.success) {
     return {

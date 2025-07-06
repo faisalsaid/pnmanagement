@@ -84,14 +84,14 @@ export const TaskColumns: ColumnDef<TaskItem>[] = [
       return (
         <div
           className={cn(
-            `flex items-center gap-1 text-sm capitalize border px-2 rounded-sm w-fit`,
+            `flex items-center gap-1 text-sm capitalize border px-2 rounded-sm w-fit dark:text-slate-300`,
             status === 'DONE'
-              ? 'bg-green-400/30 border-green-800 text-green-800  '
+              ? 'bg-green-800/20 border-green-800 text-green-800  '
               : status === 'IN_PROGRESS'
-              ? 'bg-yellow-400/30 border-yellow-600 text-yellow-600'
+              ? 'bg-yellow-400/20 border-yellow-600 text-yellow-600'
               : status === 'REVIEW'
-              ? 'bg-purple-400/30 border-purple-600'
-              : 'bg-sky-400/30 border-sky-600 text-sky-600',
+              ? 'bg-purple-400/20 border-purple-600 text-purple-600'
+              : 'bg-sky-400/20 border-sky-600 text-sky-600',
           )}
         >
           {status === 'DONE' ? (

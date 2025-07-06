@@ -10,6 +10,12 @@ import {
 } from '@/components/ui/hover-card';
 import AuthorCard from '@/components/AuthorCard';
 import ProjectsActionsCell from './ProjectsActionsCell';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import UserAvatar from '@/components/UserAvatar';
 
 export type ProjectsTable = Prisma.ProjectGetPayload<{
   select: {
@@ -27,6 +33,19 @@ export type ProjectsTable = Prisma.ProjectGetPayload<{
         articles: {
           select: {
             id: true;
+          };
+        };
+      };
+    };
+    members: {
+      select: {
+        role: true;
+        user: {
+          select: {
+            id: true;
+            name: true;
+            email: true;
+            image: true;
           };
         };
       };
@@ -64,6 +83,39 @@ export const columns: ColumnDef<ProjectsTable>[] = [
         month: 'long',
         year: 'numeric',
       }),
+  },
+  {
+    accessorKey: 'members',
+    header: 'Member',
+    cell: ({ row }) => {
+      const members = row.original.members;
+
+      return (
+        <div className="*:data-[slot=avatar]:ring-background flex hover:space-x-0.5 -space-x-2 *:data-[slot=avatar]:ring-2 ">
+          {members.map((member) => {
+            const user = {
+              id: member.user.id,
+              name: member.user.name,
+              image: member.user.image,
+            };
+            return (
+              <Tooltip key={member.user.id}>
+                <TooltipTrigger
+                  className={`transition-all duration-500 ease-in-out`}
+                >
+                  <UserAvatar user={user} />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>
+                    {member.role} | {member.user.name}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            );
+          })}
+        </div>
+      );
+    },
   },
   {
     id: 'action',

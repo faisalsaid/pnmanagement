@@ -30,6 +30,7 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
   if (!projectDetail) {
     redirect('/projects');
   }
+
   if (!member) {
     redirect('/projects');
   }
