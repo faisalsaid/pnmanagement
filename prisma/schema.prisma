@@ -36,7 +36,8 @@ model User {
   goals         Goal[] @relation("CreatedGoals")
 
   // relasi task
-  task          Task[]
+  createdTasks Task[] @relation("CreatedTasks")
+  assignedTasks Task[] @relation("Task_assignedTo")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -331,8 +332,11 @@ model Task {
   goal        Goal        @relation(fields: [goalId], references: [id])
   goalId      String
 
-  assignedTo  User?       @relation(fields: [assignedToId], references: [id])
-  assignedToId String?
+   createdBy     User       @relation("CreatedTasks", fields: [createdById], references: [id])
+  createdById   String
+
+  assignedTo    User?      @relation("Task_assignedTo",fields: [assignedToId], references: [id])
+  assignedToId  String?
 
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
