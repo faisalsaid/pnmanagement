@@ -5,7 +5,6 @@ import ProjectDetailsInfo from '../_components/ProjectDetailsInfo';
 import ProjectTab from '../_components/ProjectTab';
 import ProjectTitle from '../_components/ProjectTitle';
 import ProjectDetailDescription from '../_components/ProjectDetailDescription';
-import { Skeleton } from '@/components/ui/skeleton';
 import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
 import {
@@ -31,14 +30,20 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
 
   // Get the current session and user
   const session = await auth();
+  const user = session?.user;
+  if (!user?.id || !user?.email || !user?.name || !user?.role) {
+    return redirect('/projects');
+  }
 
   // Check if the user is a member of the project
   const isMember = projectDetail.members.some(
-    (member) => member.user.id === session?.user.id,
+    (member) => member.user.id === user.id,
   );
 
+  const isPrivileged = ['ADMIN', 'PEMRED'].includes(user.role as string);
+
   // Redirect if the user is neither a member nor has ADMIN role
-  if (!isMember && session?.user.role !== 'ADMIN') {
+  if (!isMember && !isPrivileged) {
     return redirect('/projects');
   }
 
@@ -54,34 +59,26 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
   // - The user is a project member with one of the roles: ['ADMIN', 'OWNER']
   // - OR the user is not a member but has global ADMIN role
   const hasCrudAccess =
-    session?.user.role === 'ADMIN' ||
+    isPrivileged ||
     projectDetail.members.some(
       (member) =>
         member.user.id === session?.user.id &&
         ['ADMIN', 'OWNER'].includes(member.role),
     );
 
-  if (
-    !session?.user?.id ||
-    !session.user.email ||
-    !session.user.name ||
-    !session.user.role ||
-    !session.user.image
-  ) {
-    return redirect('/projects');
-  }
-
   // Construct currentUser object
   const currentUser: CurrentProjectMember = {
-    id: session?.user.id,
-    name: session?.user.name,
-    email: session?.user.email,
-    role: session?.user.role,
-    image: session?.user.image,
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    image: user.image as string,
     isMember,
     memberRole,
     hasCrudAccess,
   };
+
+  // return <div>ACCESS ACEPTED</div>;
   return (
     <ProjectDetailProvider
       projectDetail={projectDetail}

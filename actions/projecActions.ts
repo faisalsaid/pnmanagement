@@ -146,7 +146,7 @@ export const getUserToOwnerProject = async () => {
 
 // HENDLE GET ALL PROJECT
 
-export const getAllProjects = async () => {
+export const getAllProjects = async (userId?: string) => {
   try {
     const session = await auth();
     const user = session?.user;
@@ -162,7 +162,18 @@ export const getAllProjects = async () => {
       throw new Error('Forbidden: Access denied');
     }
 
+    const isPrivileged = ['ADMIN', 'PEMERED'].includes(dbUser.role);
+
     const projects = await prisma.project.findMany({
+      where: isPrivileged
+        ? {}
+        : {
+            members: {
+              some: {
+                userId: userId,
+              },
+            },
+          },
       orderBy: { createdAt: 'desc' },
       select: {
         id: true,

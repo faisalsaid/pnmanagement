@@ -15,8 +15,15 @@ const ProjectsPage = async () => {
       }
     : null;
 
-  const allProjects = await getAllProjects();
+  // if user admin or pemred gett all project if note, get porject with user in member project
 
+  const isPrivileged = ['ADMIN', 'PEMRED'].includes(
+    session?.user.role as string,
+  );
+
+  const allProjects = await getAllProjects(
+    isPrivileged ? undefined : session?.user.id,
+  );
   // console.log(allProjects);
 
   return (
