@@ -27,13 +27,7 @@ const AuthorCard = ({ author }: AuthorCardProp) => {
     <div className="space-y-2 p-2">
       <div className="flex items-center justify-between">
         <Avatar className="hover:cursor-pointer">
-          <AvatarImage
-            src={
-              author.image ||
-              'https://avatars.githubusercontent.com/u/61022946?v=4'
-            }
-            alt={'profile'}
-          />
+          <AvatarImage src={author.image || undefined} alt={'profile'} />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
         <Badge variant={'secondary'}>{author.articles.length} article</Badge>

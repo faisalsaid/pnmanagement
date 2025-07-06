@@ -65,7 +65,12 @@ export const columns: ColumnDef<ProjectsTable>[] = [
       const cretor = row.original.createdBy;
       return (
         <HoverCard>
-          <HoverCardTrigger>{cretor?.name ?? cretor.name}</HoverCardTrigger>
+          <HoverCardTrigger>
+            <div className="flex gap-2 items-center">
+              <UserAvatar user={cretor} />
+              <p>{cretor?.name ?? cretor.name}</p>
+            </div>
+          </HoverCardTrigger>
           <HoverCardContent className="p-0">
             <AuthorCard author={cretor} />
           </HoverCardContent>
