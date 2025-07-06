@@ -2,7 +2,7 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { TaskItem } from '../AllTaskByProject';
-import { GripHorizontal } from 'lucide-react';
+import { CircleCheck, Eye, GripHorizontal, List, Loader } from 'lucide-react';
 import UserAvatar from '@/components/UserAvatar';
 import { cn } from '@/lib/utils';
 import TaskTableActionsCell from './TaskTableActionsCell';
@@ -16,7 +16,11 @@ export const TaskColumns: ColumnDef<TaskItem>[] = [
   {
     accessorKey: 'title',
     header: 'Title',
-    cell: ({ row }) => <div className="line-clamp-1">{row.original.title}</div>,
+    cell: ({ row }) => (
+      <div className="line-clamp-1 overflow-hidden text-ellipsis whitespace-nowrap max-w-52 ">
+        {row.original.title}
+      </div>
+    ),
   },
   {
     accessorKey: 'assignedTo',
@@ -41,10 +45,14 @@ export const TaskColumns: ColumnDef<TaskItem>[] = [
               <p>{user.name}</p>
               <p
                 className={cn(
-                  `capitalize text-muted-foreground text-xs border px-1 rounded-sm`,
+                  `capitalize text-muted-foreground text-xs border px-1 rounded-sm dark:text-white`,
                   user.memberRole === 'OWNER'
-                    ? 'bg-amber-500/20  border-amber-500'
-                    : 'bg-sky-500/20 border-sky-500',
+                    ? 'bg-amber-500/20  border-amber-500 text-amber-800'
+                    : user.memberRole === 'ADMIN'
+                    ? 'bg-green-800/30 border-green-800 text-green-800'
+                    : user.memberRole === 'EDITOR'
+                    ? 'bg-sky-500/20 border-sky-500 text-sky-500'
+                    : 'bg-red-500/20 border-red-500 text-rose-800',
                 )}
               >
                 {user.memberRole?.toLocaleLowerCase()}
@@ -61,14 +69,46 @@ export const TaskColumns: ColumnDef<TaskItem>[] = [
     accessorKey: 'goal',
     header: 'Goal',
     cell: ({ row }) => {
-      return <div className="line-clamp-1">{row.original.goal.title}</div>;
+      return (
+        <div className="line-clamp-1 overflow-hidden text-ellipsis whitespace-nowrap max-w-52">
+          {row.original.goal.title}
+        </div>
+      );
     },
   },
   {
     accessorKey: 'status',
-    header: 'Goal',
+    header: 'Status',
     cell: ({ row }) => {
-      return <div>{row.original.status}</div>;
+      const status = row.original.status;
+      return (
+        <div
+          className={cn(
+            `flex items-center gap-1 text-sm capitalize border px-2 rounded-sm w-fit`,
+            status === 'DONE'
+              ? 'bg-green-400/30 border-green-800 text-green-800  '
+              : status === 'IN_PROGRESS'
+              ? 'bg-yellow-400/30 border-yellow-600 text-yellow-600'
+              : status === 'REVIEW'
+              ? 'bg-purple-400/30 border-purple-600'
+              : 'bg-sky-400/30 border-sky-600 text-sky-600',
+          )}
+        >
+          {status === 'DONE' ? (
+            <CircleCheck size={14} />
+          ) : status === 'IN_PROGRESS' ? (
+            <Loader size={14} />
+          ) : status === 'REVIEW' ? (
+            <Eye size={14} />
+          ) : (
+            <List size={14} />
+          )}
+
+          {status === 'IN_PROGRESS'
+            ? 'In Progress'
+            : status.toLocaleLowerCase()}
+        </div>
+      );
     },
   },
   {

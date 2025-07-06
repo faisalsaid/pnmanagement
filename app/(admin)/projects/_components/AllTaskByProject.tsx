@@ -46,7 +46,7 @@ const AllTaskByProject = () => {
   console.log(tasks);
 
   return (
-    <div className="container mx-auto py-10">
+    <div className="mx-auto rounded-xl overflow-hidden mt-2">
       {tasks ? (
         <DataTable columns={TaskColumns} data={tasks} />
       ) : (
