@@ -5,12 +5,13 @@ import { TaskItem } from '../AllTaskByProject';
 import { Ellipsis, GripHorizontal } from 'lucide-react';
 import UserAvatar from '@/components/UserAvatar';
 import { id } from 'date-fns/locale';
+import { cn } from '@/lib/utils';
 
 export const TaskColumns: ColumnDef<TaskItem>[] = [
   {
     id: 'sort',
-    header: () => <GripHorizontal />,
-    cell: ({ row }) => <GripHorizontal />,
+    header: () => <GripHorizontal size={16} />,
+    cell: ({ row }) => <GripHorizontal size={16} />,
   },
   {
     accessorKey: 'title',
@@ -42,10 +43,19 @@ export const TaskColumns: ColumnDef<TaskItem>[] = [
                 name: user.name as string,
               }}
             />
-            <p>{user.name}</p>
-            <p className="capitalize text-muted-foreground">
-              {user.memberRole?.toLocaleLowerCase()}
-            </p>
+            <div className="flex gap-1 items-baseline">
+              <p>{user.name}</p>
+              <p
+                className={cn(
+                  `capitalize text-muted-foreground text-xs border px-1 rounded-sm`,
+                  user.memberRole === 'OWNER'
+                    ? 'bg-amber-500/20  border-amber-500'
+                    : 'bg-sky-500/20 border-sky-500',
+                )}
+              >
+                {user.memberRole?.toLocaleLowerCase()}
+              </p>
+            </div>
           </div>
         );
       } else {
@@ -79,7 +89,7 @@ export const TaskColumns: ColumnDef<TaskItem>[] = [
     header: 'Actions',
     cell: ({ row }) => (
       <div>
-        <Ellipsis />
+        <Ellipsis size={20} />
       </div>
     ),
   },

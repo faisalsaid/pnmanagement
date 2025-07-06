@@ -105,14 +105,14 @@ export const GoalFormSchema = z.object({
 export type GoalFormValues = z.infer<typeof GoalFormSchema>;
 
 // CREATE task
-
 export const TaskFormSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().optional(),
   status: z.enum(['TODO', 'IN_PROGRESS', 'REVIEW', 'DONE']),
   dueDate: z.coerce.date().optional(),
   goalId: z.string().min(1, 'Goal is required'),
-  assignedToId: z.string().optional(),
+  assignedToId: z.string().min(1).optional(),
+  createdById: z.string().min(1),
 });
 
 export type TaskFormValues = z.infer<typeof TaskFormSchema>;

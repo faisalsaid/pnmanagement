@@ -544,8 +544,15 @@ export async function createTask(formData: TaskFormValues) {
     };
   }
 
-  const { title, description, status, dueDate, goalId, assignedToId } =
-    result.data;
+  const {
+    title,
+    description,
+    status,
+    dueDate,
+    goalId,
+    assignedToId,
+    createdById,
+  } = result.data;
 
   try {
     const task = await prisma.task.create({
@@ -556,6 +563,7 @@ export async function createTask(formData: TaskFormValues) {
         dueDate: dueDate ? new Date(dueDate) : undefined,
         goalId,
         assignedToId: assignedToId || undefined,
+        createdById: createdById,
       },
     });
 
@@ -582,8 +590,15 @@ export async function updateTask(id: string, formData: FormData) {
     };
   }
 
-  const { title, description, status, dueDate, goalId, assignedToId } =
-    result.data;
+  const {
+    title,
+    description,
+    status,
+    dueDate,
+    goalId,
+    assignedToId,
+    createdById,
+  } = result.data;
 
   try {
     const updated = await prisma.task.update({
@@ -595,6 +610,7 @@ export async function updateTask(id: string, formData: FormData) {
         dueDate: dueDate ? new Date(dueDate) : undefined,
         goalId,
         assignedToId: assignedToId || undefined,
+        createdById,
       },
     });
 

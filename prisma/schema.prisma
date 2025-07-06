@@ -332,7 +332,7 @@ model Task {
   goal        Goal        @relation(fields: [goalId], references: [id])
   goalId      String
 
-   createdBy     User       @relation("CreatedTasks", fields: [createdById], references: [id])
+  createdBy     User       @relation("CreatedTasks", fields: [createdById], references: [id])
   createdById   String
 
   assignedTo    User?      @relation("Task_assignedTo",fields: [assignedToId], references: [id])

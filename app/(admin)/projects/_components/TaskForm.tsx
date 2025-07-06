@@ -38,6 +38,7 @@ import UserAvatar from '@/components/UserAvatar';
 
 // icons
 import { Calendar as CalendarIcon } from 'lucide-react';
+import { useEffect } from 'react';
 
 type TaskFormProps = {
   onSubmit: (data: TaskFormValues) => void;
@@ -53,6 +54,8 @@ export const TaskForm = ({
   initialData,
   submitLabel = 'Create Task',
 }: TaskFormProps) => {
+  const { projectDetail, currentProjectMember } = useProjectDetails();
+
   const form = useForm<TaskFormValues>({
     resolver: zodResolver(TaskFormSchema),
     defaultValues: {
@@ -62,10 +65,16 @@ export const TaskForm = ({
       goalId: '',
       assignedToId: undefined,
       dueDate: undefined,
+      createdById: '',
       ...initialData,
     },
   });
-  const { projectDetail } = useProjectDetails();
+
+  useEffect(() => {
+    if (currentProjectMember?.user?.id) {
+      form.setValue('createdById', currentProjectMember.user.id);
+    }
+  }, [currentProjectMember?.user?.id, form]);
 
   const sortedGoals = projectDetail.goals.sort((a, b) => {
     return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
