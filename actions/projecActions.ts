@@ -180,6 +180,7 @@ export const getAllProjects = async (userId?: string) => {
         name: true,
         createdAt: true,
         description: true,
+        deadline: true,
         createdBy: {
           select: {
             id: true,

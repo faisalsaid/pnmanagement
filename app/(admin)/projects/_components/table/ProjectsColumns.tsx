@@ -16,6 +16,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import UserAvatar from '@/components/UserAvatar';
+import { getWorkDuration } from '@/lib/helper/GetWorkDuration';
 
 export type ProjectsTable = Prisma.ProjectGetPayload<{
   select: {
@@ -23,6 +24,7 @@ export type ProjectsTable = Prisma.ProjectGetPayload<{
     name: true;
     createdAt: true;
     description: true;
+    deadline: true;
     createdBy: {
       select: {
         id: true;
@@ -80,14 +82,15 @@ export const columns: ColumnDef<ProjectsTable>[] = [
   },
 
   {
-    accessorKey: 'createdAt',
-    header: 'Created At',
-    cell: ({ row }) =>
-      row.original.createdAt.toLocaleString('id-ID', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      }),
+    id: 'range',
+    header: 'Time Range',
+    cell: ({ row }) => {
+      const createTime = row.original.createdAt;
+      const dueDate = row.original.deadline;
+
+      const result = getWorkDuration(createTime, dueDate);
+      return <p>{result}</p>;
+    },
   },
   {
     accessorKey: 'members',
