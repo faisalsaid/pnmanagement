@@ -21,6 +21,15 @@ export type TaskItem = Prisma.TaskGetPayload<{
         };
       };
     };
+    createdBy: {
+      select: {
+        id: true;
+        name: true;
+        email: true;
+        image: true;
+        role: true;
+      };
+    };
   };
 }>;
 

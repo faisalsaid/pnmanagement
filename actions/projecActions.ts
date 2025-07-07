@@ -296,6 +296,15 @@ export const getProjectById = async ({ id }: GetPorjectById) => {
                   },
                 },
               },
+              createdBy: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  image: true,
+                  role: true,
+                },
+              },
             },
           },
         },

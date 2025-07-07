@@ -35,6 +35,24 @@ export const TaskColumns: ColumnDef<TaskItem>[] = [
     ),
   },
   {
+    accessorKey: 'createdBy',
+    header: 'Creator',
+    cell: ({ row }) => {
+      return (
+        <div className="flex gap-2 items-center">
+          <UserAvatar
+            user={{
+              id: row.original.createdBy.id as string,
+              image: row.original.createdBy.image as string,
+              name: row.original.createdBy.name as string,
+            }}
+          />
+          <div className="">{row.original.createdBy.name}</div>
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: 'assignedTo',
     header: 'Assignet To',
     cell: ({ row }) => {
@@ -78,21 +96,10 @@ export const TaskColumns: ColumnDef<TaskItem>[] = [
     },
   },
   {
-    accessorKey: 'goal',
-    header: 'Goal',
+    accessorKey: 'dueDate',
+    header: 'Due Date',
     cell: ({ row }) => {
-      return (
-        <Tooltip>
-          <TooltipTrigger>
-            <div className="line-clamp-1 overflow-hidden text-ellipsis whitespace-nowrap max-w-52">
-              {row.original.goal.title}
-            </div>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{row.original.goal.title}</p>
-          </TooltipContent>
-        </Tooltip>
-      );
+      return <div>{row.original.dueDate?.toLocaleDateString()}</div>;
     },
   },
   {
@@ -130,13 +137,26 @@ export const TaskColumns: ColumnDef<TaskItem>[] = [
       );
     },
   },
+
   {
-    accessorKey: 'dueDate',
-    header: 'Due Date',
+    accessorKey: 'goal',
+    header: 'Goal',
     cell: ({ row }) => {
-      return <div>{row.original.dueDate?.toLocaleDateString()}</div>;
+      return (
+        <Tooltip>
+          <TooltipTrigger>
+            <div className="line-clamp-1 overflow-hidden text-ellipsis whitespace-nowrap max-w-52">
+              {row.original.goal.title}
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{row.original.goal.title}</p>
+          </TooltipContent>
+        </Tooltip>
+      );
     },
   },
+
   {
     id: 'action',
     header: 'Actions',

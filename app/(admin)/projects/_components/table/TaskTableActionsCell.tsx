@@ -103,7 +103,9 @@ const TaskTableActionsCell = ({ task }: { task: TaskItem }) => {
     <div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Ellipsis className={'hover:cursor-pointer'} size={18} />
+          <div className="flex items-center justify-center ">
+            <Ellipsis className={'hover:cursor-pointer'} size={18} />
+          </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel className="text-muted-foreground">
