@@ -63,14 +63,18 @@ const TaskTableActionsCell = ({ task }: { task: TaskItem }) => {
             Actions
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onClick={() => setOpenUpdateDialog(true)}
-            className="hover:cursor-pointer"
-          >
-            Update
-          </DropdownMenuItem>
+          <DropdownMenuItem>View Details</DropdownMenuItem>
 
-          {currentProjectMember.id && (
+          {currentProjectMember.hasCrudAccess && (
+            <DropdownMenuItem
+              onClick={() => setOpenUpdateDialog(true)}
+              className="hover:cursor-pointer"
+            >
+              Update
+            </DropdownMenuItem>
+          )}
+
+          {currentProjectMember.hasCrudAccess && (
             <DropdownMenuItem
               variant="destructive"
               onClick={() => setOpenConfirmDialog(true)}
