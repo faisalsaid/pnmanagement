@@ -6,6 +6,11 @@ import { CircleCheck, Eye, GripHorizontal, List, Loader } from 'lucide-react';
 import UserAvatar from '@/components/UserAvatar';
 import { cn } from '@/lib/utils';
 import TaskTableActionsCell from './TaskTableActionsCell';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 export const TaskColumns: ColumnDef<TaskItem>[] = [
   {
@@ -17,9 +22,16 @@ export const TaskColumns: ColumnDef<TaskItem>[] = [
     accessorKey: 'title',
     header: 'Title',
     cell: ({ row }) => (
-      <div className="line-clamp-1 overflow-hidden text-ellipsis whitespace-nowrap max-w-52 ">
-        {row.original.title}
-      </div>
+      <Tooltip>
+        <TooltipTrigger>
+          <div className="line-clamp-1 overflow-hidden text-ellipsis whitespace-nowrap max-w-52 ">
+            {row.original.title}
+          </div>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{row.original.title}</p>
+        </TooltipContent>
+      </Tooltip>
     ),
   },
   {
