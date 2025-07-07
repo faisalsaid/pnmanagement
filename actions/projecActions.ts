@@ -280,7 +280,24 @@ export const getProjectById = async ({ id }: GetPorjectById) => {
       },
       goals: {
         include: {
-          tasks: true,
+          tasks: {
+            include: {
+              goal: {
+                select: {
+                  title: true,
+                },
+              },
+              assignedTo: {
+                include: {
+                  teamMemberships: {
+                    select: {
+                      role: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       },
     },
