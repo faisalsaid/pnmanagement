@@ -281,6 +281,8 @@ model Project {
 
   goals       Goal[]
 
+  kanbanColumns KanbanColumn[]
+
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
 }
@@ -309,6 +311,8 @@ model Goal {
   description String?
   status      GoalStatus   @default(PENDING) // Enum: PENDING, IN_PROGRESS, COMPLETED
   dueDate     DateTime?
+  archived    Boolean @default(false)
+
 
   project     Project      @relation(fields: [projectId], references: [id])
   projectId   String
@@ -319,30 +323,67 @@ model Goal {
   tasks       Task[]       // Relasi ke Task
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+
+  @@index([projectId])
 }
 
 
 model Task {
-  id          String      @id @default(cuid())
-  title       String
-  description String?
-  status      TaskStatus  @default(TODO) // Enum: TODO, IN_PROGRESS, DONE
-  dueDate     DateTime?
+  id            String        @id @default(cuid())
+  title         String
+  description   String?
+  status        TaskStatus    @default(TODO)
+  dueDate       DateTime?
+  priority      TaskPriority  @default(MEDIUM)
+  isCompleted   Boolean @default(false)
+  archived      Boolean @default(false)
 
-  goal        Goal        @relation(fields: [goalId], references: [id])
-  goalId      String
+  goal          Goal          @relation(fields: [goalId], references: [id])
+  goalId        String
 
-  createdBy     User       @relation("CreatedTasks", fields: [createdById], references: [id])
+  createdBy     User          @relation("CreatedTasks", fields: [createdById], references: [id])
   createdById   String
 
-  assignedTo    User?      @relation("Task_assignedTo",fields: [assignedToId], references: [id])
+  assignedTo    User?         @relation("Task_assignedTo",fields: [assignedToId], references: [id])
   assignedToId  String?
 
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  column        KanbanColumn? @relation(fields: [columnId], references: [id])
+  columnId      String?
+
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([goalId])
 }
 
 
+
+model KanbanColumn {
+  id        String   @id @default(cuid())
+  name      String   
+  order     Int      
+  color     String?
+  archived  Boolean @default(false)
+
+
+  project   Project  @relation(fields: [projectId], references: [id])
+  projectId String
+
+  tasks     Task[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+}
+
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
 
 enum TaskStatus {
   TODO
