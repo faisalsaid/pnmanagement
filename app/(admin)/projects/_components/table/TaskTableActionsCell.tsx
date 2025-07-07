@@ -22,18 +22,31 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
+import {
+  Dialog,
+  DialogContent,
+  // DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  // DialogTrigger,
+} from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 // dependens
 import { TaskItem } from '../AllTaskByProject';
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { deleteTask } from '@/actions/projecActions';
+import { deleteTask, updateTask } from '@/actions/projecActions';
 import { useProjectDetails } from '../../[id]/context/ProjectDetailContex';
+import { TaskForm } from '../TaskForm';
+import { TaskFormValues } from '@/lib/zod';
+import { Separator } from '@/components/ui/separator';
 
 const TaskTableActionsCell = ({ task }: { task: TaskItem }) => {
   const router = useRouter();
   const [opeConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
   const [openUpdateDialog, setOpenUpdateDialog] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const { currentProjectMember } = useProjectDetails();
@@ -50,6 +63,40 @@ const TaskTableActionsCell = ({ task }: { task: TaskItem }) => {
       }
       setOpenConfirmDialog(false);
     });
+  };
+
+  function sanitizeInitialData(data: any) {
+    if (!data) return undefined;
+
+    return {
+      ...data,
+      description: data.description ?? undefined,
+      dueDate: data.dueDate ?? undefined,
+      assignedToId: data.assignedToId ?? undefined,
+    };
+  }
+
+  const clearTask = sanitizeInitialData(task);
+
+  const handleSubmit = async (data: TaskFormValues) => {
+    try {
+      setIsSubmitting(true);
+
+      await updateTask(task.id, data);
+
+      toast.success('Task updated successfully ✅');
+
+      // Opsional: gunakan startTransition untuk UI refresh ringan
+      startTransition(() => {
+        router.refresh(); // jika ingin reload data dari server
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to update task ❌');
+    } finally {
+      setIsSubmitting(false);
+      setOpenUpdateDialog(false);
+    }
   };
 
   return (
@@ -108,6 +155,22 @@ const TaskTableActionsCell = ({ task }: { task: TaskItem }) => {
       </AlertDialog>
 
       {/* UPDATE FORM */}
+      <Dialog open={openUpdateDialog} onOpenChange={setOpenUpdateDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Update {task.title}</DialogTitle>
+          </DialogHeader>
+          <Separator />
+          <ScrollArea className=" max-h-[75svh]  rounded-md  p-4">
+            <TaskForm
+              onCancel={() => setOpenUpdateDialog(false)}
+              submitLabel="Update"
+              onSubmit={handleSubmit}
+              initialData={clearTask}
+            />
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

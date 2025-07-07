@@ -43,7 +43,7 @@ const AllTaskByProject = () => {
     fetchTask();
   }, [projectDetail.id, taskCount]);
 
-  console.log(tasks);
+  // console.log(tasks);
 
   return (
     <div className="mx-auto rounded-xl overflow-hidden mt-2">

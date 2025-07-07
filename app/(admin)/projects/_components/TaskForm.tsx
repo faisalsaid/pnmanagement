@@ -94,7 +94,11 @@ export const TaskForm = ({
           render={({ field }) => (
             <FormItem>
               <Label>Goal</Label>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                disabled={submitLabel !== 'Create Task'}
+              >
                 <FormControl className="w-full">
                   <SelectTrigger>
                     <SelectValue placeholder="Select goal" />
@@ -153,9 +157,11 @@ export const TaskForm = ({
             </FormItem>
           )}
         />
-        <div className="flex gap-4 items-center">
-          {/* Status */}
-          {/* <FormField
+
+        {/* Status */}
+
+        {submitLabel !== 'Create Task' && (
+          <FormField
             control={form.control}
             name="status"
             render={({ field }) => (
@@ -173,14 +179,16 @@ export const TaskForm = ({
                   <SelectContent>
                     <SelectItem value="TODO">TODO</SelectItem>
                     <SelectItem value="IN_PROGRESS">IN PROGRESS</SelectItem>
+                    <SelectItem value="REVIEW">REVIEW</SelectItem>
                     <SelectItem value="DONE">DONE</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
               </FormItem>
             )}
-          /> */}
-
+          />
+        )}
+        <div className="flex gap-4 items-center">
           {/* Due Date */}
           <FormField
             control={form.control}

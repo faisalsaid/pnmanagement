@@ -610,7 +610,7 @@ export async function createTask(formData: TaskFormValues) {
 //   await validateAdminUser();
 
 //   const raw = Object.fromEntries(formData.entries());
-export async function updateTask(id: string, data: typeof TaskFormSchema) {
+export async function updateTask(id: string, data: TaskFormValues) {
   await validateAdminUser();
 
   const result = TaskFormSchema.safeParse(data);
