@@ -52,6 +52,15 @@ export type ProjectsTable = Prisma.ProjectGetPayload<{
         };
       };
     };
+    goals: {
+      include: {
+        tasks: {
+          select: {
+            id: true;
+          };
+        };
+      };
+    };
   };
 }>;
 
@@ -123,6 +132,25 @@ export const columns: ColumnDef<ProjectsTable>[] = [
           })}
         </div>
       );
+    },
+  },
+  {
+    id: 'goal',
+    header: 'Goal',
+    cell: ({ row }) => {
+      const goalCount = row.original.goals.length;
+      return <div>{goalCount} Goals</div>;
+    },
+  },
+  {
+    id: 'task',
+    header: 'Task',
+    cell: ({ row }) => {
+      const totalTasks = row.original.goals.reduce(
+        (acc, goal) => acc + goal.tasks.length,
+        0,
+      );
+      return <div>{totalTasks} Task</div>;
     },
   },
   {

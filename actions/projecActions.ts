@@ -208,6 +208,15 @@ export const getAllProjects = async (userId?: string) => {
             },
           },
         },
+        goals: {
+          include: {
+            tasks: {
+              select: {
+                id: true,
+              },
+            },
+          },
+        },
       },
     });
 

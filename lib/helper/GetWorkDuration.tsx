@@ -33,7 +33,8 @@ export function getWorkDuration(
   if (!dueDate) return 'Not set';
 
   const ms = dueDate.getTime() - createdAt.getTime();
-  if (ms <= 0) return 'Already due';
+  if (ms < 0) return 'Deadline has passed';
+  if (ms === 0) return 'Due today';
 
   const minutes = Math.floor(ms / (1000 * 60));
   const hours = Math.floor(minutes / 60);
@@ -43,24 +44,24 @@ export function getWorkDuration(
   const years = Math.floor(days / 365);
 
   if (years >= 1) {
-    return `${years} year${years > 1 ? 's' : ''} leave`;
+    return `${years} year${years > 1 ? 's' : ''} left`;
   }
 
   if (months >= 1) {
-    return `${months} month${months > 1 ? 's' : ''} leave`;
+    return `${months} month${months > 1 ? 's' : ''} left`;
   }
 
   if (weeks >= 1) {
-    return `${weeks} week${weeks > 1 ? 's' : ''} leave`;
+    return `${weeks} week${weeks > 1 ? 's' : ''} left`;
   }
 
   if (days >= 1) {
-    return `${days} day${days > 1 ? 's' : ''} leave`;
+    return `${days} day${days > 1 ? 's' : ''} left`;
   }
 
   const remainingHours = hours % 24;
   const remainingMinutes = minutes % 60;
   return `${remainingHours} hour${
     remainingHours !== 1 ? 's' : ''
-  } ${remainingMinutes} minute${remainingMinutes !== 1 ? 's' : ''} leave`;
+  } ${remainingMinutes} minute${remainingMinutes !== 1 ? 's' : ''} left`;
 }
