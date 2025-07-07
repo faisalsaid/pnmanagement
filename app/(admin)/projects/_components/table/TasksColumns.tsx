@@ -82,9 +82,16 @@ export const TaskColumns: ColumnDef<TaskItem>[] = [
     header: 'Goal',
     cell: ({ row }) => {
       return (
-        <div className="line-clamp-1 overflow-hidden text-ellipsis whitespace-nowrap max-w-52">
-          {row.original.goal.title}
-        </div>
+        <Tooltip>
+          <TooltipTrigger>
+            <div className="line-clamp-1 overflow-hidden text-ellipsis whitespace-nowrap max-w-52">
+              {row.original.goal.title}
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{row.original.goal.title}</p>
+          </TooltipContent>
+        </Tooltip>
       );
     },
   },
