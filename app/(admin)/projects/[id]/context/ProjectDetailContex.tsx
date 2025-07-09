@@ -2,46 +2,57 @@
 
 import { createContext, useContext } from 'react';
 import { Prisma, MemberRole, Role } from '@prisma/client';
+import { ProjectDetail } from '../../project.type';
 
-type ProjectDetailBase = Prisma.ProjectGetPayload<{
-  include: {
-    members: {
-      select: {
-        user: {
-          select: {
-            id: true;
-            email: true;
-            role: true;
-            image: true;
-            name: true;
-          };
-        };
-        role: true;
-      };
-    };
-    createdBy: {
-      select: {
-        id: true;
-        email: true;
-        role: true;
-        image: true;
-        name: true;
-      };
-    };
-    goals: {
-      include: {
-        tasks: true;
-      };
-    };
-  };
-}>;
+// type ProjectDetailBase = Prisma.ProjectGetPayload<{
+//   include: {
+//     members: {
+//       select: {
+//         user: {
+//           select: {
+//             id: true;
+//             email: true;
+//             role: true;
+//             image: true;
+//             name: true;
+//           };
+//         };
+//         role: true;
+//       };
+//     };
+//     createdBy: {
+//       select: {
+//         id: true;
+//         email: true;
+//         role: true;
+//         image: true;
+//         name: true;
+//       };
+//     };
+//     goals: {
+//       include: {
+//         tasks: true;
+//       };
+//     };
+//     kanbanColumns: {
+//       where: { archived: false };
+//       orderBy: { order: 'asc' };
+//       include: {
+//         tasks: {
+//           where: { archived: false };
+//           orderBy: { createdAt: 'asc' };
+//         };
+//       };
+//     };
+//   };
+// }>;
 
 // custom getPojectPaylod add progress: number
-type GoalWithProgress = ProjectDetailBase['goals'][number] & {
+type GoalWithProgress = ProjectDetail['goals'][number] & {
   progress: number;
 };
 
-export type ProjectDetailProps = Omit<ProjectDetailBase, 'goals'> & {
+export type ProjectDetailProps = Omit<ProjectDetail, 'goals'> & {
   goals: GoalWithProgress[];
 };
 

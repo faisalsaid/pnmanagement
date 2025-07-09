@@ -14,6 +14,10 @@ import {
 import { MemberRole, Role } from '@prisma/client';
 import { toast } from 'sonner';
 import { redirect } from 'next/navigation';
+import {
+  ProjectDetail,
+  projectDetailQuery,
+} from '@/app/(admin)/projects/project.type';
 // import { Role } from '@prisma/client';
 
 export async function validateAdminUser() {
@@ -252,64 +256,9 @@ export const getProjectById = async ({ id }: GetPorjectById) => {
     throw new Error('Forbidden');
   }
 
-  const project = await prisma.project.findUnique({
+  const project: ProjectDetail | null = await prisma.project.findUnique({
     where: { id },
-    include: {
-      members: {
-        select: {
-          user: {
-            select: {
-              id: true,
-              email: true,
-              role: true,
-              image: true,
-              name: true,
-            },
-          },
-          role: true,
-        },
-      },
-      createdBy: {
-        select: {
-          id: true,
-          email: true,
-          role: true,
-          image: true,
-          name: true,
-        },
-      },
-      goals: {
-        include: {
-          tasks: {
-            include: {
-              goal: {
-                select: {
-                  title: true,
-                },
-              },
-              assignedTo: {
-                include: {
-                  teamMemberships: {
-                    select: {
-                      role: true,
-                    },
-                  },
-                },
-              },
-              createdBy: {
-                select: {
-                  id: true,
-                  name: true,
-                  email: true,
-                  image: true,
-                  role: true,
-                },
-              },
-            },
-          },
-        },
-      },
-    },
+    ...projectDetailQuery,
   });
 
   if (!project) return null;
@@ -732,3 +681,32 @@ export const getTasksByProjectId = async (projectId: string) => {
     return [];
   }
 };
+
+// /////////////////////////
+
+// update colum
+
+export async function updateTaskColumn(taskId: string, columnId: string) {
+  await prisma.task.update({
+    where: { id: taskId },
+    data: { columnId },
+  });
+}
+
+export async function createColumn({
+  projectId,
+  name,
+}: {
+  projectId: string;
+  name: string;
+}) {
+  const newColumn = await prisma.kanbanColumn.create({
+    data: {
+      name,
+      order: 0, // atau hitung berdasarkan jumlah kolom yang ada
+      projectId,
+    },
+  });
+
+  return newColumn;
+}
