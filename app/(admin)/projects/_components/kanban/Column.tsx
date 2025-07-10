@@ -1,82 +1,67 @@
-import TaskCard from './TaskCard';
+import { CSS } from '@dnd-kit/utilities';
 import { KanbanColumn } from '../../project.type';
-import { assignTaskToColumn } from '@/actions/projecActions';
-import { useProjectDetails } from '../../[id]/context/ProjectDetailContex';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useDroppable } from '@dnd-kit/core';
+import {
+  horizontalListSortingStrategy,
+  SortableContext,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { GripVertical } from 'lucide-react';
 
-type Props = {
-  column: KanbanColumn;
+interface ColumsProps {
+  columns: KanbanColumn[];
+}
+const Columns = ({ columns }: ColumsProps) => {
+  return (
+    <div className="bg-muted p-4 rounded-md flex gap-4 items-start overflow-auto w-full">
+      <SortableContext
+        items={columns.map((col) => col.id)}
+        strategy={horizontalListSortingStrategy}
+      >
+        {columns.map((column) => (
+          <ColumnCard key={column.id} column={column} />
+        ))}
+      </SortableContext>
+    </div>
+  );
 };
 
-export default function Column({ column }: Props) {
-  const router = useRouter();
-  const { projectDetail } = useProjectDetails();
-  const [selectedTaskId, setSelectedTaskId] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+export default Columns;
 
-  // Ambil semua task yang belum ada di kolom mana pun
-  const allTask = projectDetail.goals.flatMap((goal) => goal.tasks);
-  const unassignedTasks = allTask.filter((task) => !task.columnId);
+// COLUMNS CARD
 
-  const { setNodeRef, isOver } = useDroppable({
-    id: column.id,
-    data: {
-      columnId: column.id,
-    },
-  });
+interface Columcard {
+  column: KanbanColumn;
+  // activeTaskId: number | null;
+}
 
-  const handleAddExistingTask = async () => {
-    if (!selectedTaskId) return;
+const ColumnCard = ({ column }: Columcard) => {
+  const { id, name, tasks } = column;
 
-    setIsSubmitting(true);
-    await assignTaskToColumn(selectedTaskId, column.id);
-    setIsSubmitting(false);
-    // location.reload(); // bisa diganti dengan update state agar tidak reload
-    router.refresh();
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id });
+
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform),
   };
 
   return (
     <div
       ref={setNodeRef}
-      className={`rounded p-4 min-w-[300px] transition ${
-        isOver ? 'bg-blue-50' : 'bg-white'
-      }`}
+      style={style}
+      className="w-full min-h-3 border-2 rounded-sm p-2 bg-slate-50"
     >
-      <div className="flex justify-between items-center mb-2">
-        <h2 className="font-bold">{column.name}</h2>
-      </div>
-
-      {/* Dropdown + Button */}
-      <div className="mb-2 flex gap-2">
-        <select
-          className="border px-2 py-1 rounded text-sm w-full"
-          value={selectedTaskId}
-          onChange={(e) => setSelectedTaskId(e.target.value)}
-        >
-          <option value="">-- Pilih Task --</option>
-          {unassignedTasks.map((task) => (
-            <option key={task.id} value={task.id}>
-              {task.title}
-            </option>
-          ))}
-        </select>
+      <div className="flex items-center justify-between mb-2">
+        <div className="text-sm font-semibold">{name}</div>
         <button
-          onClick={handleAddExistingTask}
-          disabled={!selectedTaskId || isSubmitting}
-          className="text-sm px-2 py-1 bg-blue-500 text-white rounded disabled:opacity-50"
+          {...attributes}
+          {...listeners}
+          className="cursor-grab p-1 active:cursor-grabbing"
+          aria-label="Drag column"
         >
-          Tambah
+          <GripVertical className="w-4 h-4" />
         </button>
-      </div>
-
-      {/* Task List */}
-      <div className="space-y-2">
-        {column.tasks.map((task) => (
-          <TaskCard task={task} />
-        ))}
       </div>
     </div>
   );
-}
+};

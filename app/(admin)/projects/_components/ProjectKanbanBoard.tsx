@@ -17,7 +17,9 @@ const columns = [
 
 const ProjectKanbanBoard = () => {
   const { projectDetail } = useProjectDetails();
-  console.log(projectDetail.goals.flatMap((goal) => goal.tasks));
+  // console.log(projectDetail.goals.flatMap((goal) => goal.tasks));
+
+  // console.log(projectDetail);
 
   const allColum = projectDetail.kanbanColumns;
 

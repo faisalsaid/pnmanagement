@@ -739,3 +739,39 @@ export async function assignTaskToColumn(taskId: string, columnId: string) {
     data: { columnId },
   });
 }
+
+// //////////////////////
+
+// Update kanban colum order
+
+type ColumOrderUpdate = {
+  id: string;
+  order: number;
+};
+
+export async function updateKanbanColumns(updatedData: ColumOrderUpdate[]) {
+  try {
+    const updatedColumns = await Promise.all(
+      updatedData.map((col) =>
+        prisma.kanbanColumn.update({
+          where: { id: col.id },
+          data: { order: col.order },
+        }),
+      ),
+    );
+
+    // // Optional: Refresh cache atau path tertentu
+    // revalidatePath('/kanban'); // sesuaikan dengan pathmu jika pakai caching
+
+    return {
+      success: true,
+      data: updatedColumns,
+    };
+  } catch (error) {
+    console.error('Failed to update columns:', error);
+    return {
+      success: false,
+      error: 'Failed to update kanban columns',
+    };
+  }
+}

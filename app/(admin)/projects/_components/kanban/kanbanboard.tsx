@@ -1,22 +1,27 @@
 'use client';
 
 import {
-  DndContext,
-  closestCorners,
+  KeyboardSensor,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
+  closestCorners,
+  DndContext,
+  DragEndEvent,
+  DragOverlay,
 } from '@dnd-kit/core';
 import {
   arrayMove,
   SortableContext,
   verticalListSortingStrategy,
+  sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable';
 
 import { useState } from 'react';
-import Column from './Column'; // Komponen untuk 1 kolom
-import { KanbanColumn } from '../../project.type'; // kamu bisa sesuaikan tipe datanya
-import { updateTaskColumn } from '@/actions/projecActions';
+import Column from './Column';
+import { KanbanColumn } from '../../project.type';
+import { updateKanbanColumns, updateTaskColumn } from '@/actions/projecActions';
 
 type KanbanBoardProps = {
   initialColumns: KanbanColumn[];
@@ -24,61 +29,58 @@ type KanbanBoardProps = {
 
 export default function KanbanBoard({ initialColumns }: KanbanBoardProps) {
   const [columns, setColumns] = useState<KanbanColumn[]>(initialColumns);
-
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(PointerSensor),
+    useSensor(TouchSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
   );
 
-  const onDragEnd = async (event: any) => {
+  const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (!over || active.id === over.id) return;
+    // handle column never change
+    if (!over) return;
+    if (active.id === over.id) return;
 
-    const activeType = active.data.current?.type;
-    const taskId = active.id;
-    const sourceColumnId = active.data.current?.columnId;
-    const targetColumnId = over.data.current?.columnId;
+    const oldIndex = columns.findIndex((c) => c.id === active.id);
+    const newIndex = columns.findIndex((c) => c.id === over.id);
 
-    // Validasi jenis drag
-    if (activeType !== 'task') return;
+    const newColumns = arrayMove(columns, oldIndex, newIndex).map(
+      (col, index) => ({
+        ...col,
+        order: index,
+      }),
+    );
 
-    if (!targetColumnId || !sourceColumnId) return;
+    // ⏩ Update column ui
+    setColumns(newColumns);
 
-    if (sourceColumnId !== targetColumnId) {
-      await updateTaskColumn(taskId, targetColumnId);
-    }
+    const updateColumOrder = newColumns.map((col) => ({
+      id: col.id,
+      order: col.order,
+    }));
 
-    setColumns((prev) => {
-      const updated = [...prev];
-
-      const movedTask = prev
-        .flatMap((c) => c.tasks)
-        .find((t) => t.id === taskId);
-
-      if (!movedTask) return prev;
-
-      const from = updated.find((c) => c.id === sourceColumnId);
-      if (from) {
-        from.tasks = from.tasks.filter((t) => t.id !== taskId);
-      }
-
-      const to = updated.find((c) => c.id === targetColumnId);
-      if (to) {
-        to.tasks.push({ ...movedTask, columnId: targetColumnId });
-      }
-
-      return updated;
-    });
+    await updateKanbanColumns(updateColumOrder);
   };
 
   return (
     <DndContext
       sensors={sensors}
       collisionDetection={closestCorners}
-      onDragEnd={onDragEnd}
+      onDragStart={(event) => {
+        // if (typeof event.active.id === 'number') {
+        //   setActiveTaskId(event.active.id);
+        // }
+      }}
+      onDragEnd={(event) => {
+        handleDragEnd(event);
+      }}
     >
-      <div className="flex gap-4 overflow-x-auto pb-4">
-        {columns.map((col) => (
+      <div className="flex gap-4 overflow-x-auto pb-4 w-full">
+        <Column columns={columns} />
+        {/* {columns.map((col) => (
           <SortableContext
             key={col.id}
             items={col.tasks.map((t) => t.id)}
@@ -86,7 +88,7 @@ export default function KanbanBoard({ initialColumns }: KanbanBoardProps) {
           >
             <Column column={col} />
           </SortableContext>
-        ))}
+        ))} */}
       </div>
     </DndContext>
   );
