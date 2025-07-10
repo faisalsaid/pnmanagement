@@ -710,3 +710,32 @@ export async function createColumn({
 
   return newColumn;
 }
+
+// export const getColumByPojectId = async (someProjectId: string) => {
+//   try {
+//     const columnsDB = await prisma.kanbanColumn.findMany({
+//       where: { projectId: someProjectId },
+//       orderBy: { order: 'asc' }, // sesuai urutan drag & drop
+//     });
+
+//     if (columnsDB) {
+//       const columns = columnsDB.map((col) => ({
+//         id: col.id,
+//         name: col.name,
+//         tasks: [], // masih kosong
+//       }));
+//       return { success: true, columns };
+//     } else {
+//       return { success: false, message: "Can't find column" };
+//     }
+//   } catch (error: any) {
+//     throw new Error(error);
+//   }
+// };
+
+export async function assignTaskToColumn(taskId: string, columnId: string) {
+  return await prisma.task.update({
+    where: { id: taskId },
+    data: { columnId },
+  });
+}

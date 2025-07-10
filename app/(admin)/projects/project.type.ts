@@ -63,6 +63,31 @@ export const projectDetailQuery = Prisma.validator<Prisma.ProjectDefaultArgs>()(
         include: {
           tasks: {
             where: { archived: false },
+            include: {
+              goal: {
+                select: {
+                  title: true,
+                },
+              },
+              assignedTo: {
+                include: {
+                  teamMemberships: {
+                    select: {
+                      role: true,
+                    },
+                  },
+                },
+              },
+              createdBy: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  image: true,
+                  role: true,
+                },
+              },
+            },
             orderBy: { createdAt: 'asc' },
           },
         },
@@ -73,13 +98,39 @@ export const projectDetailQuery = Prisma.validator<Prisma.ProjectDefaultArgs>()(
 
 export type ProjectDetail = Prisma.ProjectGetPayload<typeof projectDetailQuery>;
 
-export type KanbanColumn = {
-  id: string;
-  name: string;
-  oder: string;
-  color?: string;
-  tasks: Task[];
-};
+export type KanbanColumn = Prisma.KanbanColumnGetPayload<{
+  include: {
+    tasks: {
+      where: { archived: false };
+      include: {
+        goal: {
+          select: {
+            title: true;
+          };
+        };
+        assignedTo: {
+          include: {
+            teamMemberships: {
+              select: {
+                role: true;
+              };
+            };
+          };
+        };
+        createdBy: {
+          select: {
+            id: true;
+            name: true;
+            email: true;
+            image: true;
+            role: true;
+          };
+        };
+      };
+    };
+  };
+}>;
+
 export type Task = Prisma.TaskGetPayload<{
   include: {
     goal: {

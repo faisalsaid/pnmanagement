@@ -6,14 +6,19 @@ import { Task } from '../../project.type';
 
 type Props = {
   task: Task;
-  columnId: string;
+  // columnId: string;
 };
 
-export default function TaskCard({ task, columnId }: Props) {
+export default function TaskCard({ task }: Props) {
+  console.log('TASK CARD', task);
+
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
       id: task.id,
-      data: { columnId },
+      data: {
+        type: 'task',
+        columnId: task.columnId, // ini penting agar tahu kolom asal
+      },
     });
 
   const style = {
@@ -27,9 +32,9 @@ export default function TaskCard({ task, columnId }: Props) {
       style={style}
       {...attributes}
       {...listeners}
-      className="p-3 bg-gray-100 rounded shadow"
+      className="bg-gray-100 p-2 rounded cursor-move"
     >
-      <p className="text-sm font-semibold">{task.title}</p>
+      {task.title}
     </div>
   );
 }

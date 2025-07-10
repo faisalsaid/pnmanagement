@@ -15,7 +15,7 @@ import {
 
 import { useState } from 'react';
 import Column from './Column'; // Komponen untuk 1 kolom
-import { KanbanColumn, Task } from '../../project.type'; // kamu bisa sesuaikan tipe datanya
+import { KanbanColumn } from '../../project.type'; // kamu bisa sesuaikan tipe datanya
 import { updateTaskColumn } from '@/actions/projecActions';
 
 type KanbanBoardProps = {
@@ -34,37 +34,40 @@ export default function KanbanBoard({ initialColumns }: KanbanBoardProps) {
 
     if (!over || active.id === over.id) return;
 
+    const activeType = active.data.current?.type;
     const taskId = active.id;
+    const sourceColumnId = active.data.current?.columnId;
     const targetColumnId = over.data.current?.columnId;
 
-    if (!targetColumnId) return;
+    // Validasi jenis drag
+    if (activeType !== 'task') return;
 
-    // Lakukan update columnId via server action
-    await updateTaskColumn(taskId, targetColumnId);
+    if (!targetColumnId || !sourceColumnId) return;
 
-    // Pindahkan task ke column baru di local state
+    if (sourceColumnId !== targetColumnId) {
+      await updateTaskColumn(taskId, targetColumnId);
+    }
+
     setColumns((prev) => {
       const updated = [...prev];
 
-      // hapus dari kolom lama
-      for (let col of updated) {
-        col.tasks = col.tasks.filter((t) => t.id !== taskId);
-      }
-
-      // cari task
-      const movedTask = initialColumns
+      const movedTask = prev
         .flatMap((c) => c.tasks)
         .find((t) => t.id === taskId);
 
       if (!movedTask) return prev;
 
-      // tambahkan ke kolom baru
-      const newCol = updated.find((c) => c.id === targetColumnId);
-      if (newCol) {
-        newCol.tasks.push({ ...movedTask, columnId: targetColumnId });
+      const from = updated.find((c) => c.id === sourceColumnId);
+      if (from) {
+        from.tasks = from.tasks.filter((t) => t.id !== taskId);
       }
 
-      return [...updated];
+      const to = updated.find((c) => c.id === targetColumnId);
+      if (to) {
+        to.tasks.push({ ...movedTask, columnId: targetColumnId });
+      }
+
+      return updated;
     });
   };
 

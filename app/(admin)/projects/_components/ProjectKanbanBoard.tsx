@@ -19,11 +19,20 @@ const ProjectKanbanBoard = () => {
   const { projectDetail } = useProjectDetails();
   console.log(projectDetail.goals.flatMap((goal) => goal.tasks));
 
-  const allTask = projectDetail.goals.flatMap((goal) => goal.tasks);
+  const allColum = projectDetail.kanbanColumns;
+
+  console.log('KANBAN COLUM', allColum);
+
+  //   const columns = columnsDB.map((col) => ({
+  // //         id: col.id,
+  // //         name: col.name,
+  // //         tasks: [], // masih kosong
+  // //       }));
 
   return (
     <div>
       <AddColumn projectId={projectDetail.id} />
+      <KanbanBoard initialColumns={allColum} />
     </div>
     // <div className="w-full  overflow-hidden overflow-x-scroll">
     //   <div className="flex gap-2">
