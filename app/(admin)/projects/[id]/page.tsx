@@ -11,6 +11,7 @@ import {
   CurrentProjectMember,
   ProjectDetailProvider,
 } from './context/ProjectDetailContex';
+import WraperProjectDetailContext from '../_components/WraperPojectDetailsContex';
 
 type Params = Promise<{ id: string }>;
 
@@ -80,7 +81,7 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
 
   // return <div>ACCESS ACEPTED</div>;
   return (
-    <ProjectDetailProvider
+    <WraperProjectDetailContext
       projectDetail={projectDetail}
       currentProjectMember={currentUser}
     >
@@ -107,7 +108,7 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
           <ProjectTab />
         </div>
       </div>
-    </ProjectDetailProvider>
+    </WraperProjectDetailContext>
   );
 };
 
