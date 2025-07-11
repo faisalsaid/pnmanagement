@@ -104,7 +104,7 @@ export default function KanbanBoard({ initialColumns }: KanbanBoardProps) {
       console.log('empty column');
 
       // console.log('ACTIVE ID', activeId, 'OVER ID', over.id);
-      console.log(activeId);
+      // console.log(activeId);
 
       const sourceColIndex = findColumnIndexByTaskId(activeId);
       const destColIndex = columns.findIndex(
@@ -117,7 +117,7 @@ export default function KanbanBoard({ initialColumns }: KanbanBoardProps) {
 
       const sourceCol = columns[sourceColIndex];
       const destCol = columns[destColIndex];
-      console.log('sourceCol', sourceCol, destCol);
+      // console.log('sourceCol', sourceCol, destCol);
 
       const activeTaskIndex = sourceCol.tasks.findIndex(
         (task) => 'task-' + task.id === activeId,
@@ -156,6 +156,75 @@ export default function KanbanBoard({ initialColumns }: KanbanBoardProps) {
       setColumns(updatedColumns);
       await updateTaskColumn(taskToMove.id, destCol.id);
       return;
+    }
+
+    // Drag and drop tasks - betwen task
+
+    const sourceColIndex = findColumnIndexByTaskId(activeId);
+    const destColIndex = findColumnIndexByTaskId(overId);
+    if (sourceColIndex === -1 || destColIndex === -1) return;
+
+    console.log('sourceColIndex', sourceColIndex, 'destColIndex', destColIndex);
+
+    const sourceCol = columns[sourceColIndex];
+    const destCol = columns[destColIndex];
+
+    const activeTaskIndex = sourceCol.tasks.findIndex(
+      (task) => 'task-' + task.id === activeId,
+    );
+
+    const overTaskIndex = destCol.tasks.findIndex(
+      (task) => 'task-' + task.id === overId,
+    );
+
+    const updatedColumns = [...columns];
+
+    if (sourceColIndex === destColIndex) {
+      // 👉 Drag dalam kolom yang sama: gunakan arrayMove
+      const reorderedTasks = arrayMove(
+        sourceCol.tasks,
+        activeTaskIndex,
+        overTaskIndex,
+      );
+
+      updatedColumns[sourceColIndex] = {
+        ...sourceCol,
+        tasks: reorderedTasks,
+      };
+    } else {
+      // 👉 Drag antar kolom
+      const taskToMove = sourceCol.tasks[activeTaskIndex];
+
+      // Remove dari source
+      updatedColumns[sourceColIndex] = {
+        ...sourceCol,
+        tasks: sourceCol.tasks
+          .filter((task) => `task-${task.id}` !== activeId)
+          .map((task) => ({
+            ...task,
+            sortingId: `task-${task.id}`,
+          })),
+      };
+
+      // Insert ke destination dengan sortingId
+      updatedColumns[destColIndex] = {
+        ...destCol,
+        tasks: [
+          ...destCol.tasks.slice(0, overTaskIndex),
+          {
+            ...taskToMove,
+            sortingId: `task-${taskToMove.id}`,
+          },
+          ...destCol.tasks.slice(overTaskIndex),
+        ].map((task, index) => ({
+          ...task,
+          order: index,
+          sortingId: `task-${task.id}`, // ← tambahkan ini
+        })),
+      };
+
+      setColumns(updatedColumns);
+      await updateTaskColumn(taskToMove.id, destCol.id);
     }
   };
 
