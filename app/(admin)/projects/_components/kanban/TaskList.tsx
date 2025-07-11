@@ -9,9 +9,10 @@ import { TaskWithSortingId } from './kanbanboard';
 
 interface TaskListProp {
   tasklist: TaskWithSortingId[];
+  activeTaskId: string | null;
 }
 
-const TasksList = ({ tasklist }: TaskListProp) => {
+const TasksList = ({ tasklist, activeTaskId }: TaskListProp) => {
   return (
     <SortableContext
       items={tasklist.map((task) => 'task-' + task.id)}
@@ -23,7 +24,13 @@ const TasksList = ({ tasklist }: TaskListProp) => {
             Drop here
           </div>
         ) : (
-          tasklist.map((task) => <TaskItemCard key={task.id} task={task} />)
+          tasklist.map((task) => (
+            <TaskItemCard
+              key={task.id}
+              task={task}
+              activeTaskId={activeTaskId}
+            />
+          ))
         )}
       </div>
     </SortableContext>
@@ -34,8 +41,9 @@ export default TasksList;
 
 interface TaskListProps {
   task: TaskWithSortingId;
+  isDragging?: boolean;
   isOverlay?: boolean;
-  activeTaskId?: number | null;
+  activeTaskId?: string | null;
 }
 
 export const TaskItemCard = ({
@@ -50,7 +58,9 @@ export const TaskItemCard = ({
 
   const style = {
     transition,
+    opacity: activeTaskId === sortingId ? 0.4 : 1,
     transform: CSS.Transform.toString(transform),
+    cursor: isOverlay ? 'grabbing' : undefined,
   };
   return (
     <div

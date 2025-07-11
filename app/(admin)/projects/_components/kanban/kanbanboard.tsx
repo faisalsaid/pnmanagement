@@ -246,7 +246,7 @@ export default function KanbanBoard({ initialColumns }: KanbanBoardProps) {
       }}
     >
       <div className="flex gap-4 overflow-x-auto pb-4 w-full">
-        <Column columns={columns} />
+        <Column columns={columns} activeTaskId={activeTaskId} />
         <DragOverlay>
           {activeTaskId ? (
             <TaskItemCard
@@ -257,6 +257,7 @@ export default function KanbanBoard({ initialColumns }: KanbanBoardProps) {
                   .find((t) => t.sortingId === activeTaskId)!
               }
               isOverlay
+              // activeTaskId={activeTaskId}
             />
           ) : null}
         </DragOverlay>

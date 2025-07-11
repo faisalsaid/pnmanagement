@@ -12,8 +12,9 @@ import { KanbanColumnWithSortingId } from './kanbanboard';
 
 interface ColumsProps {
   columns: KanbanColumnWithSortingId[];
+  activeTaskId: string | null;
 }
-const Columns = ({ columns }: ColumsProps) => {
+const Columns = ({ columns, activeTaskId }: ColumsProps) => {
   return (
     <div className="bg-muted p-4 rounded-md flex gap-4 items-start overflow-auto w-full">
       <SortableContext
@@ -21,7 +22,11 @@ const Columns = ({ columns }: ColumsProps) => {
         strategy={horizontalListSortingStrategy}
       >
         {columns.map((column) => (
-          <ColumnCard key={column.id} column={column} />
+          <ColumnCard
+            key={column.id}
+            column={column}
+            activeTaskId={activeTaskId}
+          />
         ))}
       </SortableContext>
     </div>
@@ -34,10 +39,10 @@ export default Columns;
 
 interface Columcard {
   column: KanbanColumnWithSortingId;
-  // activeTaskId: number | null;
+  activeTaskId: string | null;
 }
 
-const ColumnCard = ({ column }: Columcard) => {
+const ColumnCard = ({ column, activeTaskId }: Columcard) => {
   const { sortingId, name, tasks } = column;
 
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -66,7 +71,7 @@ const ColumnCard = ({ column }: Columcard) => {
         </button>
       </div>
       <Separator />
-      <TasksList tasklist={tasks} />
+      <TasksList tasklist={tasks} activeTaskId={activeTaskId} />
     </div>
   );
 };
