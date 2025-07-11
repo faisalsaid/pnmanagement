@@ -6,6 +6,9 @@ import {
 import { GripVertical } from 'lucide-react';
 import { CSS } from '@dnd-kit/utilities';
 import { TaskWithSortingId } from './kanbanboard';
+import { Badge } from '@/components/ui/badge';
+import { getWorkDuration } from '@/lib/helper/GetWorkDuration';
+import UserAvatar from '@/components/UserAvatar';
 
 interface TaskListProp {
   tasklist: TaskWithSortingId[];
@@ -65,21 +68,46 @@ export const TaskItemCard = ({
   return (
     <div
       ref={setNodeRef}
-      className="flex items-center gap-2 border p-2 rounded-sm bg-background "
+      className=" border p-4 rounded-sm bg-background space-y-4"
       style={style}
     >
-      <input type="checkbox" />
+      <div className="flex items-center gap-2">
+        <input type="checkbox" />
+        <Badge>{task.priority}</Badge>
+        <p className="text-xs">{task.status}</p>
 
-      <div className="line-clamp-1">{title}</div>
+        <button
+          {...attributes}
+          {...listeners}
+          className="cursor-grab p-1 active:cursor-grabbing ml-auto"
+          aria-label="Drag Task"
+        >
+          <GripVertical className="w-4 h-4" />
+        </button>
+      </div>
 
-      <button
-        {...attributes}
-        {...listeners}
-        className="cursor-grab p-1 active:cursor-grabbing ml-auto"
-        aria-label="Drag Task"
-      >
-        <GripVertical className="w-4 h-4" />
-      </button>
+      <div className="space-y-2">
+        <p className="text-xs">
+          Due date : {getWorkDuration(task.createdAt, task.dueDate)}
+        </p>
+        <div className=" font-semibold">{task.title}</div>
+        <div className="bg-muted p-2 rounded-sm text-xs italic text-muted-foreground">
+          {task.description ? task.description : 'No descreption'}
+        </div>
+
+        <div className="flex gap-2 items-center">
+          <UserAvatar
+            user={{
+              id: task.assignedTo?.id as string,
+              image: task.assignedTo?.image as string,
+              name: task.assignedTo?.name as string,
+            }}
+          />
+          <div className="flex gap-1 items-baseline">
+            <p className="text-sm">{task.assignedTo?.name}</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

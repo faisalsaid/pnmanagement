@@ -75,7 +75,9 @@ export const TaskSampleCard = ({
         <button
           {...attributes}
           {...listeners}
-          className="cursor-grab p-1 active:cursor-grabbing"
+          className={`${
+            activeTaskId ? 'cursor-grabbing' : 'cursor-grab'
+          }  p-1 active:cursor-grabbing`}
           aria-label="Drag Task"
         >
           <GripVertical className="w-4 h-4" />
