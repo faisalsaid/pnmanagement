@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useProjectDetails } from '../[id]/context/ProjectDetailContex';
 import KanbanBoard from './kanban/kanbanboard';
 import { AddColumn } from './kanban/AddColumnKanban';
+import { KanbanColumn } from '../project.type';
 
 const columns = [
   { title: 'Baclog', taskItem: 2 },
@@ -15,13 +16,30 @@ const columns = [
   { title: 'Done', taskItem: 4 },
 ];
 
+function addSortingId(data: KanbanColumn[]) {
+  return data.map((column) => {
+    // Tambahkan sortingId ke column
+    const modifiedColumn = {
+      ...column,
+      sortingId: `column-${column.id}`,
+      tasks: column.tasks.map((task) => ({
+        ...task,
+        sortingId: `task-${task.id}`,
+      })),
+    };
+    return modifiedColumn;
+  });
+}
+
 const ProjectKanbanBoard = () => {
   const { projectDetail } = useProjectDetails();
   // console.log(projectDetail.goals.flatMap((goal) => goal.tasks));
 
   // console.log(projectDetail);
 
-  const allColum = projectDetail.kanbanColumns;
+  console.log('ProjectKanbanBoard', projectDetail.kanbanColumns);
+
+  const allColum = addSortingId(projectDetail.kanbanColumns);
 
   console.log('KANBAN COLUM', allColum);
 

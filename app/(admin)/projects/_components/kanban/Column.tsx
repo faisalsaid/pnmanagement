@@ -7,10 +7,11 @@ import {
 } from '@dnd-kit/sortable';
 import { GripVertical } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
-import TaskList from './TaskList';
+import TasksList from './TaskList';
+import { KanbanColumnWithSortingId } from './kanbanboard';
 
 interface ColumsProps {
-  columns: KanbanColumn[];
+  columns: KanbanColumnWithSortingId[];
 }
 const Columns = ({ columns }: ColumsProps) => {
   return (
@@ -32,15 +33,15 @@ export default Columns;
 // COLUMNS CARD
 
 interface Columcard {
-  column: KanbanColumn;
+  column: KanbanColumnWithSortingId;
   // activeTaskId: number | null;
 }
 
 const ColumnCard = ({ column }: Columcard) => {
-  const { id, name, tasks } = column;
+  const { sortingId, name, tasks } = column;
 
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: 'column-' + id });
+    useSortable({ id: sortingId });
 
   const style = {
     transition,
@@ -65,7 +66,7 @@ const ColumnCard = ({ column }: Columcard) => {
         </button>
       </div>
       <Separator />
-      <TaskList tasklist={tasks} />
+      <TasksList tasklist={tasks} />
     </div>
   );
 };

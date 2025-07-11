@@ -1,5 +1,3 @@
-import React from 'react';
-import { TaskItem } from '../AllTaskByProject';
 import {
   SortableContext,
   useSortable,
@@ -7,12 +5,13 @@ import {
 } from '@dnd-kit/sortable';
 import { GripVertical } from 'lucide-react';
 import { CSS } from '@dnd-kit/utilities';
+import { TaskWithSortingId } from './kanbanboard';
 
 interface TaskListProp {
-  tasklist: TaskItem[];
+  tasklist: TaskWithSortingId[];
 }
 
-const TaskList = ({ tasklist }: TaskListProp) => {
+const TasksList = ({ tasklist }: TaskListProp) => {
   return (
     <SortableContext
       items={tasklist.map((task) => 'task-' + task.id)}
@@ -24,20 +23,30 @@ const TaskList = ({ tasklist }: TaskListProp) => {
             Drop here
           </div>
         ) : (
-          tasklist.map((task) => <TaskItemCard task={task} />)
+          tasklist.map((task) => <TaskItemCard key={task.id} task={task} />)
         )}
       </div>
     </SortableContext>
   );
 };
 
-export default TaskList;
+export default TasksList;
 
-const TaskItemCard = ({ task }: { task: TaskItem }) => {
-  const { id, title } = task;
+interface TaskListProps {
+  task: TaskWithSortingId;
+  isOverlay?: boolean;
+  activeTaskId?: number | null;
+}
+
+export const TaskItemCard = ({
+  task,
+  isOverlay = false,
+  activeTaskId,
+}: TaskListProps) => {
+  const { sortingId, title } = task;
 
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: 'task-' + id });
+    useSortable({ id: sortingId });
 
   const style = {
     transition,

@@ -63,6 +63,8 @@ const Page = () => {
     const activeId = Number(active.id);
     const overId = Number(over.id);
 
+    console.log(activeId, overId);
+
     // Drag antar column
     const isColumn =
       typeof active.id === 'string' && active.id.endsWith('-column');
@@ -79,6 +81,8 @@ const Page = () => {
 
     // Jika drop ke column kosong
     if (typeof over.id === 'string' && over.id.endsWith('-column')) {
+      console.log('Colum kosong');
+
       const sourceColIndex = findColumnIndexByTaskId(activeId);
       const destColIndex = columns.findIndex((col) => col.id === over.id);
       if (sourceColIndex === -1 || destColIndex === -1) return;
@@ -112,6 +116,8 @@ const Page = () => {
     // Drag antar task
     const sourceColIndex = findColumnIndexByTaskId(activeId);
     const destColIndex = findColumnIndexByTaskId(overId);
+
+    console.log('HANDLE TASK DRAG => ', sourceColIndex, '=>', destColIndex);
 
     if (sourceColIndex === -1 || destColIndex === -1) return;
 
