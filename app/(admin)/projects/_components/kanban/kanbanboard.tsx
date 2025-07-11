@@ -29,6 +29,8 @@ type KanbanBoardProps = {
 
 export default function KanbanBoard({ initialColumns }: KanbanBoardProps) {
   const [columns, setColumns] = useState<KanbanColumn[]>(initialColumns);
+  const [activeTaskId, setActiveTaskId] = useState<number | null>(null);
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(TouchSensor),
@@ -44,25 +46,39 @@ export default function KanbanBoard({ initialColumns }: KanbanBoardProps) {
     if (!over) return;
     if (active.id === over.id) return;
 
-    const oldIndex = columns.findIndex((c) => c.id === active.id);
-    const newIndex = columns.findIndex((c) => c.id === over.id);
+    // const activeId = String(active.id);
+    // const overId = String(over.id);
 
-    const newColumns = arrayMove(columns, oldIndex, newIndex).map(
-      (col, index) => ({
-        ...col,
-        order: index,
-      }),
-    );
+    const isColumn =
+      typeof active.id === 'string' && active.id.startsWith('column-');
 
-    // ⏩ Update column ui
-    setColumns(newColumns);
+    console.log(isColumn);
 
-    const updateColumOrder = newColumns.map((col) => ({
-      id: col.id,
-      order: col.order,
-    }));
+    if (isColumn) {
+      const activeId = String(active.id).replace('column-', '');
+      const overId = String(over.id).replace('column-', '');
 
-    await updateKanbanColumns(updateColumOrder);
+      const oldIndex = columns.findIndex((col) => col.id === activeId);
+      const newIndex = columns.findIndex((col) => col.id === overId);
+      if (oldIndex === -1 || newIndex === -1) return;
+
+      const newColumns = arrayMove(columns, oldIndex, newIndex).map(
+        (col, index) => ({
+          ...col,
+          order: index,
+        }),
+      );
+
+      // ⏩ Update column ui
+      setColumns(newColumns);
+
+      const updateColumOrder = newColumns.map((col) => ({
+        id: col.id,
+        order: col.order,
+      }));
+
+      await updateKanbanColumns(updateColumOrder);
+    }
   };
 
   return (

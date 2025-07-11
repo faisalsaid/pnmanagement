@@ -14,7 +14,7 @@ const Columns = ({ columns }: ColumsProps) => {
   return (
     <div className="bg-muted p-4 rounded-md flex gap-4 items-start overflow-auto w-full">
       <SortableContext
-        items={columns.map((col) => col.id)}
+        items={columns.map((col) => 'column-' + col.id)}
         strategy={horizontalListSortingStrategy}
       >
         {columns.map((column) => (
@@ -38,7 +38,7 @@ const ColumnCard = ({ column }: Columcard) => {
   const { id, name, tasks } = column;
 
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id });
+    useSortable({ id: 'column-' + id });
 
   const style = {
     transition,
