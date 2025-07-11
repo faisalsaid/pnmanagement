@@ -6,6 +6,8 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { GripVertical } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import TaskList from './TaskList';
 
 interface ColumsProps {
   columns: KanbanColumn[];
@@ -49,7 +51,7 @@ const ColumnCard = ({ column }: Columcard) => {
     <div
       ref={setNodeRef}
       style={style}
-      className="w-full min-h-3 border-2 rounded-sm p-2 bg-slate-50"
+      className="w-full min-h-3 border-2 rounded-sm p-2 bg-slate-50 space-y-4"
     >
       <div className="flex items-center justify-between mb-2">
         <div className="text-sm font-semibold">{name}</div>
@@ -62,6 +64,8 @@ const ColumnCard = ({ column }: Columcard) => {
           <GripVertical className="w-4 h-4" />
         </button>
       </div>
+      <Separator />
+      <TaskList tasklist={tasks} />
     </div>
   );
 };
