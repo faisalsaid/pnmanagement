@@ -2,6 +2,8 @@
 
 import { useState, useTransition } from 'react';
 import { createColumn } from '@/actions/projecActions';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 export function AddColumn({ projectId }: { projectId: string }) {
   const [name, setName] = useState('');
@@ -17,21 +19,17 @@ export function AddColumn({ projectId }: { projectId: string }) {
   };
 
   return (
-    <div className="p-2">
-      <input
+    <div className="flex items-center gap-2">
+      <Input
         type="text"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        placeholder="Nama kolom"
+        placeholder="Column name"
         className="border p-1 rounded"
       />
-      <button
-        onClick={handleAdd}
-        disabled={isPending}
-        className="ml-2 bg-blue-500 text-white px-3 py-1 rounded"
-      >
-        Tambah Kolom
-      </button>
+      <Button onClick={handleAdd} disabled={isPending}>
+        Add Column
+      </Button>
     </div>
   );
 }

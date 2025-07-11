@@ -24,6 +24,8 @@ import { KanbanColumn } from '../../project.type';
 import { updateKanbanColumns, updateTaskColumn } from '@/actions/projecActions';
 import { TaskItemCard } from './TaskList';
 
+import KanbanSettingsBar from './KanbanSettingsBar';
+
 export type TaskWithSortingId = KanbanColumn['tasks'][number] & {
   sortingId: string;
 };
@@ -229,39 +231,43 @@ export default function KanbanBoard({ initialColumns }: KanbanBoardProps) {
   };
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCorners}
-      onDragStart={(event) => {
-        if (
-          typeof event.active.id === 'string' &&
-          event.active.id.startsWith('task-')
-        ) {
-          setActiveTaskId(event.active.id);
-        }
-      }}
-      onDragEnd={(event) => {
-        handleDragEnd(event);
-        setActiveTaskId(null); // Reset overlay
-      }}
-    >
-      <div className="flex gap-4 overflow-x-auto pb-4 w-full">
-        <Column columns={columns} activeTaskId={activeTaskId} />
-        <DragOverlay>
-          {activeTaskId ? (
-            <TaskItemCard
-              // activeTaskId={activeTaskId}
-              task={
-                columns
-                  .flatMap((col) => col.tasks)
-                  .find((t) => t.sortingId === activeTaskId)!
-              }
-              isOverlay
-              // activeTaskId={activeTaskId}
-            />
-          ) : null}
-        </DragOverlay>
-      </div>
-    </DndContext>
+    <div className="overflow-x-auto px-4 py-2 space-y-4 w-full bg-muted rounded-lg">
+      <KanbanSettingsBar />{' '}
+      {/* <- fungsi assign task to colum ada di sini <AssignTaskToColumn/> */}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCorners}
+        onDragStart={(event) => {
+          if (
+            typeof event.active.id === 'string' &&
+            event.active.id.startsWith('task-')
+          ) {
+            setActiveTaskId(event.active.id);
+          }
+        }}
+        onDragEnd={(event) => {
+          handleDragEnd(event);
+          setActiveTaskId(null); // Reset overlay
+        }}
+      >
+        <div>
+          <Column columns={columns} activeTaskId={activeTaskId} />
+          <DragOverlay>
+            {activeTaskId ? (
+              <TaskItemCard
+                // activeTaskId={activeTaskId}
+                task={
+                  columns
+                    .flatMap((col) => col.tasks)
+                    .find((t) => t.sortingId === activeTaskId)!
+                }
+                isOverlay
+                // activeTaskId={activeTaskId}
+              />
+            ) : null}
+          </DragOverlay>
+        </div>
+      </DndContext>
+    </div>
   );
 }
