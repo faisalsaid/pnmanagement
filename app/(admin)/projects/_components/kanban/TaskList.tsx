@@ -23,7 +23,7 @@ const TasksList = ({ tasklist, activeTaskId }: TaskListProp) => {
     >
       <div className="space-y-2">
         {tasklist.length === 0 ? (
-          <div className="border border-dashed rounded p-2 text-center text-gray-400">
+          <div className="border border-dashed rounded p-2 text-center text-gray-400 h-32 flex items-center justify-center">
             Drop here
           </div>
         ) : (

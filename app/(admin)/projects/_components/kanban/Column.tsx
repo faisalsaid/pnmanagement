@@ -16,7 +16,7 @@ interface ColumsProps {
 }
 const Columns = ({ columns, activeTaskId }: ColumsProps) => {
   return (
-    <div className="bg-muted p-4 rounded-md flex gap-4 items-start overflow-auto w-full">
+    <div className="bg-muted p-4 rounded-md flex gap-4 items-start overflow-x-scroll w-full">
       <SortableContext
         items={columns.map((col) => 'column-' + col.id)}
         strategy={horizontalListSortingStrategy}
@@ -57,7 +57,7 @@ const ColumnCard = ({ column, activeTaskId }: Columcard) => {
     <div
       ref={setNodeRef}
       style={style}
-      className="w-full min-h-3 border-2 rounded-sm p-2 bg-slate-50 space-y-4"
+      className="w-full min-h-3 border-2 min-w-64 rounded-sm p-2 bg-primary-foreground space-y-4"
     >
       <div className="flex items-center justify-between mb-2">
         <div className="text-sm font-semibold">{name}</div>
