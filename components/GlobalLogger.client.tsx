@@ -21,7 +21,7 @@ export default function GlobalLogger() {
     const isCategory = pathname.startsWith('/category');
     const isArticle = pathname.startsWith('/read/');
     const articleSLug = isArticle ? pathname.split('/')[2] || null : null;
-    console.log(articleSLug);
+    // console.log(articleSLug);
 
     const pageType: 'category' | 'article' | 'page' = isCategory
       ? 'category'

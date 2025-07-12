@@ -86,7 +86,7 @@ const GoalCard = ({ goal }: Props) => {
         toast.success(`Success delete ${goalTitle} goal`);
         router.refresh();
       }
-    } catch (error: any) {
+    } catch (error) {
       toast.error('Failed to delete asset');
       console.log(error);
     } finally {
@@ -190,8 +190,9 @@ const GoalCard = ({ goal }: Props) => {
         title={`Do you really want to delete the goal? `}
         description={
           <span>
-            The goal <span className="font-bold italic">"{goal.title}"</span>{' '}
-            will be permanently deleted and{' '}
+            The goal{' '}
+            <span className="font-bold italic">{`"${goal.title}"`}</span> will
+            be permanently deleted and{' '}
             <span className="text-red-700 font-bold">cannot be undone!</span> .
           </span>
         }

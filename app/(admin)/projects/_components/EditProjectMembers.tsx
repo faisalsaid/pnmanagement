@@ -48,6 +48,7 @@ const EditProjectMembers = ({ members, projectId, creatorId }: Props) => {
       toast.success('Role updated');
       router.refresh(); // atau mutate jika pakai SWR
     } catch (error) {
+      console.log(error);
       toast.error('Failed to update role');
     } finally {
       setUpdating(false);
@@ -65,6 +66,7 @@ const EditProjectMembers = ({ members, projectId, creatorId }: Props) => {
       toast.success('Member removed');
       router.refresh();
     } catch (error) {
+      console.log(error);
       toast.error('Failed to remove member');
     } finally {
       setUpdating(false);

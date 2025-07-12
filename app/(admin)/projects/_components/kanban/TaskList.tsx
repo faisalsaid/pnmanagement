@@ -54,7 +54,7 @@ export const TaskItemCard = ({
   isOverlay = false,
   activeTaskId,
 }: TaskListProps) => {
-  const { sortingId, title } = task;
+  const { sortingId } = task;
 
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: sortingId });

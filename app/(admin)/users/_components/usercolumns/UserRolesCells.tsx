@@ -138,8 +138,8 @@ const UserRolesCells = ({ user, currentUser }: Props) => {
               description={
                 <span>
                   Are you sure you want to change{' '}
-                  <span className="font-semibold uppercase">{user.name}</span>'s
-                  role to{' '}
+                  <span className="font-semibold uppercase">{user.name}</span>
+                  {"'s role to "}
                   <span className="font-semibold uppercase">{pendingRole}</span>
                   ?
                 </span>

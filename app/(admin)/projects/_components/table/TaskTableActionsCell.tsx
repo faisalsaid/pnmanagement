@@ -46,7 +46,7 @@ const TaskTableActionsCell = ({ task }: { task: TaskItem }) => {
   const router = useRouter();
   const [opeConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
   const [openUpdateDialog, setOpenUpdateDialog] = useState<boolean>(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  // const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const { currentProjectMember } = useProjectDetails();
@@ -56,7 +56,8 @@ const TaskTableActionsCell = ({ task }: { task: TaskItem }) => {
       try {
         await deleteTask(task.id);
         toast.success(`Success delete ${task.title}`);
-      } catch (error: any) {
+      } catch (error) {
+        console.log(error);
         toast.error(`Fail delete ${task.title}`);
       } finally {
         router.refresh();
@@ -65,7 +66,7 @@ const TaskTableActionsCell = ({ task }: { task: TaskItem }) => {
     });
   };
 
-  function sanitizeInitialData(data: any) {
+  function sanitizeInitialData(data: TaskItem) {
     if (!data) return undefined;
 
     return {
@@ -80,7 +81,7 @@ const TaskTableActionsCell = ({ task }: { task: TaskItem }) => {
 
   const handleSubmit = async (data: TaskFormValues) => {
     try {
-      setIsSubmitting(true);
+      // setIsSubmitting(true);
 
       await updateTask(task.id, data);
 
@@ -94,7 +95,7 @@ const TaskTableActionsCell = ({ task }: { task: TaskItem }) => {
       console.error(error);
       toast.error('Failed to update task ❌');
     } finally {
-      setIsSubmitting(false);
+      // setIsSubmitting(false);
       setOpenUpdateDialog(false);
     }
   };

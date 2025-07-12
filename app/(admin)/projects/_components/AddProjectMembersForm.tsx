@@ -93,6 +93,7 @@ const AddProjectMembersForm = ({
     };
 
     fetchUsers();
+    //eslint-disable-next-line
   }, [open]);
 
   const handleToggle = (user: ProjectUser, checked: boolean) => {

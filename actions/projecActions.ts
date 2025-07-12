@@ -122,7 +122,7 @@ export const getUserToOwnerProject = async () => {
     const users = await prisma.user.findMany({
       where: {
         role: {
-          notIn: ['USER', 'TESTER'],
+          notIn: ['USER'],
         },
       },
       select: {
@@ -341,7 +341,7 @@ export async function addMembersToProject({
   projectId: string;
   members: { userId: string; role: MemberRole }[];
 }) {
-  console.log(projectId, members);
+  // console.log(projectId, members);
 
   try {
     if (!members.length) return { success: true }; // tidak ada yang perlu ditambahkan

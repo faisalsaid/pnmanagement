@@ -34,7 +34,8 @@ const ProjectOverview = () => {
         toast.error('Fail created task');
       }
       setOpenFormDialog(false);
-    } catch (error: any) {
+    } catch (error) {
+      console.log(error);
       toast.error('Fail, something wrong');
       setOpenFormDialog(false);
     }

@@ -110,7 +110,7 @@ const UserPage = async ({ searchParams }: PostPageProps) => {
     redirect(`/users?page=1&pageSize=${pageSizeNumber}`);
   }
 
-  console.log(users);
+  // console.log(users);
 
   return (
     <div className="space-y-4">

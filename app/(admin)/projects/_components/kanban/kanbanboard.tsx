@@ -48,9 +48,9 @@ export type KanbanColumnWithSortingId = KanbanColumn & {
   tasks: TaskWithSortingId[];
 };
 
-type KanbanBoardProps = {
-  initialColumns: KanbanColumnWithSortingId[];
-};
+// type KanbanBoardProps = {
+//   initialColumns: KanbanColumnWithSortingId[];
+// };
 
 export default function KanbanBoard() {
   const { projectDetail } = useProjectDetails();
@@ -62,9 +62,12 @@ export default function KanbanBoard() {
   const [columns, setColumns] = useState<KanbanColumnWithSortingId[]>(allColum);
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
 
+  const taskLength = allColum.flatMap((col) => col.tasks).length;
+
   useEffect(() => {
     setColumns(allColum);
-  }, [allColum.flatMap((col) => col.tasks).length]);
+    // eslint-disable-next-line
+  }, [taskLength]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -132,8 +135,8 @@ export default function KanbanBoard() {
       );
 
       const taskToMove = sourceCol.tasks[activeTaskIndex];
-      console.log(taskToMove);
-      console.log(destCol);
+      // console.log(taskToMove);
+      // console.log(destCol);
 
       const updatedColumns = [...columns];
 

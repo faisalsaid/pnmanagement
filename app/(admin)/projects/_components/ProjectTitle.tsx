@@ -59,8 +59,9 @@ const ProjectTitle = () => {
         toast.success('Project name updated');
         setEditMode(false);
       }
-      console.log(result);
+      // console.log(result);
     } catch (error) {
+      console.log(error);
       setEditMode(false);
       toast.error('Fail');
     }

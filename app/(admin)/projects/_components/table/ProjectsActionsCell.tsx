@@ -36,7 +36,7 @@ const ProjectsActionsCell = ({
   projectId,
 }: Props) => {
   const [permission, setPermission] = useState(false);
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (currentUser) {
@@ -44,7 +44,7 @@ const ProjectsActionsCell = ({
         currentUser.id === projectCreator.id || currentUser.role === 'ADMIN';
       setPermission(isAllowed);
     }
-  }, [currentUser]);
+  }, [currentUser, projectCreator.id]);
 
   return (
     <div className="flex items-center justify-center">
@@ -71,7 +71,7 @@ const ProjectsActionsCell = ({
           <DropdownMenuSeparator />
           {permission && (
             <DropdownMenuItem
-              onClick={() => setOpen(true)}
+              // onClick={() => setOpen(true)}
               className="text-red-600 cursor-pointer"
             >
               Delete

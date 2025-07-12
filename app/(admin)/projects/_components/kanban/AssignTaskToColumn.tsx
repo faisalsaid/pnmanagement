@@ -65,7 +65,8 @@ const AssignTaskToColumn = () => {
       try {
         await updateTaskColumn(taskValue, columValue);
         toast.success('Success assing task');
-      } catch (error: any) {
+      } catch (error) {
+        console.log(error);
         toast.error('Fail assign task');
       } finally {
         setLoading(false);

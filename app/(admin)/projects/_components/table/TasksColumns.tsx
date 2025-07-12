@@ -56,10 +56,13 @@ export const TaskColumns: ColumnDef<TaskItem>[] = [
     accessorKey: 'assignedTo',
     header: 'Assignet To',
     cell: ({ row }) => {
+      // eslint-disable-next-line
       const { teamMemberships, ...user } = {
         ...row.original.assignedTo,
         memberRole: row.original.assignedTo?.teamMemberships[0].role,
       };
+
+      // console.log(teamMemberships);
 
       if (row.original.assignedTo) {
         return (

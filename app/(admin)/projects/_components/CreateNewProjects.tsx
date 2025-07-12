@@ -81,7 +81,7 @@ const CreateNewProjects = ({ userId }: { userId: string | undefined }) => {
     if (open) {
       fetchUsers();
     }
-  }, [open]);
+  }, [open, userId]);
 
   const form = useForm<z.infer<typeof CreateProjectSchema>>({
     resolver: zodResolver(CreateProjectSchema),
@@ -129,6 +129,8 @@ const CreateNewProjects = ({ userId }: { userId: string | undefined }) => {
         form.reset();
         setOpen(false);
       } catch (err) {
+        console.log(err);
+
         toast.error('Failed to create project');
       }
     });
@@ -218,9 +220,7 @@ const CreateNewProjects = ({ userId }: { userId: string | undefined }) => {
                                 } else {
                                   form.setValue(
                                     'teamMembers',
-                                    members.filter(
-                                      (m: any) => m.userId !== user.id,
-                                    ),
+                                    members.filter((m) => m.userId !== user.id),
                                   );
                                 }
                               }}

@@ -52,7 +52,7 @@ export const saveMediaAssetInfo = async (dataAsset: MediaAssetInput) => {
 // HANDLE UPDATE ASSET INFO
 type UpdateMediaAssetProps = z.infer<typeof UpdateAssetInfoSchema>;
 export const updateMediaAssetInfo = async (asset: UpdateMediaAssetProps) => {
-  console.log(asset.id, asset.title, asset.caption);
+  // console.log(asset.id, asset.title, asset.caption);
   if (!asset.id) {
     throw new Error('Asset ID is required');
   }
@@ -92,7 +92,7 @@ export const deleteMediaAsset = async ({
   public_id,
   id,
 }: DeleteMediaAssetProps) => {
-  console.log('deleteMediaAsset =>>', public_id, id);
+  // console.log('deleteMediaAsset =>>', public_id, id);
 
   if (!public_id || !id) {
     return { success: false, error: 'publicId is required' };
@@ -110,7 +110,7 @@ export const deleteMediaAsset = async ({
     }
 
     const media = await prisma.mediaAsset.findUnique({ where: { id } });
-    console.log('Media in DB:', media);
+    // console.log('Media in DB:', media);
 
     // Hapus dari DB
     const deleted = await prisma.mediaAsset.delete({
