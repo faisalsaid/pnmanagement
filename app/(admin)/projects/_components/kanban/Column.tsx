@@ -7,7 +7,7 @@ import {
 import { GripVertical } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import TasksList from './TaskList';
-import { KanbanColumnWithSortingId } from './Kanbanboard';
+import { KanbanColumnWithSortingId } from './kanbanboard';
 
 interface ColumsProps {
   columns: KanbanColumnWithSortingId[];

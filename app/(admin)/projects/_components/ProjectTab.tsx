@@ -3,7 +3,7 @@
 // components
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ProjectOverview from './ProjectOverview';
-import KanbanBoard from './kanban/Kanbanboard';
+import KanbanBoard from './kanban/kanbanboard';
 
 const ProjectTab = () => {
   return (
