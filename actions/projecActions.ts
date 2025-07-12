@@ -84,6 +84,14 @@ export async function createProject({
 
     const finalTeam = Array.from(memberMap.values());
 
+    // Default Kanban Columns
+    const defaultKanbanColumns = [
+      { name: 'TODO', order: 0, color: '#E0E0E0' },
+      { name: 'PROGRESS', order: 1, color: '#2196F3' },
+      { name: 'REVIEW', order: 2, color: '#FFC107' },
+      { name: 'DONE', order: 3, color: '#4CAF50' },
+    ];
+
     // Buat project dan sekaligus tambahkan team member
     const data = await prisma.project.create({
       data: {
@@ -96,6 +104,9 @@ export async function createProject({
             user: { connect: { id: member.userId } },
             role: member.role,
           })),
+        },
+        kanbanColumns: {
+          create: defaultKanbanColumns,
         },
       },
     });

@@ -207,6 +207,11 @@ const CreateNewProjects = ({ userId }: { userId: string | undefined }) => {
                               type="checkbox"
                               id={`user-${user.id}`}
                               value={user.id}
+                              checked={
+                                form
+                                  .watch('teamMembers')
+                                  ?.some((m) => m.userId === user.id) ?? false
+                              }
                               onChange={(e) => {
                                 const checked = e.target.checked;
                                 const members =

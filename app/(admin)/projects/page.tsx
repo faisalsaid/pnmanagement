@@ -30,7 +30,7 @@ const ProjectsPage = async () => {
     <div>
       <div className="mb-4 px-4 py-2 bg-secondary rounded-md flex justify-between items-center">
         <h1 className="text-xl font-semibold">All Projects</h1>
-        <CreateNewProjects userId={session?.user.id} />
+        {session ? <CreateNewProjects userId={session?.user.id} /> : null}
       </div>
       <div>
         <ProjectsTable
