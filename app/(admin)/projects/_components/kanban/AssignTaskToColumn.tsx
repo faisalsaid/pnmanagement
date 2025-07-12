@@ -165,12 +165,15 @@ const AssignTaskToColumn = () => {
               >
                 Cancel
               </Button>
-              <Button
-                disabled={loading || !taskValue || !columValue}
-                onClick={handeSubmit}
-              >
-                {loading ? 'Assign...' : 'Assign'}{' '}
-              </Button>
+
+              {allTasksNoAssign.length === 0 ? null : (
+                <Button
+                  disabled={loading || !taskValue || !columValue}
+                  onClick={handeSubmit}
+                >
+                  {loading ? 'Assign...' : 'Assign'}{' '}
+                </Button>
+              )}
             </div>
           </div>
         </DialogContent>

@@ -5,7 +5,7 @@ import {
 } from '@dnd-kit/sortable';
 import { GripVertical } from 'lucide-react';
 import { CSS } from '@dnd-kit/utilities';
-import { TaskWithSortingId } from './kanbanboard';
+import { TaskWithSortingId } from './Kanbanboard';
 import { Badge } from '@/components/ui/badge';
 import { getWorkDuration } from '@/lib/helper/GetWorkDuration';
 import UserAvatar from '@/components/UserAvatar';

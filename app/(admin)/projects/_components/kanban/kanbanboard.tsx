@@ -18,19 +18,34 @@ import {
   sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Column from './Column';
 import { KanbanColumn } from '../../project.type';
 import { updateKanbanColumns, updateTaskColumn } from '@/actions/projecActions';
 import { TaskItemCard } from './TaskList';
 
 import KanbanSettingsBar from './KanbanSettingsBar';
+import { useProjectDetails } from '../../[id]/context/ProjectDetailContex';
+
+function addSortingId(data: KanbanColumn[]) {
+  return data.map((column) => {
+    // Tambahkan sortingId ke column
+    const modifiedColumn = {
+      ...column,
+      sortingId: `column-${column.id}`,
+      tasks: column.tasks.map((task) => ({
+        ...task,
+        sortingId: `task-${task.id}`,
+      })),
+    };
+    return modifiedColumn;
+  });
+}
 
 export type TaskWithSortingId = KanbanColumn['tasks'][number] & {
   sortingId: string;
 };
 
-// Extend kolomnya, beserta tasks-nya yang sudah di-extend
 export type KanbanColumnWithSortingId = KanbanColumn & {
   sortingId: string;
   tasks: TaskWithSortingId[];
@@ -40,12 +55,21 @@ type KanbanBoardProps = {
   initialColumns: KanbanColumnWithSortingId[];
 };
 
-export default function KanbanBoard({ initialColumns }: KanbanBoardProps) {
-  const [columns, setColumns] =
-    useState<KanbanColumnWithSortingId[]>(initialColumns);
+export default function KanbanBoard() {
+  const { projectDetail } = useProjectDetails();
+
+  const allColum: KanbanColumnWithSortingId[] = addSortingId(
+    projectDetail.kanbanColumns,
+  );
+
+  // console.log(allColum.flatMap((col) => col.tasks).length);
+
+  const [columns, setColumns] = useState<KanbanColumnWithSortingId[]>(allColum);
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
 
-  console.log('activeTaskId', activeTaskId);
+  useEffect(() => {
+    setColumns(allColum);
+  }, [allColum.flatMap((col) => col.tasks).length]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -231,43 +255,46 @@ export default function KanbanBoard({ initialColumns }: KanbanBoardProps) {
   };
 
   return (
-    <div className="overflow-x-auto px-4 py-2 space-y-4 w-full bg-muted rounded-lg">
-      <KanbanSettingsBar />{' '}
+    <div className=" px-4 py-2 space-y-4 w-full bg-muted rounded-lg">
+      <KanbanSettingsBar />
       {/* <- fungsi assign task to colum ada di sini <AssignTaskToColumn/> */}
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCorners}
-        onDragStart={(event) => {
-          if (
-            typeof event.active.id === 'string' &&
-            event.active.id.startsWith('task-')
-          ) {
-            setActiveTaskId(event.active.id);
-          }
-        }}
-        onDragEnd={(event) => {
-          handleDragEnd(event);
-          setActiveTaskId(null); // Reset overlay
-        }}
-      >
-        <div>
-          <Column columns={columns} activeTaskId={activeTaskId} />
-          <DragOverlay>
-            {activeTaskId ? (
-              <TaskItemCard
-                // activeTaskId={activeTaskId}
-                task={
-                  columns
-                    .flatMap((col) => col.tasks)
-                    .find((t) => t.sortingId === activeTaskId)!
-                }
-                isOverlay
-                // activeTaskId={activeTaskId}
-              />
-            ) : null}
-          </DragOverlay>
-        </div>
-      </DndContext>
+
+      <div className="overflow-x-scroll">
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCorners}
+          onDragStart={(event) => {
+            if (
+              typeof event.active.id === 'string' &&
+              event.active.id.startsWith('task-')
+            ) {
+              setActiveTaskId(event.active.id);
+            }
+          }}
+          onDragEnd={(event) => {
+            handleDragEnd(event);
+            setActiveTaskId(null); // Reset overlay
+          }}
+        >
+          <div>
+            <Column columns={columns} activeTaskId={activeTaskId} />
+            <DragOverlay>
+              {activeTaskId ? (
+                <TaskItemCard
+                  // activeTaskId={activeTaskId}
+                  task={
+                    columns
+                      .flatMap((col) => col.tasks)
+                      .find((t) => t.sortingId === activeTaskId)!
+                  }
+                  isOverlay
+                  // activeTaskId={activeTaskId}
+                />
+              ) : null}
+            </DragOverlay>
+          </div>
+        </DndContext>
+      </div>
     </div>
   );
 }

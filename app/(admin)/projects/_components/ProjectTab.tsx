@@ -2,8 +2,8 @@
 
 // components
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import ProjectKanbanBoard from './ProjectKanbanBoard';
 import ProjectOverview from './ProjectOverview';
+import KanbanBoard from './kanban/Kanbanboard';
 
 const ProjectTab = () => {
   return (
@@ -19,7 +19,7 @@ const ProjectTab = () => {
           <ProjectOverview />
         </TabsContent>
         <TabsContent value="board">
-          <ProjectKanbanBoard />
+          <KanbanBoard />
         </TabsContent>
         <TabsContent value="calender">Calender</TabsContent>
         <TabsContent value="files">Files</TabsContent>
