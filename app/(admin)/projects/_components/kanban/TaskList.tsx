@@ -9,6 +9,7 @@ import { TaskWithSortingId } from './Kanbanboard';
 import { Badge } from '@/components/ui/badge';
 import { getWorkDuration } from '@/lib/helper/GetWorkDuration';
 import UserAvatar from '@/components/UserAvatar';
+import { useProjectDetails } from '../../[id]/context/ProjectDetailContex';
 
 interface TaskListProp {
   tasklist: TaskWithSortingId[];
@@ -54,7 +55,14 @@ export const TaskItemCard = ({
   isOverlay = false,
   activeTaskId,
 }: TaskListProps) => {
+  const { currentProjectMember } = useProjectDetails();
   const { sortingId } = task;
+
+  const dragable =
+    currentProjectMember.hasCrudAccess ||
+    currentProjectMember.id === task.assignedToId;
+
+  console.log(dragable);
 
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: sortingId });
@@ -75,15 +83,16 @@ export const TaskItemCard = ({
         <input type="checkbox" />
         <Badge>{task.priority}</Badge>
         <p className="text-xs">{task.status}</p>
-
-        <button
-          {...attributes}
-          {...listeners}
-          className="cursor-grab p-1 active:cursor-grabbing ml-auto"
-          aria-label="Drag Task"
-        >
-          <GripVertical className="w-4 h-4" />
-        </button>
+        {dragable ? (
+          <button
+            {...attributes}
+            {...listeners}
+            className="cursor-grab p-1 active:cursor-grabbing ml-auto"
+            aria-label="Drag Task"
+          >
+            <GripVertical className="w-4 h-4" />
+          </button>
+        ) : null}
       </div>
 
       <div className="space-y-2">
