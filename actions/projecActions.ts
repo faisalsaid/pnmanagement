@@ -170,8 +170,9 @@ export const getAllProjects = async (userId?: string) => {
 
     const projects = await prisma.project.findMany({
       where: isPrivileged
-        ? {}
+        ? { archived: false }
         : {
+            archived: false,
             members: {
               some: {
                 userId: userId,
@@ -774,4 +775,13 @@ export async function updateKanbanColumns(updatedData: ColumOrderUpdate[]) {
       error: 'Failed to update kanban columns',
     };
   }
+}
+
+// handle projects soft delete
+
+export async function updateProjectArchived(id: string, archived: boolean) {
+  return await prisma.project.update({
+    where: { id },
+    data: { archived },
+  });
 }
