@@ -33,12 +33,20 @@ import { toast } from 'sonner';
 
 const AssignTaskToColumn = () => {
   const routes = useRouter();
-  const { projectDetail } = useProjectDetails();
+  const { projectDetail, currentProjectMember } = useProjectDetails();
 
   // get all tasks column null
-  const allTasksNoAssign = projectDetail.goals.flatMap((goal) =>
-    goal.tasks.filter((task) => task.columnId === null),
-  );
+  const allTasksNoAssign = currentProjectMember.hasCrudAccess
+    ? projectDetail.goals.flatMap((goal) =>
+        goal.tasks.filter((task) => task.columnId === null),
+      )
+    : projectDetail.goals.flatMap((goal) =>
+        goal.tasks.filter(
+          (task) =>
+            task.columnId === null &&
+            task.assignedToId === currentProjectMember.id,
+        ),
+      );
 
   // get all columns
   const allColums = projectDetail.kanbanColumns;

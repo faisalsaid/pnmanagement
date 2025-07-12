@@ -45,18 +45,10 @@ export async function createProject({
   payload: z.infer<typeof CreateProjectSchema>;
 }) {
   try {
-    const session = await auth();
-    const user = session?.user;
+    const user = await validateAdminUser();
 
-    if (!user?.id) throw new Error('Unauthorized');
-
-    const dbUser = await prisma.user.findUnique({
-      where: { id: user.id },
-      select: { role: true },
-    });
-
-    if (!dbUser || dbUser.role === 'USER') {
-      throw new Error('Forbidden: Access denied');
+    if (!user) {
+      return;
     }
 
     const parsed = CreateProjectSchema.safeParse(payload);
@@ -125,11 +117,11 @@ export async function createProject({
 
 export const getUserToOwnerProject = async () => {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      throw new Error('Unauthorized: User not authenticated');
-    }
+    const user = await validateAdminUser();
 
+    if (!user) {
+      return;
+    }
     const users = await prisma.user.findMany({
       where: {
         role: {
@@ -177,7 +169,7 @@ export const getAllProjects = async (userId?: string) => {
       throw new Error('Forbidden: Access denied');
     }
 
-    const isPrivileged = ['ADMIN', 'PEMERED'].includes(dbUser.role);
+    const isPrivileged = ['ADMIN', 'PEMRED'].includes(dbUser.role);
 
     const projects = await prisma.project.findMany({
       where: isPrivileged
@@ -252,20 +244,10 @@ interface GetPorjectById {
 }
 
 export const getProjectById = async ({ id }: GetPorjectById) => {
-  const session = await auth();
-  const user = session?.user;
+  const user = await validateAdminUser();
 
-  if (!user?.id) {
-    throw new Error('Unauthorized');
-  }
-
-  const dbUser = await prisma.user.findUnique({
-    where: { id: user.id },
-    select: { role: true },
-  });
-
-  if (!dbUser || dbUser.role === 'USER') {
-    throw new Error('Forbidden');
+  if (!user) {
+    return;
   }
 
   const project: ProjectDetail | null = await prisma.project.findUnique({
@@ -310,20 +292,11 @@ export const updateProjectSingleFieldById = async ({
   id,
 }: UpdateSingleFieldByIdProps) => {
   try {
-    const session = await auth();
-    const user = session?.user;
+    const user = await validateAdminUser();
 
-    if (!user?.id) throw new Error('Unauthorized');
-
-    const dbUser = await prisma.user.findUnique({
-      where: { id: user.id },
-      select: { role: true },
-    });
-
-    if (!dbUser || dbUser.role === 'USER') {
-      throw new Error('Forbidden: Access denied');
+    if (!user) {
+      return;
     }
-
     // Validasi field yang diizinkan
     const allowedFields = ['description', 'name'];
     if (!allowedFields.includes(field)) {
@@ -356,6 +329,11 @@ export async function addMembersToProject({
   // console.log(projectId, members);
 
   try {
+    const user = await validateAdminUser();
+
+    if (!user) {
+      return;
+    }
     if (!members.length) return { success: true }; // tidak ada yang perlu ditambahkan
 
     // Ambil anggota yang sudah ada
@@ -424,6 +402,12 @@ export async function updateMemberRole({
   userId: string;
   role: MemberRole;
 }) {
+  const user = await validateAdminUser();
+
+  if (!user) {
+    return;
+  }
+
   return await prisma.teamMember.update({
     where: {
       userId_projectId: {
@@ -444,6 +428,11 @@ export async function removeProjectMember({
   projectId: string;
   userId: string;
 }) {
+  const user = await validateAdminUser();
+
+  if (!user) {
+    return;
+  }
   return await prisma.teamMember.delete({
     where: {
       userId_projectId: {
@@ -458,7 +447,11 @@ export async function removeProjectMember({
 
 export async function createGoal(formData: FormData) {
   // validate user
-  await validateAdminUser();
+  const user = await validateAdminUser();
+
+  if (!user) {
+    return;
+  }
 
   // 1. Parse & validate input
   const raw = Object.fromEntries(formData.entries());
@@ -498,7 +491,11 @@ export interface UpdateGoalParams extends GoalFormValues {
 }
 
 export async function updateGoal(data: UpdateGoalParams) {
-  await validateAdminUser();
+  const user = await validateAdminUser();
+
+  if (!user) {
+    return;
+  }
 
   const result = GoalFormSchema.safeParse(data);
   if (!result.success) {
@@ -529,7 +526,11 @@ export async function updateGoal(data: UpdateGoalParams) {
 export async function deleteGoal(id: string) {
   try {
     // Pastikan user adalah admin
-    await validateAdminUser();
+    const user = await validateAdminUser();
+
+    if (!user) {
+      return;
+    }
 
     // Hapus goal
     await prisma.goal.delete({
@@ -549,7 +550,11 @@ export async function deleteGoal(id: string) {
 // CREATE Task
 
 export async function createTask(formData: TaskFormValues) {
-  await validateAdminUser();
+  const user = await validateAdminUser();
+
+  if (!user) {
+    return;
+  }
 
   const result = TaskFormSchema.safeParse(formData);
 
@@ -598,7 +603,11 @@ export async function createTask(formData: TaskFormValues) {
 
 //   const raw = Object.fromEntries(formData.entries());
 export async function updateTask(id: string, data: TaskFormValues) {
-  await validateAdminUser();
+  const user = await validateAdminUser();
+
+  if (!user) {
+    return;
+  }
 
   const result = TaskFormSchema.safeParse(data);
 
@@ -644,7 +653,11 @@ export async function updateTask(id: string, data: TaskFormValues) {
 // DELETE Task
 
 export async function deleteTask(id: string) {
-  await validateAdminUser();
+  const user = await validateAdminUser();
+
+  if (!user) {
+    return;
+  }
 
   try {
     await prisma.task.delete({ where: { id } });
@@ -657,6 +670,12 @@ export async function deleteTask(id: string) {
 
 export const getTasksByProjectId = async (projectId: string) => {
   try {
+    const user = await validateAdminUser();
+
+    if (!user) {
+      return;
+    }
+
     const tasks = await prisma.task.findMany({
       where: {
         goal: {
@@ -699,6 +718,12 @@ export const getTasksByProjectId = async (projectId: string) => {
 // update colum
 
 export async function updateTaskColumn(taskId: string, columnId: string) {
+  const user = await validateAdminUser();
+
+  if (!user) {
+    return;
+  }
+
   await prisma.task.update({
     where: { id: taskId },
     data: { columnId },
@@ -712,6 +737,11 @@ export async function createColumn({
   projectId: string;
   name: string;
 }) {
+  const user = await validateAdminUser();
+
+  if (!user) {
+    return;
+  }
   const newColumn = await prisma.kanbanColumn.create({
     data: {
       name,
@@ -746,6 +776,11 @@ export async function createColumn({
 // };
 
 export async function assignTaskToColumn(taskId: string, columnId: string) {
+  const user = await validateAdminUser();
+
+  if (!user) {
+    return;
+  }
   return await prisma.task.update({
     where: { id: taskId },
     data: { columnId },
@@ -763,6 +798,12 @@ type ColumOrderUpdate = {
 
 export async function updateKanbanColumns(updatedData: ColumOrderUpdate[]) {
   try {
+    const user = await validateAdminUser();
+
+    if (!user) {
+      return;
+    }
+
     const updatedColumns = await Promise.all(
       updatedData.map((col) =>
         prisma.kanbanColumn.update({
@@ -791,6 +832,11 @@ export async function updateKanbanColumns(updatedData: ColumOrderUpdate[]) {
 // handle projects soft delete
 
 export async function updateProjectArchived(id: string, archived: boolean) {
+  const user = await validateAdminUser();
+
+  if (!user) {
+    return;
+  }
   return await prisma.project.update({
     where: { id },
     data: { archived },
