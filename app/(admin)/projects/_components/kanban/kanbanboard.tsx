@@ -71,7 +71,12 @@ export default function KanbanBoard() {
 
   const sensors = useSensors(
     useSensor(PointerSensor),
-    useSensor(TouchSensor),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
@@ -240,7 +245,7 @@ export default function KanbanBoard() {
       <KanbanSettingsBar />
       {/* <- fungsi assign task to colum ada di sini <AssignTaskToColumn/> */}
 
-      <div className="overflow-x-scroll">
+      <div className="overflow-x-scroll touch-pan-x">
         <DndContext
           sensors={sensors}
           collisionDetection={closestCorners}
