@@ -50,12 +50,14 @@ const ProjectDetailDescription = () => {
         id,
       });
 
-      if (result.status === 'success') {
+      if (result && result.status === 'success') {
         setDisplayDesctiption(result.data?.description as string);
         setEditMode(false);
         toast.success('Project description updated');
       } else {
-        toast.error(result.message || 'Failed to update description');
+        toast.error(
+          (result && result.message) || 'Failed to update description',
+        );
       }
     } catch (error) {
       toast.error('An unexpected error occurred');

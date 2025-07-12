@@ -54,7 +54,7 @@ const ProjectTitle = () => {
         field: 'name',
         id,
       });
-      if (result.status === 'success') {
+      if (result && result.status === 'success') {
         setDisplayTitle(result.data?.name as string);
         toast.success('Project name updated');
         setEditMode(false);

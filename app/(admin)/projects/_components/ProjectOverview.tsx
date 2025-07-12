@@ -28,7 +28,7 @@ const ProjectOverview = () => {
   const onSubmit = async (data: TaskFormValues) => {
     try {
       const result = await createTask(data);
-      if (result.success) {
+      if (result && result.success) {
         toast.success(`Success created ${data.title} task`);
       } else {
         toast.error('Fail created task');

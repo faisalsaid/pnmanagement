@@ -63,7 +63,7 @@ const GoalCard = ({ goal }: Props) => {
     try {
       const result = await updateGoal({ ...data, id: goal.id });
 
-      if (result.success) {
+      if (result && result.success) {
         toast.success(`Goal "${data.title}" updated successfully.`);
         router.refresh();
       } else {
@@ -82,7 +82,7 @@ const GoalCard = ({ goal }: Props) => {
     setLoading(true);
     try {
       const result = await deleteGoal(goalId);
-      if (result.success) {
+      if (result && result.success) {
         toast.success(`Success delete ${goalTitle} goal`);
         router.refresh();
       }

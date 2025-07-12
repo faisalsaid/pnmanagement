@@ -59,7 +59,7 @@ const AddProjectMembersForm = ({
   existingMemberIds = [],
   onSuccess,
 }: Props) => {
-  const [users, setUsers] = useState<ProjectUser[]>([]);
+  const [users, setUsers] = useState<ProjectUser[] | undefined>([]);
   const [isLoadingUsers, setIsLoadingUsers] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -78,7 +78,7 @@ const AddProjectMembersForm = ({
       setIsLoadingUsers(true);
       try {
         const usersData = await getUserToOwnerProject();
-        const filtered = usersData.filter(
+        const filtered = usersData?.filter(
           (user) =>
             !excludedUserIds.includes(user.id) &&
             !existingMemberIds.includes(user.id),
@@ -140,12 +140,12 @@ const AddProjectMembersForm = ({
               <FormItem>
                 <FormLabel>Team Members</FormLabel>
                 <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
-                  {users.length === 0 ? (
+                  {users?.length === 0 ? (
                     <p className="text-sm text-muted-foreground">
                       {isLoadingUsers ? 'Load users...' : 'No users available'}
                     </p>
                   ) : (
-                    users.map((user) => (
+                    users?.map((user) => (
                       <div key={user.id} className="flex items-center gap-4">
                         <input
                           type="checkbox"

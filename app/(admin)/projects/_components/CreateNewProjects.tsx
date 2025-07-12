@@ -67,9 +67,11 @@ const CreateNewProjects = ({ userId }: { userId: string | undefined }) => {
       try {
         const usersData = await getUserToOwnerProject();
         // Filter: eliminate creator and selected owner
-        const filtered = usersData.filter((user) => user.id !== userId);
 
-        setUsers(filtered);
+        if (usersData) {
+          const filtered = usersData?.filter((user) => user.id !== userId);
+          setUsers(filtered);
+        }
       } catch (error) {
         toast.error('Failed to load users');
         console.error('Error fetching users:', error);
@@ -118,8 +120,8 @@ const CreateNewProjects = ({ userId }: { userId: string | undefined }) => {
       try {
         const result = await createProject({ payload: finalPayload });
 
-        if (!result.success) {
-          toast.error(result.message);
+        if (!result?.success) {
+          toast.error(result?.message);
           form.reset();
           setOpen(false);
           return;

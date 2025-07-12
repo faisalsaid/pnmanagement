@@ -48,7 +48,7 @@ const ProjectProgress = () => {
 
       // console.log(result);
 
-      if (result.success) {
+      if (result && result.success) {
         toast.success(`Goal "${data.title}" was successfully created.`);
         router.refresh();
       } else {
