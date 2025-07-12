@@ -1,26 +1,27 @@
 'use client';
 
+import { useState } from 'react';
+import { useProjectDetails } from '../../[id]/context/ProjectDetailContex';
+import { useRouter } from 'next/navigation';
+import { updateTaskColumn } from '@/actions/projecActions';
+
+// icons
 import { Button } from '@/components/ui/button';
 import { MdAssignmentReturned } from 'react-icons/md';
 
+// components
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { useState } from 'react';
-
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
-
 import {
   Select,
   SelectContent,
@@ -28,10 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useProjectDetails } from '../../[id]/context/ProjectDetailContex';
 import { toast } from 'sonner';
-import { updateTaskColumn } from '@/actions/projecActions';
-import { useRouter } from 'next/navigation';
 
 const AssignTaskToColumn = () => {
   const routes = useRouter();
@@ -60,11 +58,8 @@ const AssignTaskToColumn = () => {
     setColumnValue(null);
   };
 
-  //   console.log(taskValue);
-
   // hanlde submit
   const handeSubmit = async () => {
-    // console.log(`Assign task ${taskValue} to column ${columValue}`);
     setLoading(true);
     if (taskValue && columValue) {
       try {
@@ -108,7 +103,6 @@ const AssignTaskToColumn = () => {
       {/* DIALOG */}
 
       <Dialog open={openAssignTaskDialog} onOpenChange={handleCancel}>
-        {/* <DialogTrigger>Open</DialogTrigger> */}
         <DialogContent>
           {/* <DialogClose onClick={resetValue} /> */}
           <DialogHeader>

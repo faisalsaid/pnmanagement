@@ -1,23 +1,16 @@
 'use client';
 
+// icons
 import { Button } from '@/components/ui/button';
 import { Columns3 } from 'lucide-react';
 
+// components
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { useState } from 'react';
 import AssignTaskToColumn from './AssignTaskToColumn';
 
 const KanbanSettingsBar = () => {

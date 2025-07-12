@@ -1,5 +1,4 @@
 import { CSS } from '@dnd-kit/utilities';
-import { KanbanColumn } from '../../project.type';
 import {
   horizontalListSortingStrategy,
   SortableContext,

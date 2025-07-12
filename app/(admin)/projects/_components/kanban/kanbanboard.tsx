@@ -1,5 +1,8 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { updateKanbanColumns, updateTaskColumn } from '@/actions/projecActions';
+import { useProjectDetails } from '../../[id]/context/ProjectDetailContex';
 import {
   KeyboardSensor,
   PointerSensor,
@@ -11,25 +14,19 @@ import {
   DragEndEvent,
   DragOverlay,
 } from '@dnd-kit/core';
-import {
-  arrayMove,
-  SortableContext,
-  verticalListSortingStrategy,
-  sortableKeyboardCoordinates,
-} from '@dnd-kit/sortable';
+import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 
-import { useEffect, useState } from 'react';
-import Column from './Column';
+// type
 import { KanbanColumn } from '../../project.type';
-import { updateKanbanColumns, updateTaskColumn } from '@/actions/projecActions';
-import { TaskItemCard } from './TaskList';
 
+// components
+import Column from './Column';
+import { TaskItemCard } from './TaskList';
 import KanbanSettingsBar from './KanbanSettingsBar';
-import { useProjectDetails } from '../../[id]/context/ProjectDetailContex';
 
 function addSortingId(data: KanbanColumn[]) {
   return data.map((column) => {
-    // Tambahkan sortingId ke column
+    // add field sortingId to column
     const modifiedColumn = {
       ...column,
       sortingId: `column-${column.id}`,
@@ -61,8 +58,6 @@ export default function KanbanBoard() {
   const allColum: KanbanColumnWithSortingId[] = addSortingId(
     projectDetail.kanbanColumns,
   );
-
-  // console.log(allColum.flatMap((col) => col.tasks).length);
 
   const [columns, setColumns] = useState<KanbanColumnWithSortingId[]>(allColum);
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
@@ -98,12 +93,7 @@ export default function KanbanBoard() {
     const isColumn =
       typeof active.id === 'string' && active.id.startsWith('column-');
 
-    console.log(isColumn);
-
     if (isColumn) {
-      // const activeId = String(active.id).replace('column-', '');
-      // const overId = String(over.id).replace('column-', '');
-
       const oldIndex = columns.findIndex((col) => col.sortingId === activeId);
       const newIndex = columns.findIndex((col) => col.sortingId === overId);
       if (oldIndex === -1 || newIndex === -1) return;
@@ -127,29 +117,19 @@ export default function KanbanBoard() {
     }
 
     if (typeof over.id === 'string' && over.id.startsWith('column-')) {
-      console.log('empty column');
-
-      // console.log('ACTIVE ID', activeId, 'OVER ID', over.id);
-      // console.log(activeId);
-
       const sourceColIndex = findColumnIndexByTaskId(activeId);
       const destColIndex = columns.findIndex(
         (col) => col.sortingId === over.id,
       );
 
-      console.log('sourceColIndex', sourceColIndex, destColIndex);
-
       if (sourceColIndex === -1 || destColIndex === -1) return;
 
       const sourceCol = columns[sourceColIndex];
       const destCol = columns[destColIndex];
-      // console.log('sourceCol', sourceCol, destCol);
 
       const activeTaskIndex = sourceCol.tasks.findIndex(
         (task) => 'task-' + task.id === activeId,
       );
-
-      // console.log(sourceCol);
 
       const taskToMove = sourceCol.tasks[activeTaskIndex];
       console.log(taskToMove);
@@ -189,8 +169,6 @@ export default function KanbanBoard() {
     const sourceColIndex = findColumnIndexByTaskId(activeId);
     const destColIndex = findColumnIndexByTaskId(overId);
     if (sourceColIndex === -1 || destColIndex === -1) return;
-
-    console.log('sourceColIndex', sourceColIndex, 'destColIndex', destColIndex);
 
     const sourceCol = columns[sourceColIndex];
     const destCol = columns[destColIndex];

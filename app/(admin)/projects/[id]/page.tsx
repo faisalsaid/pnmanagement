@@ -9,7 +9,7 @@ import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
 import {
   CurrentProjectMember,
-  ProjectDetailProvider,
+  // ProjectDetailProvider,
 } from './context/ProjectDetailContex';
 import WraperProjectDetailContext from '../_components/WraperPojectDetailsContex';
 
@@ -21,8 +21,6 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
 
   // fetch porject detail by project id
   const projectDetail = await getProjectById({ id });
-
-  // console.log(projectDetail);
 
   // Redirect if project is not found
   if (!projectDetail) {
@@ -79,7 +77,6 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
     hasCrudAccess,
   };
 
-  // return <div>ACCESS ACEPTED</div>;
   return (
     <WraperProjectDetailContext
       projectDetail={projectDetail}
