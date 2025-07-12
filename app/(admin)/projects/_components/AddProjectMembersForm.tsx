@@ -59,7 +59,7 @@ const AddProjectMembersForm = ({
   existingMemberIds = [],
   onSuccess,
 }: Props) => {
-  const [users, setUsers] = useState<ProjectUser[] | undefined>([]);
+  const [users, setUsers] = useState<ProjectUser[]>([]);
   const [isLoadingUsers, setIsLoadingUsers] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -78,12 +78,14 @@ const AddProjectMembersForm = ({
       setIsLoadingUsers(true);
       try {
         const usersData = await getUserToOwnerProject();
-        const filtered = usersData?.filter(
-          (user) =>
-            !excludedUserIds.includes(user.id) &&
-            !existingMemberIds.includes(user.id),
-        );
-        setUsers(filtered);
+        if (usersData) {
+          const filtered = usersData?.filter(
+            (user) =>
+              !excludedUserIds.includes(user.id) &&
+              !existingMemberIds.includes(user.id),
+          );
+          setUsers(filtered);
+        }
       } catch (error) {
         toast.error('Failed to load users');
         console.error(error);

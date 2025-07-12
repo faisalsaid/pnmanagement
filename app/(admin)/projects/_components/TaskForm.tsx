@@ -188,13 +188,13 @@ export const TaskForm = ({
             )}
           />
         )}
-        <div className="flex gap-4 items-center">
+        <div className="sm:flex gap-4 items-center space-y-2 sm:space-y-0">
           {/* Due Date */}
           <FormField
             control={form.control}
             name="dueDate"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem className="flex flex-col ">
                 <FormLabel className={`${isDisabled ? 'text-muted' : ''}`}>
                   Due Date
                 </FormLabel>
@@ -205,7 +205,7 @@ export const TaskForm = ({
                         disabled={isDisabled}
                         variant={'outline'}
                         className={cn(
-                          'w-[180px] pl-3 text-left font-normal',
+                          'sm:w-[180px] w-full pl-3 text-left font-normal',
                           !field.value && 'text-muted-foreground',
                         )}
                       >

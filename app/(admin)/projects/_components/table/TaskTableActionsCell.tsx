@@ -159,7 +159,7 @@ const TaskTableActionsCell = ({ task }: { task: TaskItem }) => {
 
       {/* UPDATE FORM */}
       <Dialog open={openUpdateDialog} onOpenChange={setOpenUpdateDialog}>
-        <DialogContent>
+        <DialogContent className="min-w-48">
           <DialogHeader>
             <DialogTitle>Update {task.title}</DialogTitle>
           </DialogHeader>
