@@ -34,24 +34,7 @@ export const TaskColumns: ColumnDef<TaskItem>[] = [
       </Tooltip>
     ),
   },
-  {
-    accessorKey: 'createdBy',
-    header: 'Creator',
-    cell: ({ row }) => {
-      return (
-        <div className="flex gap-2 items-center">
-          <UserAvatar
-            user={{
-              id: row.original.createdBy.id as string,
-              image: row.original.createdBy.image as string,
-              name: row.original.createdBy.name as string,
-            }}
-          />
-          <div className="">{row.original.createdBy.name}</div>
-        </div>
-      );
-    },
-  },
+
   {
     accessorKey: 'assignedTo',
     header: 'Assignet To',
@@ -159,7 +142,24 @@ export const TaskColumns: ColumnDef<TaskItem>[] = [
       );
     },
   },
-
+  {
+    accessorKey: 'createdBy',
+    header: 'Creator',
+    cell: ({ row }) => {
+      return (
+        <div className="flex gap-2 items-center">
+          <UserAvatar
+            user={{
+              id: row.original.createdBy.id as string,
+              image: row.original.createdBy.image as string,
+              name: row.original.createdBy.name as string,
+            }}
+          />
+          <div className="">{row.original.createdBy.name}</div>
+        </div>
+      );
+    },
+  },
   {
     id: 'action',
     header: 'Actions',

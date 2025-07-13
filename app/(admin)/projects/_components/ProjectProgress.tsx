@@ -34,6 +34,7 @@ const ProjectProgress = () => {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
   const handleSubmit = async (data: GoalFormValues) => {
+    setDialogOpen(false);
     try {
       const formData = new FormData();
 

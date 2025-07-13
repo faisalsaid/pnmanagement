@@ -161,7 +161,11 @@ const CreateGoalForm = ({
           <Button onClick={onClose} variant={'ghost'} type="button">
             Cancel
           </Button>
-          <Button className="" type="submit">
+          <Button
+            disabled={form.formState.isSubmitting}
+            className=""
+            type="submit"
+          >
             {submitLabel} Goal
           </Button>
         </div>
