@@ -110,12 +110,3 @@ const ProjectDetailsPage = async ({ params }: { params: Params }) => {
 };
 
 export default ProjectDetailsPage;
-
-// const MemberListSkeleton = () => {
-//   return (
-//     <div className="flex items-center gap-2">
-//       <Skeleton className="h-6 w-20" />
-//       <Skeleton className="h-6 w-6" />
-//     </div>
-//   );
-// };
