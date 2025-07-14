@@ -3,12 +3,21 @@
 import { formatIndonesianDate } from '@/lib/helper/formatDate';
 import { Prisma } from '@prisma/client';
 
-import { LayoutDashboard, User } from 'lucide-react';
+import { LayoutDashboard, Moon, Sun, User } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import MenuSheet from './MenuSheet';
 import { Session } from 'next-auth';
-// import { Button } from '@/components/ui/button';
+import { useTheme } from 'next-themes';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
 
 interface WebFooterProps {
   categories: Prisma.CategoryGetPayload<true>[];
@@ -16,6 +25,8 @@ interface WebFooterProps {
 }
 
 const WebHeader = ({ categories, session }: WebFooterProps) => {
+  const { setTheme } = useTheme();
+
   const isAllowed =
     session?.user.role &&
     ['ADMIN', 'PEMRED', 'REDAKTUR'].includes(session.user.role);
@@ -60,6 +71,26 @@ const WebHeader = ({ categories, session }: WebFooterProps) => {
         </div>
         <div className="flex items-center gap-2 justify-end">
           {/* <div>serch article</div> */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon">
+                <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                <span className="sr-only">Toggle theme</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setTheme('light')}>
+                Light
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme('dark')}>
+                Dark
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme('system')}>
+                System
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <div>
             {permission ? (
               <div>
