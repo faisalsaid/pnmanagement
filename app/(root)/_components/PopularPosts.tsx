@@ -8,7 +8,7 @@ const PopularPosts = async () => {
 
   return (
     <div className="space-y-4">
-      <h1>Popular Post</h1>
+      <h1 className="text-orange-600 font-semibold">Popular Post</h1>
       <div className="space-y-2">
         {popularPost && popularPost.length > 0 ? (
           popularPost.map((post) => (

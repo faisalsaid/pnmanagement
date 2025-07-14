@@ -27,8 +27,8 @@ const PopularPostCard = ({ post }: Props) => {
       <h1 className="text-sm line-clamp-3 flex-grow ">
         <Link href={`/read/${post.slug}`}>{post.title}</Link>
       </h1>
-      <div className="flex flex-col items-center p-2 bg-amber-100 rounded-sm justify-center">
-        <span>{post.viewCount}</span>
+      <div className="flex flex-col items-center p-2 bg-amber-100 rounded-sm justify-center text-amber-800">
+        <span className="font-semibold">{post.viewCount}</span>
         <span className="text-xs">views</span>
       </div>
     </div>

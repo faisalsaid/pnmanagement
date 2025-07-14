@@ -17,7 +17,9 @@ const CategoryHomePage = ({
 
   return (
     <div className="space-y-2">
-      <div className="capitalize font-semibold text-xl">{categoryName}</div>
+      <div className="capitalize font-semibold text-xl text-orange-600">
+        {categoryName}
+      </div>
       <HeadCategory article={headCategoryList} />
       <div className="space-y-2">
         {post.map((article) => (
