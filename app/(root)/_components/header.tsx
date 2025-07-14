@@ -2,13 +2,16 @@
 
 import { formatIndonesianDate } from '@/lib/helper/formatDate';
 import { Prisma } from '@prisma/client';
+import { signOut } from 'next-auth/react';
 
-import { LayoutDashboard, Moon, Sun, User } from 'lucide-react';
+import { LayoutDashboard, LogOutIcon, Moon, Sun, User } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import MenuSheet from './MenuSheet';
 import { Session } from 'next-auth';
 import { useTheme } from 'next-themes';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,7 +32,9 @@ const WebHeader = ({ categories, session }: WebFooterProps) => {
 
   const isAllowed =
     session?.user.role &&
-    ['ADMIN', 'PEMRED', 'REDAKTUR'].includes(session.user.role);
+    ['ADMIN', 'PEMRED', 'REDAKTUR', 'TESTER', 'REPORTER'].includes(
+      session.user.role,
+    );
 
   const [permission, setPermission] = useState(isAllowed);
 
@@ -92,19 +97,65 @@ const WebHeader = ({ categories, session }: WebFooterProps) => {
             </DropdownMenuContent>
           </DropdownMenu>
           <div>
-            {permission ? (
-              <div>
-                <Link href={'/dashboard'}>
-                  <LayoutDashboard />
-                </Link>
-              </div>
-            ) : null}
+            {/* {permission ? (
+              
+            ) : null} */}
             {!session ? (
               <Link className="flex gap-1 items-center " href={'/auth/login'}>
                 <User size={16} />
                 Sign in
               </Link>
-            ) : null}
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Avatar className="hover:cursor-pointer">
+                    <AvatarImage
+                      src={session?.user.image as string}
+                      alt={'profile'}
+                    />
+                    <AvatarFallback>!</AvatarFallback>
+                  </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent sideOffset={10}>
+                  <DropdownMenuLabel>
+                    <div className=" sm:hidden">
+                      <p className="capitalize line-clamp-1 ">
+                        {session?.user.name}
+                      </p>
+                      {/* <p className="text-xs text-muted-foreground capitalize">
+                  {data?.user.role.toLocaleLowerCase()}
+                </p> */}
+                    </div>
+                    <p className="hidden sm:block">My Account</p>
+                  </DropdownMenuLabel>
+
+                  <DropdownMenuSeparator />
+                  {permission ? (
+                    <Link href={'/dashboard'}>
+                      <DropdownMenuItem>
+                        <LayoutDashboard className="h-[1.2rem] w-[1.2rem] mr-2" />
+                        Dashboard
+                      </DropdownMenuItem>
+                    </Link>
+                  ) : null}
+                  <Link href={'/profile'}>
+                    <DropdownMenuItem>
+                      <User className="h-[1.2rem] w-[1.2rem] mr-2" />
+                      Profile
+                    </DropdownMenuItem>
+                  </Link>
+                  <DropdownMenuItem variant="destructive">
+                    <Button
+                      onClick={() => signOut({ redirectTo: '/' })}
+                      variant={'outline'}
+                    >
+                      <LogOutIcon className="h-[1.2rem] w-[1.2rem] mr-2" />
+                      Logout
+                    </Button>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
           <div className="block md:hidden">
             <MenuSheet categories={cleanCategories} session={session} />
