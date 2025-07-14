@@ -1,7 +1,13 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 import { CldImage } from 'next-cloudinary';
 
 import { MediaAsset } from '@prisma/client';
@@ -23,19 +29,23 @@ const AssetCard = ({
         width={asset.width!}
       />
       <div className="absolute inset-0 flex items-center justify-center bg-black/20 text-white opacity-0 translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0 gap-2">
+        <ImageDetailDialog
+          asset={asset}
+          trigger={
+            <Button size="sm" variant="secondary">
+              View
+            </Button>
+          }
+        />
         <Sheet>
-          <ImageDetailDialog
-            asset={asset}
-            trigger={
-              <Button size="sm" variant="secondary">
-                View
-              </Button>
-            }
-          />
           <SheetTrigger asChild>
             <Button size="sm">Info</Button>
           </SheetTrigger>
           <SheetContent side="right" className="w-[80%] sm:w-[500px]">
+            <SheetHeader>
+              <SheetTitle>Asset Info</SheetTitle>
+            </SheetHeader>
+
             <AssetInfoForm asset={asset} />
           </SheetContent>
         </Sheet>
