@@ -5,6 +5,10 @@ import { revalidatePath } from 'next/cache';
 import slugify from 'slugify';
 import { z } from 'zod';
 import { DateTime } from 'luxon';
+import {
+  getAllHeadlineArticleQuery,
+  HeadlineArticleType,
+} from '@/types/article.type';
 
 interface InputCategory {
   name: string;
@@ -335,3 +339,28 @@ export async function getTopFiveArticles() {
 
   return articles;
 }
+
+// GET all hedaline post
+
+export const getAllHeadlineArticle = async () => {
+  try {
+    const result: HeadlineArticleType[] = await prisma.article.findMany({
+      where: {
+        category: {
+          slug: 'utama',
+        },
+        status: 'PUBLISHED',
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 5,
+      ...getAllHeadlineArticleQuery,
+    });
+
+    return { success: true, result };
+  } catch (error: any) {
+    console.error('Error fetching headline articles:', error);
+    throw new Error('Failed to get all headline posts');
+  }
+};

@@ -26,6 +26,7 @@ const SiglePostPage = async ({ params }: Props) => {
     },
   });
 
+  // hanlde post view count
   if (article) await incrementPostView(article?.id);
 
   // select first feature image
