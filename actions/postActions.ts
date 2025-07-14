@@ -7,7 +7,9 @@ import { z } from 'zod';
 import { DateTime } from 'luxon';
 import {
   getAllHeadlineArticleQuery,
+  getTenPopularPostQuery,
   HeadlineArticleType,
+  TenPopularArticleType,
 } from '@/types/article.type';
 
 interface InputCategory {
@@ -362,5 +364,27 @@ export const getAllHeadlineArticle = async () => {
   } catch (error: any) {
     console.error('Error fetching headline articles:', error);
     throw new Error('Failed to get all headline posts');
+  }
+};
+
+// GET ten popular post by viewcount
+
+export const getTenPopularPost = async () => {
+  try {
+    const result: TenPopularArticleType[] = await prisma.article.findMany({
+      where: {
+        status: 'PUBLISHED',
+      },
+      orderBy: {
+        viewCount: 'desc',
+      },
+      take: 10,
+      ...getTenPopularPostQuery,
+    });
+
+    return result;
+  } catch (error) {
+    console.error('Error fetching popular post:', error);
+    throw new Error('Failed to get popular post');
   }
 };

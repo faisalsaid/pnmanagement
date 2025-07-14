@@ -1,29 +1,25 @@
-const PopularPosts = () => {
+import { getTenPopularPost } from '@/actions/postActions';
+import PopularPostCard from './PopularPostCard';
+
+const PopularPosts = async () => {
+  const popularPost = await getTenPopularPost();
+
+  // console.log(popularPost);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <h1>Popular Post</h1>
       <div className="space-y-2">
-        {Array.from({ length: 10 }, (_, i) => (
-          <PopularPostCard key={i} />
-        ))}
+        {popularPost && popularPost.length > 0 ? (
+          popularPost.map((post) => (
+            <PopularPostCard post={post} key={post.id} />
+          ))
+        ) : (
+          <div>No Posts</div>
+        )}
       </div>
     </div>
   );
 };
 
 export default PopularPosts;
-
-const PopularPostCard = () => {
-  return (
-    <div className="flex items-center gap-2">
-      <div className="h-[60px] aspect-square bg-orange-400 rounded-md"></div>
-      <h1 className="text-sm line-clamp-3">
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-      </h1>
-      <div className="flex flex-col items-center p-2 bg-amber-100 rounded-sm justify-center">
-        <span>300</span>
-        <span className="text-xs">views</span>
-      </div>
-    </div>
-  );
-};
