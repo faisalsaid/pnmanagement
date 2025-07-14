@@ -55,3 +55,38 @@ export const getTenPopularPostQuery =
 export type TenPopularArticleType = Prisma.ArticleGetPayload<
   typeof getTenPopularPostQuery
 >;
+
+export const get3CategoryForHomeQuery =
+  Prisma.validator<Prisma.ArticleFindManyArgs>()({
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      category: true,
+      content: true,
+      status: true,
+      tags: true,
+      createdAt: true,
+      viewCount: true,
+      media: {
+        where: {
+          role: 'feature',
+        },
+        take: 1,
+        select: {
+          mediaAsset: {
+            select: {
+              id: true,
+              public_id: true,
+              height: true,
+              width: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+export type ArticleCategoryHomeType = Prisma.ArticleGetPayload<
+  typeof get3CategoryForHomeQuery
+>;

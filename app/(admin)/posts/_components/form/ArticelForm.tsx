@@ -123,7 +123,7 @@ const ArticelForm = ({ initialData, categories, authorId }: Props) => {
 
   // Handle submit
   const onSubmit = async (data: z.infer<typeof postFormSchema>) => {
-    console.log(data);
+    // console.log(data);
 
     if (initialData) {
       startTransition(() => {

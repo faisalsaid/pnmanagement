@@ -6,6 +6,8 @@ import slugify from 'slugify';
 import { z } from 'zod';
 import { DateTime } from 'luxon';
 import {
+  ArticleCategoryHomeType,
+  get3CategoryForHomeQuery,
   getAllHeadlineArticleQuery,
   getTenPopularPostQuery,
   HeadlineArticleType,
@@ -384,7 +386,68 @@ export const getTenPopularPost = async () => {
 
     return result;
   } catch (error) {
-    console.error('Error fetching popular post:', error);
+    console.error('Error fetching popular post', error);
     throw new Error('Failed to get popular post');
+  }
+};
+
+// GET get 3 categories for home
+
+export const get3CategoriesForHome = async () => {
+  try {
+    const [politik, hukum, olahraga]: [
+      ArticleCategoryHomeType[],
+      ArticleCategoryHomeType[],
+      ArticleCategoryHomeType[],
+    ] = await Promise.all([
+      prisma.article.findMany({
+        ...get3CategoryForHomeQuery,
+        where: {
+          category: {
+            slug: 'politik',
+          },
+          deletedAt: null,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        take: 4,
+      }),
+      prisma.article.findMany({
+        ...get3CategoryForHomeQuery,
+        where: {
+          category: {
+            slug: 'hukum',
+          },
+          deletedAt: null,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        take: 4,
+      }),
+      prisma.article.findMany({
+        ...get3CategoryForHomeQuery,
+        where: {
+          category: {
+            slug: 'olahraga',
+          },
+          deletedAt: null,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        take: 4,
+      }),
+    ]);
+
+    return [
+      { name: 'politik', data: politik },
+      { name: 'hukum', data: hukum },
+      { name: 'olahraga', data: olahraga },
+    ];
+  } catch (error) {
+    console.error('Error fetching article by cotegory for home', error);
+    throw new Error('Failed to get article by cotegory for home');
   }
 };

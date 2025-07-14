@@ -38,7 +38,7 @@ interface SectionCardProps {
 
 const SectionCard = ({ classes, artcile }: SectionCardProps) => {
   const theImage = artcile.media.find((media) => media.role === 'feature');
-  console.log(theImage?.mediaAsset.public_id);
+  // console.log(theImage?.mediaAsset.public_id);
 
   return (
     <div
