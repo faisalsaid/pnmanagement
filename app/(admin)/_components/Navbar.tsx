@@ -6,7 +6,15 @@ import { Session } from 'next-auth';
 import { signOut } from 'next-auth/react';
 
 // import ui
-import { Globe, LogOutIcon, Moon, Settings, Sun, User } from 'lucide-react';
+import {
+  Globe,
+  House,
+  LogOutIcon,
+  Moon,
+  Settings,
+  Sun,
+  User,
+} from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -102,6 +110,12 @@ const Navbar = ({ data }: { data: Session | null }) => {
               <DropdownMenuItem>
                 <User className="h-[1.2rem] w-[1.2rem] mr-2" />
                 Profile
+              </DropdownMenuItem>
+            </Link>
+            <Link href={'/room'}>
+              <DropdownMenuItem>
+                <House className="h-[1.2rem] w-[1.2rem] mr-2" />
+                My Room
               </DropdownMenuItem>
             </Link>
             <DropdownMenuItem>

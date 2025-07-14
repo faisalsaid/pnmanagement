@@ -4,7 +4,14 @@ import { formatIndonesianDate } from '@/lib/helper/formatDate';
 import { Prisma } from '@prisma/client';
 import { signOut } from 'next-auth/react';
 
-import { LayoutDashboard, LogOutIcon, Moon, Sun, User } from 'lucide-react';
+import {
+  House,
+  LayoutDashboard,
+  LogOutIcon,
+  Moon,
+  Sun,
+  User,
+} from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import MenuSheet from './MenuSheet';
@@ -131,17 +138,25 @@ const WebHeader = ({ categories, session }: WebFooterProps) => {
 
                   <DropdownMenuSeparator />
                   {permission ? (
-                    <Link href={'/dashboard'}>
-                      <DropdownMenuItem>
-                        <LayoutDashboard className="h-[1.2rem] w-[1.2rem] mr-2" />
-                        Dashboard
-                      </DropdownMenuItem>
-                    </Link>
+                    <>
+                      <Link href={'/dashboard'}>
+                        <DropdownMenuItem>
+                          <LayoutDashboard className="h-[1.2rem] w-[1.2rem] mr-2" />
+                          Dashboard
+                        </DropdownMenuItem>
+                      </Link>
+                      <Link href={'/profile'}>
+                        <DropdownMenuItem>
+                          <User className="h-[1.2rem] w-[1.2rem] mr-2" />
+                          Profile
+                        </DropdownMenuItem>
+                      </Link>
+                    </>
                   ) : null}
-                  <Link href={'/profile'}>
+                  <Link href={'/room'}>
                     <DropdownMenuItem>
-                      <User className="h-[1.2rem] w-[1.2rem] mr-2" />
-                      Profile
+                      <House className="h-[1.2rem] w-[1.2rem] mr-2" />
+                      My Room
                     </DropdownMenuItem>
                   </Link>
                   <DropdownMenuItem variant="destructive">
