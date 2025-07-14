@@ -2,7 +2,16 @@ import { Prisma } from '@prisma/client';
 
 export const getAllHeadlineArticleQuery =
   Prisma.validator<Prisma.ArticleFindManyArgs>()({
-    include: {
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      category: true,
+      content: true,
+      status: true,
+      tags: true,
+      createdAt: true,
+      viewCount: true,
       media: {
         select: {
           role: true,

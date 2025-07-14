@@ -1,5 +1,3 @@
-import { Separator } from '@/components/ui/separator';
-
 const PopularPosts = () => {
   return (
     <div className="space-y-6">
