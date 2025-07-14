@@ -26,8 +26,8 @@ const WebHeader = ({ categories, session }: WebFooterProps) => {
     setPermission(isAllowed);
   }, [isAllowed]);
 
-  const toExclude = ['uncategorized', 'headline', 'utama'];
-  const priority = ['politik', 'ekonomi'];
+  const toExclude = ['uncategorized', 'headline'];
+  const priority = ['utama', 'politik', 'ekonomi'];
 
   const filtered = categories.filter(
     (cat): cat is Prisma.CategoryGetPayload<true> =>
