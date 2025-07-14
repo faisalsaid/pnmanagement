@@ -2,6 +2,7 @@ import RenderRichText from '@/components/RenderRIchText';
 import prisma from '@/lib/prisma';
 import ArticelAsset from '../_components/ArticelAsset';
 import { incrementPostView } from '@/actions/postActions';
+import PopularPosts from '../../_components/PopularPosts';
 
 type ParamsProps = { slug: string };
 
@@ -43,7 +44,9 @@ const SiglePostPage = async ({ params }: Props) => {
           <RenderRichText content={article?.content as string} />
         </article>
       </section>
-      <aside className="flex-4/12">A Side</aside>
+      <aside className="flex-4/12">
+        <PopularPosts />
+      </aside>
     </div>
   );
 };
