@@ -133,6 +133,9 @@ const UserPage = async ({ searchParams }: PostPageProps) => {
           />
         </Suspense>
       </div>
+      <p className="italic text- text-muted-foreground">
+        Changing user roles is restricted to admins only.
+      </p>
     </div>
   );
 };
