@@ -9,21 +9,21 @@ import {
 } from '@/actions/postActions';
 
 const WebHomePage = async () => {
-  const { result } = await getAllHeadlineArticle();
+  const { success: headStatus, result } = await getAllHeadlineArticle();
 
-  const { success, data } = await get3CategoriesForHome();
+  const { success: categoryStatus, data } = await get3CategoriesForHome();
 
   // console.log(categoryHome);
 
   return (
     <main className="space-y-4">
-      {result && result.length > 0 ? (
+      {headStatus && result.length > 0 ? (
         <HeroSection headlinePostLists={result} />
       ) : (
         <BlankHero />
       )}
       <Separator />
-      {success ? (
+      {categoryStatus ? (
         <div className="md:grid grid-cols-3 gap-6">
           {/* List Category */}
           <div className="md:col-span-2 space-y-4">
