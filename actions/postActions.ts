@@ -441,11 +441,14 @@ export const get3CategoriesForHome = async () => {
       }),
     ]);
 
-    return [
-      { name: 'politik', data: politik },
-      { name: 'hukum', data: hukum },
-      { name: 'olahraga', data: olahraga },
-    ];
+    return {
+      success: true,
+      data: [
+        { name: 'politik', data: politik },
+        { name: 'hukum', data: hukum },
+        { name: 'olahraga', data: olahraga },
+      ],
+    };
   } catch (error) {
     console.error('Error fetching article by cotegory for home', error);
     throw new Error('Failed to get article by cotegory for home');

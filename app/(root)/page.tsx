@@ -11,7 +11,7 @@ import {
 const WebHomePage = async () => {
   const { result } = await getAllHeadlineArticle();
 
-  const categoryHome = await get3CategoriesForHome();
+  const { success, data } = await get3CategoriesForHome();
 
   // console.log(categoryHome);
 
@@ -23,28 +23,32 @@ const WebHomePage = async () => {
         <BlankHero />
       )}
       <Separator />
-      <div className="md:grid grid-cols-3 gap-6">
-        {/* List Category */}
-        <div className="md:col-span-2 space-y-4">
-          {categoryHome && categoryHome.length > 0 ? (
-            categoryHome.map((category) => (
-              <React.Fragment key={category.name}>
-                <CategoryHomePage
-                  category={category.data}
-                  categoryName={category.name}
-                />
-                <Separator />
-              </React.Fragment>
-            ))
-          ) : (
-            <div>Empty post</div>
-          )}
+      {success ? (
+        <div className="md:grid grid-cols-3 gap-6">
+          {/* List Category */}
+          <div className="md:col-span-2 space-y-4">
+            {data && data.length > 0 ? (
+              data.map((category) => (
+                <React.Fragment key={category.name}>
+                  <CategoryHomePage
+                    category={category.data}
+                    categoryName={category.name}
+                  />
+                  <Separator />
+                </React.Fragment>
+              ))
+            ) : (
+              <div>Empty post</div>
+            )}
+          </div>
+          {/* sidebar */}
+          <div>
+            <PopularPosts />
+          </div>
         </div>
-        {/* sidebar */}
-        <div>
-          <PopularPosts />
-        </div>
-      </div>
+      ) : (
+        <div>Fail get data</div>
+      )}
     </main>
   );
 };
