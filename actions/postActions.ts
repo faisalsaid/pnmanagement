@@ -5,6 +5,14 @@ import { revalidatePath } from 'next/cache';
 import slugify from 'slugify';
 import { z } from 'zod';
 import { DateTime } from 'luxon';
+import {
+  ArticleCategoryHomeType,
+  get3CategoryForHomeQuery,
+  getAllHeadlineArticleQuery,
+  getTenPopularPostQuery,
+  HeadlineArticleType,
+  TenPopularArticleType,
+} from '@/types/article.type';
 
 interface InputCategory {
   name: string;
@@ -335,3 +343,111 @@ export async function getTopFiveArticles() {
 
   return articles;
 }
+
+// GET all hedaline post
+
+export const getAllHeadlineArticle = async () => {
+  try {
+    const result: HeadlineArticleType[] = await prisma.article.findMany({
+      where: {
+        category: {
+          slug: 'utama',
+        },
+        status: 'PUBLISHED',
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 5,
+      ...getAllHeadlineArticleQuery,
+    });
+
+    return { success: true, result };
+  } catch (error: any) {
+    console.error('Error fetching headline articles:', error);
+    throw new Error('Failed to get all headline posts');
+  }
+};
+
+// GET ten popular post by viewcount
+
+export const getTenPopularPost = async () => {
+  try {
+    const result: TenPopularArticleType[] = await prisma.article.findMany({
+      where: {
+        status: 'PUBLISHED',
+      },
+      orderBy: {
+        viewCount: 'desc',
+      },
+      take: 10,
+      ...getTenPopularPostQuery,
+    });
+
+    return result;
+  } catch (error) {
+    console.error('Error fetching popular post', error);
+    throw new Error('Failed to get popular post');
+  }
+};
+
+// GET get 3 categories for home
+
+export const get3CategoriesForHome = async () => {
+  try {
+    const [politik, hukum, olahraga]: [
+      ArticleCategoryHomeType[],
+      ArticleCategoryHomeType[],
+      ArticleCategoryHomeType[],
+    ] = await Promise.all([
+      prisma.article.findMany({
+        ...get3CategoryForHomeQuery,
+        where: {
+          category: {
+            slug: 'politik',
+          },
+          deletedAt: null,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        take: 4,
+      }),
+      prisma.article.findMany({
+        ...get3CategoryForHomeQuery,
+        where: {
+          category: {
+            slug: 'hukum',
+          },
+          deletedAt: null,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        take: 4,
+      }),
+      prisma.article.findMany({
+        ...get3CategoryForHomeQuery,
+        where: {
+          category: {
+            slug: 'olahraga',
+          },
+          deletedAt: null,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        take: 4,
+      }),
+    ]);
+
+    return [
+      { name: 'politik', data: politik },
+      { name: 'hukum', data: hukum },
+      { name: 'olahraga', data: olahraga },
+    ];
+  } catch (error) {
+    console.error('Error fetching article by cotegory for home', error);
+    throw new Error('Failed to get article by cotegory for home');
+  }
+};
