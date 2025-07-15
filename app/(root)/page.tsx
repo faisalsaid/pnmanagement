@@ -14,9 +14,9 @@ const WebHomePage = async () => {
   const { success: categoryStatus, data: categoryData } =
     await get3CategoriesForHome();
 
-  console.log('headStatus', headStatus, headData);
-  console.log('categoryStatus', categoryStatus, categoryData);
-  // console.log(categoryHome);
+  // console.log('headStatus', headStatus, headData);
+  // console.log('categoryStatus', categoryStatus, categoryData);
+  // // console.log(categoryHome);
 
   return (
     <main className="space-y-4">

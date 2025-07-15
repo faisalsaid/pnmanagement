@@ -16,7 +16,7 @@ const CategoryHomePage = ({
 }: CategoryHomePageProps) => {
   const [headCategoryList, ...post] = category;
 
-  console.log(category);
+  // console.log(category);
 
   if (!category || category.length === 0) {
     return <div>No Post</div>;
