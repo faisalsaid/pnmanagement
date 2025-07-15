@@ -1,5 +1,6 @@
+import { ArticleCatgoryType } from '@/types/article.type';
 import { Eye, Images } from 'lucide-react';
-import { ArticleCatgoryType } from '../[slug]/page';
+import Link from 'next/link';
 
 interface Props {
   article: ArticleCatgoryType;
@@ -13,7 +14,9 @@ const CategoryPostCard = ({ article }: Props) => {
           <Images className="text-amber-100" />
         </div>
       </div>
-      <h1 className="line-clamp-2">{article.title}</h1>
+      <h1 className="line-clamp-2">
+        <Link href={`/read/${article.slug}`}>{article.title}</Link>
+      </h1>
       <div className="flex items-center gap-2 text-xs text-muted-foreground">
         <p className="">{article.createdAt.toLocaleDateString()}</p>|
         <p className=" flex gap-1 items-center">

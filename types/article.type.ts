@@ -90,3 +90,19 @@ export const get3CategoryForHomeQuery =
 export type ArticleCategoryHomeType = Prisma.ArticleGetPayload<
   typeof get3CategoryForHomeQuery
 >;
+
+export const allPostCategoryQuery =
+  Prisma.validator<Prisma.ArticleFindManyArgs>()({
+    include: {
+      media: {
+        select: {
+          role: true,
+          mediaAsset: true,
+        },
+      },
+    },
+  });
+
+export type ArticleCatgoryType = Prisma.ArticleGetPayload<
+  typeof allPostCategoryQuery
+>;

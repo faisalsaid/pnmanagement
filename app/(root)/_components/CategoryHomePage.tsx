@@ -3,6 +3,7 @@
 import { ArticleCategoryHomeType } from '@/types/article.type';
 import { Eye, Images } from 'lucide-react';
 import { CldImage } from 'next-cloudinary';
+import Link from 'next/link';
 
 interface CategoryHomePageProps {
   category: ArticleCategoryHomeType[];
@@ -58,7 +59,9 @@ const HeadCategory = ({ article }: HeadCategoryProps) => {
         )}
       </div>
       <div className="space-y-2">
-        <h1 className="text-lg line-clamp-2">{article.title}</h1>
+        <h1 className="text-lg line-clamp-2">
+          <Link href={`/read/${article.slug}`}>{article.title}</Link>
+        </h1>
         <p className="text-sm line-clamp-4">{article.content}</p>
         <div className="flex items-center gap-2 text-xs ">
           <p className="text-xs text-muted-foreground">
@@ -97,7 +100,9 @@ const PostCard = ({ article }: PostCardProps) => {
         )}
       </div>
       <div className="grow">
-        <h1>{article.title}</h1>
+        <Link href={`/read/${article.slug}`}>
+          <h1>{article.title}</h1>
+        </Link>
         <div className="flex items-center gap-2 text-xs ">
           <p className="text-xs text-muted-foreground">
             {article.createdAt.toLocaleDateString()}

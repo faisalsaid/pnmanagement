@@ -3,23 +3,7 @@ import CategoryHeadArticle from '../../_components/CategoryHeadArticle';
 import { Separator } from '@/components/ui/separator';
 import PopularPosts from '../../_components/PopularPosts';
 import CategoryPostCard from '../_components/CategoryPostCard';
-import { Prisma } from '@prisma/client';
-
-export const allPostCategoryQuery =
-  Prisma.validator<Prisma.ArticleFindManyArgs>()({
-    include: {
-      media: {
-        select: {
-          role: true,
-          mediaAsset: true,
-        },
-      },
-    },
-  });
-
-export type ArticleCatgoryType = Prisma.ArticleGetPayload<
-  typeof allPostCategoryQuery
->;
+import { allPostCategoryQuery, ArticleCatgoryType } from '@/types/article.type';
 
 type SlugProps = { slug: string };
 

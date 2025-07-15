@@ -1,12 +1,11 @@
 'use client';
 
 import { getExcerptFromHtml } from '@/lib/helper/excerptAricle';
-import { Prisma } from '@prisma/client';
 import { CldImage } from 'next-cloudinary';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { ArticleCatgoryType } from '../category/[slug]/page';
 import { Eye, Images } from 'lucide-react';
+import { ArticleCatgoryType } from '@/types/article.type';
 
 interface Props {
   article: ArticleCatgoryType;
