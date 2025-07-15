@@ -16,6 +16,12 @@ const CategoryHomePage = ({
 }: CategoryHomePageProps) => {
   const [headCategoryList, ...post] = category;
 
+  console.log(category);
+
+  if (!category || category.length === 0) {
+    return <div>No Post</div>;
+  }
+
   return (
     <div className="space-y-2">
       <div className="capitalize font-semibold text-xl text-orange-600">
