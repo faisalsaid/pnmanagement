@@ -13,6 +13,7 @@ import {
   HeadlineArticleType,
   TenPopularArticleType,
 } from '@/types/article.type';
+import { validateAdminUser } from './projecActions';
 
 interface InputCategory {
   name: string;
@@ -463,5 +464,29 @@ export const get3CategoriesForHome = async () => {
   } catch (error) {
     console.error('Error fetching article by cotegory for home', error);
     throw new Error('Failed to get article by cotegory for home');
+  }
+};
+
+export const softDelteArticle = async (articleId: string) => {
+  try {
+    await validateAdminUser();
+    // Verify that the article exists and is active (not soft-deleted)
+    const existingArticle = await prisma.article.findUnique({
+      where: { id: articleId },
+    });
+
+    if (!existingArticle || existingArticle.deletedAt) {
+      return null; // Resource not found or has already been deleted
+    }
+
+    const updatedArticle = await prisma.article.update({
+      where: { id: articleId },
+      data: { deletedAt: new Date() },
+    });
+
+    return updatedArticle;
+  } catch (error) {
+    console.error('Failed to soft delete article:', error);
+    throw error;
   }
 };

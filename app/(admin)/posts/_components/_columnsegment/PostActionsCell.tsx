@@ -4,8 +4,7 @@ import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { getSession } from 'next-auth/react';
 import Link from 'next/link';
-import { toast } from 'sonner';
-// import { deleteArticle } from '@/app/action/postActions';
+import { softDelteArticle } from '@/actions/postActions';
 
 import {
   DropdownMenu,
@@ -15,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { toast } from 'sonner';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -64,15 +64,17 @@ export function PostActionsCell({ post }: { post: Article }) {
 
   const handleDelete = () => {
     startTransition(async () => {
-      toast.info('oke for testing');
+      // toast.info('oke for testing');
+      const deleted = await softDelteArticle(post.id);
+
+      if (deleted) {
+        toast.success('Article deleted');
+        // console.log('Article soft-deleted:', deleted);
+      } else {
+        toast.error('Article not found or already deleted.');
+        // console.log('Article not found or already deleted.');
+      }
       router.refresh();
-      // const res = await deleteArticle(post.id);
-      // if (res?.success) {
-      //   toast.success('Article deleted successfully!');
-      //   router.refresh();
-      // } else {
-      //   toast.error(res?.message || 'Failed to delete article.');
-      // }
       setOpen(false);
     });
   };

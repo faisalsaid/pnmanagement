@@ -75,6 +75,7 @@ const PostPage = async ({ searchParams }: PostPageProps) => {
           lte: new Date(createdTo),
         },
       }),
+    deletedAt: null,
   };
 
   const pageNumber = Math.max(parseInt(page, 10) || 1, 1);
