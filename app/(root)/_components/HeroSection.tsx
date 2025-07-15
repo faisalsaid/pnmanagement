@@ -1,7 +1,7 @@
 'use client';
 
 import { HeadlineArticleType } from '@/types/article.type';
-import { Eye } from 'lucide-react';
+import { Eye, Images } from 'lucide-react';
 import { CldImage } from 'next-cloudinary';
 import Link from 'next/link';
 
@@ -12,10 +12,10 @@ interface HeroSectionProps {
 const HeroSection = ({ headlinePostLists }: HeroSectionProps) => {
   return (
     <div className="grid gap-4 md:grid-cols-4 md:grid-rows-2">
-      {headlinePostLists.map((artcile, i) => (
+      {headlinePostLists.map((article, i) => (
         <SectionCard
-          key={artcile.id}
-          artcile={artcile}
+          key={article.id}
+          article={article}
           classes={i === 0 ? 'md:row-span-2 md:col-span-2' : ''}
         />
       ))}
@@ -33,18 +33,18 @@ export default HeroSection;
 
 interface SectionCardProps {
   classes?: string;
-  artcile: HeadlineArticleType;
+  article: HeadlineArticleType;
 }
 
-const SectionCard = ({ classes, artcile }: SectionCardProps) => {
-  const theImage = artcile.media.find((media) => media.role === 'feature');
+const SectionCard = ({ classes, article }: SectionCardProps) => {
+  const theImage = article.media.find((media) => media.role === 'feature');
   // console.log(theImage?.mediaAsset.public_id);
 
   return (
     <div
       className={`${classes} bg-amber-300 rounded-lg relative min-h-44 overflow-hidden`}
     >
-      <div id="artcile-image" className="absolute inset-0">
+      <div id="article-image" className="absolute inset-0">
         {theImage ? (
           <CldImage
             className="object-cover h-full w-full"
@@ -53,16 +53,20 @@ const SectionCard = ({ classes, artcile }: SectionCardProps) => {
             height={theImage?.mediaAsset.height as number}
             width={theImage?.mediaAsset.width as number}
           />
-        ) : null}
+        ) : (
+          <div className="flex items-center justify-center w-full h-full">
+            <Images className="text-amber-100" />
+          </div>
+        )}
       </div>
       <div className="bg-black/50 p-2 absolute bottom-0 w-full space-y-2">
         <h1 className="text-slate-50 line-clamp-2">
-          <Link href={`/read/${artcile.slug}`}>{artcile.title}</Link>
+          <Link href={`/read/${article.slug}`}>{article.title}</Link>
         </h1>
         <div className="flex items-center gap-2 text-xs text-slate-50 ">
-          <p className="">{artcile.createdAt.toLocaleDateString()}</p>|
+          <p className="">{article.createdAt.toLocaleDateString()}</p>|
           <p className=" flex gap-1 items-center">
-            <Eye size={12} /> <span>{artcile.viewCount}</span>
+            <Eye size={12} /> <span>{article.viewCount}</span>
           </p>
         </div>
       </div>

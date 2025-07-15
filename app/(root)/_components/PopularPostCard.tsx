@@ -1,6 +1,7 @@
 'use client';
 
 import { TenPopularArticleType } from '@/types/article.type';
+import { Images } from 'lucide-react';
 import { CldImage } from 'next-cloudinary';
 import Link from 'next/link';
 
@@ -22,7 +23,11 @@ const PopularPostCard = ({ post }: Props) => {
             width={64}
             height={64}
           />
-        ) : null}
+        ) : (
+          <div className="flex items-center justify-center w-full h-full">
+            <Images size={18} className="text-amber-100" />
+          </div>
+        )}
       </div>
       <h1 className="text-sm line-clamp-3 flex-grow ">
         <Link href={`/read/${post.slug}`}>{post.title}</Link>

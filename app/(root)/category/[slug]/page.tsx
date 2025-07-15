@@ -1,5 +1,25 @@
 import prisma from '@/prisma';
 import CategoryHeadArticle from '../../_components/CategoryHeadArticle';
+import { Separator } from '@/components/ui/separator';
+import PopularPosts from '../../_components/PopularPosts';
+import CategoryPostCard from '../_components/CategoryPostCard';
+import { Prisma } from '@prisma/client';
+
+export const allPostCategoryQuery =
+  Prisma.validator<Prisma.ArticleFindManyArgs>()({
+    include: {
+      media: {
+        select: {
+          role: true,
+          mediaAsset: true,
+        },
+      },
+    },
+  });
+
+export type ArticleCatgoryType = Prisma.ArticleGetPayload<
+  typeof allPostCategoryQuery
+>;
 
 type SlugProps = { slug: string };
 
@@ -10,15 +30,8 @@ type CategoryPageProps = {
 const CategoryPage = async ({ params }: CategoryPageProps) => {
   const { slug } = await params;
 
-  const categoryPosts = await prisma.article.findMany({
-    include: {
-      media: {
-        select: {
-          role: true,
-          mediaAsset: true,
-        },
-      },
-    },
+  const categoryPosts: ArticleCatgoryType[] = await prisma.article.findMany({
+    ...allPostCategoryQuery,
     where: {
       category: { slug },
       status: 'PUBLISHED',
@@ -32,14 +45,28 @@ const CategoryPage = async ({ params }: CategoryPageProps) => {
     return <div>Postingan untuk {slug} tidak ditemukan</div>;
   }
 
-  const headPost = categoryPosts[0];
+  // const headPost = categoryPosts[0];
+  const [headPost, ...allPost] = categoryPosts;
 
   return (
-    <div className="py-4 space-x-4">
+    <div className="py-4 space-y-4">
       <h1 className="text-2xl capitalize font-semibold text-muted-foreground">
         {slug}
       </h1>
-      <CategoryHeadArticle article={headPost} />
+      <div className="space-y-4">
+        <CategoryHeadArticle article={headPost} />
+        <Separator />
+        <div className="md:grid grid-cols-3 gap-6 ">
+          <div className="col-span-2 grid grid-cols-2 gap-4 h-fit">
+            {allPost.map((post) => (
+              <CategoryPostCard key={post.id} article={post} />
+            ))}
+          </div>
+          <div>
+            <PopularPosts />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

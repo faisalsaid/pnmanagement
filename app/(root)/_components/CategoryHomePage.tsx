@@ -1,7 +1,7 @@
 'use client';
 
 import { ArticleCategoryHomeType } from '@/types/article.type';
-import { Eye } from 'lucide-react';
+import { Eye, Images } from 'lucide-react';
 import { CldImage } from 'next-cloudinary';
 
 interface CategoryHomePageProps {
@@ -51,7 +51,11 @@ const HeadCategory = ({ article }: HeadCategoryProps) => {
             width={image.mediaAsset.width as number}
             height={image.mediaAsset.height as number}
           />
-        ) : null}
+        ) : (
+          <div className="flex items-center justify-center w-full h-full">
+            <Images size={24} className="text-amber-100" />
+          </div>
+        )}
       </div>
       <div className="space-y-2">
         <h1 className="text-lg line-clamp-2">{article.title}</h1>
@@ -86,7 +90,11 @@ const PostCard = ({ article }: PostCardProps) => {
             width={image.mediaAsset.width as number}
             height={image.mediaAsset.height as number}
           />
-        ) : null}
+        ) : (
+          <div className="flex items-center justify-center w-full h-full">
+            <Images size={18} className="text-amber-100" />
+          </div>
+        )}
       </div>
       <div className="grow">
         <h1>{article.title}</h1>
