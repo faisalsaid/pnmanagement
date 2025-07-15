@@ -362,7 +362,11 @@ export const getAllHeadlineArticle = async () => {
       ...getAllHeadlineArticleQuery,
     });
 
-    return { success: true, result };
+    if (result) {
+      return { success: true, data: result };
+    } else {
+      return { success: false, data: [] };
+    }
   } catch (error: any) {
     console.error('Error fetching headline articles:', error);
     throw new Error('Failed to get all headline posts');
@@ -441,14 +445,21 @@ export const get3CategoriesForHome = async () => {
       }),
     ]);
 
-    return {
-      success: true,
-      data: [
-        { name: 'politik', data: politik },
-        { name: 'hukum', data: hukum },
-        { name: 'olahraga', data: olahraga },
-      ],
-    };
+    if (!politik || !hukum || !olahraga) {
+      return {
+        success: false,
+        data: [],
+      };
+    } else {
+      return {
+        success: true,
+        data: [
+          { name: 'politik', data: politik },
+          { name: 'hukum', data: hukum },
+          { name: 'olahraga', data: olahraga },
+        ],
+      };
+    }
   } catch (error) {
     console.error('Error fetching article by cotegory for home', error);
     throw new Error('Failed to get article by cotegory for home');
