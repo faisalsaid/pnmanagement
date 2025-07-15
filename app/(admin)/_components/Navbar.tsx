@@ -106,7 +106,7 @@ const Navbar = ({ data }: { data: Session | null }) => {
             </DropdownMenuLabel>
 
             <DropdownMenuSeparator />
-            <Link href={'/profiles'}>
+            <Link href={'/profile'}>
               <DropdownMenuItem>
                 <User className="h-[1.2rem] w-[1.2rem] mr-2" />
                 Profile
