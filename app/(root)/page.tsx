@@ -1,12 +1,12 @@
-import { Separator } from '@/components/ui/separator';
-import HeroSection from './_components/HeroSection';
-import PopularPosts from './_components/PopularPosts';
-import CategoryHomePage from './_components/CategoryHomePage';
-import React from 'react';
-import {
-  get3CategoriesForHome,
-  getAllHeadlineArticle,
-} from '@/actions/postActions';
+// import { Separator } from '@/components/ui/separator';
+// import HeroSection from './_components/HeroSection';
+// import PopularPosts from './_components/PopularPosts';
+// import CategoryHomePage from './_components/CategoryHomePage';
+// import React from 'react';
+// import {
+//   get3CategoriesForHome,
+//   getAllHeadlineArticle,
+// } from '@/actions/postActions';
 
 const WebHomePage = async () => {
   return <BlankHero />;
