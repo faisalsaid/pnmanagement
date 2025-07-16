@@ -2,12 +2,9 @@ import {
   getCategoryVisitStats,
   getCityActivityLast30Days,
   getDeviceVisitPerDay,
-  getHourlyVisits24h,
-  // getSimpleAnalitic,
   getTodayHits,
   getTopHoursYesterday,
   getUserActive,
-  getVisits,
   getVistorTodayBySessionId,
 } from '@/actions/logVisit';
 import React from 'react';

@@ -40,6 +40,43 @@ const filterRange = [
   { key: '1y', value: '1 year' },
 ];
 
+// range: '24h' | '7d' | '30d' | '3mo' | '6mo' | '1y'
+const convertTime = (date: string, range: string): string => {
+  const d = new Date(date);
+
+  switch (range) {
+    case '24h':
+      // Format: 07:00PM
+      return d
+        .toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true,
+        })
+        .replace(/\s/g, ''); // removes space, e.g., "07:00 PM" → "07:00PM"
+
+    case '7d':
+    case '30d':
+    case '3mo':
+      // Format: MM/DD
+      return d.toLocaleDateString('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+      });
+
+    case '6mo':
+    case '1y':
+      // Format: MMM YYYY (e.g., "Jul 2025")
+      return d.toLocaleDateString('en-US', {
+        month: 'short',
+        year: 'numeric',
+      });
+
+    default:
+      return '';
+  }
+};
+
 interface VisitDataPoint {
   time: string; // ISO timestamp
   visits: number;
@@ -72,18 +109,10 @@ const ActivitiesChart = () => {
     };
   }, [filter]);
 
-  // !isPending && console.log('chartData', chartData);
-
   if (!chartData) return <div>no data</div>;
 
   const newData = chartData.map((item) => {
-    // const hour = new Intl.DateTimeFormat('id-ID', {
-    //   hour: '2-digit',
-    //   minute: '2-digit',
-    //   hour12: true,
-    // }).format(new Date(item.time));
-
-    const time = item.time.toString();
+    const time = convertTime(item.time, filter);
     return {
       time,
       activities: item.visits,
@@ -96,8 +125,8 @@ const ActivitiesChart = () => {
   // console.log(data?.value);
 
   return (
-    <div className="bg--200 h-full">
-      <div className="flex items-center justify-between">
+    <div className="bg--200 h-full space-y-4">
+      <div className="flex items-center justify-between ">
         <div className="flex items-baseline gap-2 mb-4">
           <h1 className=" text-lg font-medium">Activities</h1>
           <p className="text-sm text-muted-foreground">
@@ -111,7 +140,7 @@ const ActivitiesChart = () => {
             onValueChange={(value: GetVisitsTimeRange) => setFilter(value)}
             defaultValue="24h"
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[120px] text-sm">
               <SelectValue placeholder="Range Time" />
             </SelectTrigger>
             <SelectContent>
@@ -141,7 +170,7 @@ const ActivitiesChart = () => {
             tickLine={false}
             axisLine={false}
             tickMargin={8}
-            tickFormatter={(value) => value.slice(5, 10)}
+            // tickFormatter={(value) => value.slice(0, 2)}
           />
           <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
           <ChartLegend content={<ChartLegendContent />} />
