@@ -108,7 +108,7 @@ const page = async () => {
           <ActivitesByCity data={theCity} />
         </div>
         <div className="bg-primary-foreground p-4 rounded-lg md:col-span-2 md:row-start-3 lg:row-start-auto">
-          <DeviceChart chartData={dataDevice} />
+          <DeviceChart />
         </div>
         <div className="bg-primary-foreground p-4 rounded-lg">
           <PopularCategory data={popularCategory} />

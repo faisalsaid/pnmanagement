@@ -9,7 +9,7 @@ import { auth } from '@/auth';
 import { startOfDay, endOfDay, subDays } from 'date-fns';
 import { Prisma } from '@prisma/client';
 import { fromZonedTime, toZonedTime } from 'date-fns-tz';
-import { DateTime } from 'luxon';
+import { DateTime, DurationLikeObject } from 'luxon';
 
 const accountId = process.env.ACCOUNT_ID;
 const licenseKey = process.env.LICENSE_KEY;
@@ -670,4 +670,153 @@ export async function getDeviceVisitPerDay() {
   }
 
   return dates; // terurut kronologis
+}
+
+export async function getDeviceVisitPerDayDinamic(range: GetVisitsTimeRange) {
+  const tz = 'Asia/Jakarta';
+  const now = DateTime.now().setZone(tz);
+
+  const durationMap: Record<GetVisitsTimeRange, DurationLikeObject> = {
+    '24h': { hours: 24 },
+    '7d': { days: 7 },
+    '30d': { days: 30 },
+    '3mo': { months: 3 },
+    '6mo': { months: 6 },
+    '1y': { years: 1 },
+  };
+
+  const start = now.startOf('day').minus(durationMap[range]);
+  const end = now.endOf('day');
+  const startUtc = start.toUTC().toJSDate();
+  const endUtc = end.toUTC().toJSDate();
+
+  const dayCount = Math.floor(end.startOf('day').diff(start, 'days').days) + 1;
+  const dates = Array.from({ length: dayCount }).map((_, i) => {
+    const date = start.plus({ days: i }).toISODate(); // 'YYYY‑MM‑DD'
+    return { date, desktop: 0, mobile: 0 };
+  });
+  const map = new Map(dates.map((d) => [d.date, d]));
+
+  const rows = await prisma.$queryRaw<
+    { day: string; deviceType: string; count: bigint }[]
+  >`
+    SELECT
+      TO_CHAR("visitTime" AT TIME ZONE 'Asia/Jakarta', 'YYYY-MM-DD') AS day,
+      LOWER(COALESCE("deviceType", 'unknown')) AS deviceType,
+      COUNT(*) AS count
+    FROM "PageVisit"
+    WHERE "visitTime" >= ${startUtc}
+      AND "visitTime" <  ${endUtc}
+    GROUP BY day, deviceType;
+  `;
+
+  for (const row of rows) {
+    const rec = map.get(row.day);
+    if (!rec) continue;
+    if (row.deviceType === 'desktop' || row.deviceType === 'mobile') {
+      rec[row.deviceType] = Number(row.count);
+    }
+  }
+
+  return dates;
+}
+
+///////////////////////////////////
+
+function getRangeStartAndInterval(range: GetVisitsTimeRange): {
+  start: Date;
+  interval: 'hour' | 'day' | 'month';
+} {
+  const now = new Date();
+  const start = new Date(now);
+
+  switch (range) {
+    case '24h':
+      start.setHours(now.getHours() - 24);
+      return { start, interval: 'hour' };
+    case '7d':
+      start.setDate(now.getDate() - 7);
+      return { start, interval: 'day' };
+    case '30d':
+      start.setDate(now.getDate() - 30);
+      return { start, interval: 'day' };
+    case '3mo':
+      start.setMonth(now.getMonth() - 3);
+      return { start, interval: 'day' };
+    case '6mo':
+      start.setMonth(now.getMonth() - 6);
+      return { start, interval: 'month' };
+    case '1y':
+      start.setFullYear(now.getFullYear() - 1);
+      return { start, interval: 'month' };
+  }
+}
+
+export async function getVisitDeviceStats(range: GetVisitsTimeRange) {
+  const { start, interval } = getRangeStartAndInterval(range);
+  const now = new Date();
+
+  const result = await prisma.$queryRawUnsafe<
+    { bucket: string; deviceType: string | null; count: number }[]
+  >(
+    `
+    WITH buckets AS (
+      SELECT generate_series(
+        date_trunc($3, $1::timestamptz),
+        date_trunc($3, $2::timestamptz),
+        ('1 ' || $3)::interval
+      ) AS bucket
+    ),
+    counts AS (
+      SELECT 
+        date_trunc($3, "visitTime") AS bucket,
+        LOWER(COALESCE("deviceType", 'unknown')) AS "deviceType",
+        COUNT(*) AS count
+      FROM "PageVisit"
+      WHERE "visitTime" BETWEEN $1 AND $2
+      GROUP BY bucket, "deviceType"
+    )
+    SELECT 
+      b.bucket,
+      c."deviceType",
+      COALESCE(c.count, 0) AS count
+    FROM buckets b
+    LEFT JOIN counts c ON b.bucket = c.bucket
+    ORDER BY b.bucket ASC
+    `,
+    start,
+    now,
+    interval, // 'hour', 'day', or 'month'
+  );
+
+  // Normalisasi hasil ke array of { time, mobile, desktop }
+  const grouped: Record<
+    string,
+    { time: string; mobile: number; desktop: number }
+  > = {};
+
+  for (const row of result) {
+    const bucketISO = new Date(row.bucket).toISOString();
+    if (!grouped[bucketISO]) {
+      grouped[bucketISO] = {
+        time: bucketISO,
+        mobile: 0,
+        desktop: 0,
+      };
+    }
+
+    const raw = row.deviceType;
+    const mapped =
+      raw === 'tablet' || raw === 'mobile'
+        ? 'mobile'
+        : raw === 'desktop'
+        ? 'desktop'
+        : null;
+
+    if (mapped) {
+      grouped[bucketISO][mapped] += Number(row.count);
+    }
+  }
+
+  return Object.values(grouped);
 }

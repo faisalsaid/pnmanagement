@@ -41,7 +41,7 @@ const filterRange = [
 ];
 
 // range: '24h' | '7d' | '30d' | '3mo' | '6mo' | '1y'
-const convertTime = (date: string, range: string): string => {
+export const convertTime = (date: string, range: string): string => {
   const d = new Date(date);
 
   switch (range) {
@@ -93,7 +93,7 @@ const ActivitiesChart = () => {
     async function fetchData() {
       startTransition(async () => {
         const result = await getVisits(filter);
-        console.log(result);
+        // console.log(result);
         setChartData(result.data);
       });
     }
