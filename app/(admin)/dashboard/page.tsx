@@ -52,7 +52,7 @@ const page = async () => {
   ];
 
   const get24lastActivites = await getHourlyVisits24h();
-  const getVistit = await getVisits('3mo');
+  const getVistit = await getVisits('30d');
 
   console.log('DASHBOARD PAGE', get24lastActivites);
   console.log(getVistit);

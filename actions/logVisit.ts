@@ -437,32 +437,32 @@ export async function getHourlyVisits24h() {
 type TimeRange = '24h' | '7d' | '30d' | '3mo' | '6mo' | '1y';
 
 export async function getVisits(range: TimeRange) {
-  let timeInterval: string;
+  let sqlInterval: string;
   let groupBy: 'hour' | 'day' | 'month';
 
   switch (range) {
     case '24h':
-      timeInterval = `'24 hours'`;
+      sqlInterval = '24 hours';
       groupBy = 'hour';
       break;
     case '7d':
-      timeInterval = `'7 days'`;
+      sqlInterval = '7 days';
       groupBy = 'day';
       break;
     case '30d':
-      timeInterval = `'30 days'`;
+      sqlInterval = '30 days';
       groupBy = 'day';
       break;
     case '3mo':
-      timeInterval = `'3 months'`;
+      sqlInterval = '3 months';
       groupBy = 'day';
       break;
     case '6mo':
-      timeInterval = `'6 months'`;
+      sqlInterval = '6 months';
       groupBy = 'month';
       break;
     case '1y':
-      timeInterval = `'12 months'`;
+      sqlInterval = '1 year';
       groupBy = 'month';
       break;
     default:
@@ -473,7 +473,7 @@ export async function getVisits(range: TimeRange) {
     { bucket: Date; visits: bigint }[]
   >(`
   WITH bounds AS (
-    SELECT date_trunc('${groupBy}', now()) - INTERVAL '${range}' AS start_time,
+    SELECT date_trunc('${groupBy}', now()) - INTERVAL '${sqlInterval}' AS start_time,
            date_trunc('${groupBy}', now()) + INTERVAL '1 ${groupBy}' AS end_time
   ),
   buckets AS (
