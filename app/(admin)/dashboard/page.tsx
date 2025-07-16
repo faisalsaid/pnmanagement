@@ -7,6 +7,7 @@ import {
   getTodayHits,
   getTopHoursYesterday,
   getUserActive,
+  getVisits,
   getVistorTodayBySessionId,
 } from '@/actions/logVisit';
 import React from 'react';
@@ -51,7 +52,10 @@ const page = async () => {
   ];
 
   const get24lastActivites = await getHourlyVisits24h();
-  // console.log('DASHBOARD PAGE', get24lastActivites);
+  const getVistit = await getVisits('3mo');
+
+  console.log('DASHBOARD PAGE', get24lastActivites);
+  console.log(getVistit);
 
   // get top five article
   const topFiveArticle = await getTopFiveArticles();
@@ -69,7 +73,7 @@ const page = async () => {
   ];
   const rushHourYesterday = rawRushHour.map((item, index) => ({
     ...item,
-    fill: color[index] || 'gray', // fallback jika color habis
+    fill: color[index] || 'gray', // fallback if no color
   }));
 
   // handle city activies
@@ -101,7 +105,7 @@ const page = async () => {
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 ">
         <div className="bg-primary-foreground p-4 rounded-lg md:col-span-2  ">
-          <ActivitiesChart data={get24lastActivites.data} />
+          <ActivitiesChart data={getVistit.data} />
         </div>
         <div className="bg-primary-foreground p-4 rounded-lg">
           <TopFiveArtcle articles={topFiveArticle} />

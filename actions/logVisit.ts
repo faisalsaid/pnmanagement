@@ -392,7 +392,7 @@ export async function getHourlyVisits24h() {
   const rows = await prisma.$queryRaw<{ hour_bucket: Date; visits: bigint }[]>`
     WITH bounds AS (
       SELECT date_trunc('hour', now()) - INTERVAL '24 hours' AS start_time,
-             date_trunc('hour', now())                       AS end_time
+             date_trunc('hour', now()) + INTERVAL '1 hour'   AS end_time
     ),
     hours AS (
       SELECT generate_series(start_time,
@@ -415,9 +415,8 @@ export async function getHourlyVisits24h() {
     ORDER  BY h.hour_bucket;
   `;
 
-  /* Susun payload persis contoh */
-  const end = rows.at(-1)!.hour_bucket; // jam terakhir
-  const start = new Date(end.getTime() - 24 * 60 * 60 * 1000); // jam pertama
+  const start = rows.at(0)!.hour_bucket;
+  const end = new Date(start.getTime() + 24 * 60 * 60 * 1000); // 24 jam dari start
 
   return {
     range: {
@@ -432,6 +431,86 @@ export async function getHourlyVisits24h() {
 }
 
 /////////////////////////////////////
+
+// GET VISIT
+
+type TimeRange = '24h' | '7d' | '30d' | '3mo' | '6mo' | '1y';
+
+export async function getVisits(range: TimeRange) {
+  let timeInterval: string;
+  let groupBy: 'hour' | 'day' | 'month';
+
+  switch (range) {
+    case '24h':
+      timeInterval = `'24 hours'`;
+      groupBy = 'hour';
+      break;
+    case '7d':
+      timeInterval = `'7 days'`;
+      groupBy = 'day';
+      break;
+    case '30d':
+      timeInterval = `'30 days'`;
+      groupBy = 'day';
+      break;
+    case '3mo':
+      timeInterval = `'3 months'`;
+      groupBy = 'day';
+      break;
+    case '6mo':
+      timeInterval = `'6 months'`;
+      groupBy = 'month';
+      break;
+    case '1y':
+      timeInterval = `'12 months'`;
+      groupBy = 'month';
+      break;
+    default:
+      throw new Error('Invalid range');
+  }
+
+  const rows = await prisma.$queryRawUnsafe<
+    { bucket: Date; visits: bigint }[]
+  >(`
+  WITH bounds AS (
+    SELECT date_trunc('${groupBy}', now()) - INTERVAL '${range}' AS start_time,
+           date_trunc('${groupBy}', now()) + INTERVAL '1 ${groupBy}' AS end_time
+  ),
+  buckets AS (
+    SELECT generate_series(start_time,
+                           end_time - INTERVAL '1 ${groupBy}',
+                           INTERVAL '1 ${groupBy}') AS bucket
+    FROM bounds
+  ),
+  visits AS (
+    SELECT date_trunc('${groupBy}', "visitTime") AS bucket,
+           COUNT(*) AS visits
+    FROM "PageVisit", bounds
+    WHERE "visitTime" >= bounds.start_time
+      AND "visitTime" < bounds.end_time
+    GROUP BY bucket
+  )
+  SELECT b.bucket,
+         COALESCE(v.visits, 0) AS visits
+  FROM buckets b
+  LEFT JOIN visits v USING (bucket)
+  ORDER BY b.bucket;
+`);
+
+  const start = rows.at(0)!.bucket;
+  const end = rows.at(-1)!.bucket;
+
+  return {
+    range: {
+      start: start.toISOString(),
+      end: new Date(end.getTime() + getIntervalMs(groupBy)).toISOString(),
+    },
+    data: rows.map((r) => ({
+      time: r.bucket.toISOString(),
+      visits: Number(r.visits),
+    })),
+  };
+}
 
 // GET Yeseterday Rush Hour, top 6
 
@@ -468,6 +547,20 @@ export async function getTopHoursYesterday() {
 
 // //////////////////////////////////////////////////////////////////////////////////////
 
+function getIntervalMs(groupBy: 'hour' | 'day' | 'month') {
+  const hour = 60 * 60 * 1000;
+  const day = 24 * hour;
+  switch (groupBy) {
+    case 'hour':
+      return hour;
+    case 'day':
+      return day;
+    case 'month':
+      return 30 * day; // approx
+  }
+}
+
+////////////////////////////////////////////////////////////////
 // GET top city
 
 export async function getCityActivityLast30Days() {

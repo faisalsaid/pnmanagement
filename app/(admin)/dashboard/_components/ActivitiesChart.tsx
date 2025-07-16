@@ -23,17 +23,19 @@ const chartConfig = {
 
 type ActivitiesChartProps = {
   data: {
-    hour: string;
+    time: string;
     visits: number;
   }[];
 };
 const ActivitiesChart = ({ data }: ActivitiesChartProps) => {
   const newData = data.map((item) => {
-    const hour = new Intl.DateTimeFormat('id-ID', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
-    }).format(new Date(item.hour));
+    // const hour = new Intl.DateTimeFormat('id-ID', {
+    //   hour: '2-digit',
+    //   minute: '2-digit',
+    //   hour12: true,
+    // }).format(new Date(item.time));
+
+    const hour = item.time.toString();
     return {
       hour,
       activities: item.visits,
