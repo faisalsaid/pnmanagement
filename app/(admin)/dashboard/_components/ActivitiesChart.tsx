@@ -45,20 +45,34 @@ interface VisitDataPoint {
   visits: number;
 }
 const ActivitiesChart = () => {
-  const [filter, setFilter] = useState<GetVisitsTimeRange>('7d');
+  const [filter, setFilter] = useState<GetVisitsTimeRange>('24h');
   const [chartData, setChartData] = useState<VisitDataPoint[] | null>(null);
 
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    startTransition(async () => {
-      const result = await getVisits(filter);
-      console.log(result);
-      setChartData(result.data);
-    });
+    let intervalId: NodeJS.Timeout;
+
+    async function fetchData() {
+      startTransition(async () => {
+        const result = await getVisits(filter);
+        console.log(result);
+        setChartData(result.data);
+      });
+    }
+
+    fetchData(); // Initial fetch
+
+    intervalId = setInterval(() => {
+      fetchData();
+    }, 60_000); // 60_000 every 60 seconds
+
+    return () => {
+      clearInterval(intervalId); // cleanup on unmount or filter change
+    };
   }, [filter]);
 
-  !isPending && console.log('chartData', chartData);
+  // !isPending && console.log('chartData', chartData);
 
   if (!chartData) return <div>no data</div>;
 
@@ -69,14 +83,17 @@ const ActivitiesChart = () => {
     //   hour12: true,
     // }).format(new Date(item.time));
 
-    const hour = item.time.toString();
+    const time = item.time.toString();
     return {
-      hour,
+      time,
       activities: item.visits,
     };
   });
 
   // console.log(newData);
+  const data = filterRange.find((range) => range.key === filter);
+
+  // console.log(data?.value);
 
   return (
     <div className="bg--200 h-full">
@@ -84,12 +101,15 @@ const ActivitiesChart = () => {
         <div className="flex items-baseline gap-2 mb-4">
           <h1 className=" text-lg font-medium">Activities</h1>
           <p className="text-sm text-muted-foreground">
-            Data from the last 24 hours.
+            {isPending
+              ? 'Load new statistic ...'
+              : `Data from the last ${data?.value} .`}
           </p>
         </div>
         <div>
           <Select
             onValueChange={(value: GetVisitsTimeRange) => setFilter(value)}
+            defaultValue="24h"
           >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Range Time" />
@@ -117,11 +137,11 @@ const ActivitiesChart = () => {
           <CartesianGrid vertical={false} />
           <YAxis tickLine={false} tickMargin={10} axisLine={false} />
           <XAxis
-            dataKey="hour"
+            dataKey="time"
             tickLine={false}
             axisLine={false}
             tickMargin={8}
-            tickFormatter={(value) => value.slice(0, 2)}
+            tickFormatter={(value) => value.slice(5, 10)}
           />
           <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
           <ChartLegend content={<ChartLegendContent />} />
