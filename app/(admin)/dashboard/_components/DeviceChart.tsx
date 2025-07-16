@@ -50,7 +50,7 @@ interface VisitDataPoint {
   mobile: number;
 }
 const DeviceChart = () => {
-  const [filter, setFilter] = useState<GetVisitsTimeRange>('1y');
+  const [filter, setFilter] = useState<GetVisitsTimeRange>('24h');
   const [chartDatas, setChartDatas] = useState<VisitDataPoint[] | null>(null);
 
   const [isPending, startTransition] = useTransition();
