@@ -9,6 +9,15 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { useEffect, useState, useTransition } from 'react';
+import { getVisits, GetVisitsTimeRange } from '@/actions/logVisit';
 
 const chartConfig = {
   visit: {
@@ -21,14 +30,39 @@ const chartConfig = {
   // },
 } satisfies ChartConfig;
 
-type ActivitiesChartProps = {
-  data: {
-    time: string;
-    visits: number;
-  }[];
-};
-const ActivitiesChart = ({ data }: ActivitiesChartProps) => {
-  const newData = data.map((item) => {
+// '24h' | '7d' | '30d' | '3mo' | '6mo' | '1y';
+const filterRange = [
+  { key: '24h', value: '24 hours' },
+  { key: '7d', value: '7 Days' },
+  { key: '30d', value: '30 Days' },
+  { key: '3mo', value: '3 Months' },
+  { key: '6mo', value: '6 Months' },
+  { key: '1y', value: '1 year' },
+];
+
+interface VisitDataPoint {
+  time: string; // ISO timestamp
+  visits: number;
+}
+const ActivitiesChart = () => {
+  const [filter, setFilter] = useState<GetVisitsTimeRange>('7d');
+  const [chartData, setChartData] = useState<VisitDataPoint[] | null>(null);
+
+  const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    startTransition(async () => {
+      const result = await getVisits(filter);
+      console.log(result);
+      setChartData(result.data);
+    });
+  }, [filter]);
+
+  !isPending && console.log('chartData', chartData);
+
+  if (!chartData) return <div>no data</div>;
+
+  const newData = chartData.map((item) => {
     // const hour = new Intl.DateTimeFormat('id-ID', {
     //   hour: '2-digit',
     //   minute: '2-digit',
@@ -46,11 +80,29 @@ const ActivitiesChart = ({ data }: ActivitiesChartProps) => {
 
   return (
     <div className="bg--200 h-full">
-      <div className="flex items-baseline gap-2 mb-4">
-        <h1 className=" text-lg font-medium">Activities</h1>
-        <p className="text-sm text-muted-foreground">
-          Data from the last 24 hours.
-        </p>
+      <div className="flex items-center justify-between">
+        <div className="flex items-baseline gap-2 mb-4">
+          <h1 className=" text-lg font-medium">Activities</h1>
+          <p className="text-sm text-muted-foreground">
+            Data from the last 24 hours.
+          </p>
+        </div>
+        <div>
+          <Select
+            onValueChange={(value: GetVisitsTimeRange) => setFilter(value)}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Range Time" />
+            </SelectTrigger>
+            <SelectContent>
+              {filterRange.map((range) => (
+                <SelectItem key={range.key} value={range.key}>
+                  {range.value}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <ChartContainer className="" config={chartConfig}>

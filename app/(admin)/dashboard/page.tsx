@@ -51,12 +51,6 @@ const page = async () => {
     { title: 'User Active', icon: FaUserCheck, value: userActive },
   ];
 
-  const get24lastActivites = await getHourlyVisits24h();
-  const getVistit = await getVisits('30d');
-
-  console.log('DASHBOARD PAGE', get24lastActivites);
-  console.log(getVistit);
-
   // get top five article
   const topFiveArticle = await getTopFiveArticles();
   // console.log(topFiveArticle);
@@ -105,7 +99,7 @@ const page = async () => {
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 ">
         <div className="bg-primary-foreground p-4 rounded-lg md:col-span-2  ">
-          <ActivitiesChart data={getVistit.data} />
+          <ActivitiesChart />
         </div>
         <div className="bg-primary-foreground p-4 rounded-lg">
           <TopFiveArtcle articles={topFiveArticle} />

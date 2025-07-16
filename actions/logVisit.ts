@@ -434,9 +434,9 @@ export async function getHourlyVisits24h() {
 
 // GET VISIT
 
-type TimeRange = '24h' | '7d' | '30d' | '3mo' | '6mo' | '1y';
+export type GetVisitsTimeRange = '24h' | '7d' | '30d' | '3mo' | '6mo' | '1y';
 
-export async function getVisits(range: TimeRange) {
+export async function getVisits(range: GetVisitsTimeRange) {
   let sqlInterval: string;
   let groupBy: 'hour' | 'day' | 'month';
 
