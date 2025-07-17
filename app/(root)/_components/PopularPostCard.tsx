@@ -29,9 +29,14 @@ const PopularPostCard = ({ post }: Props) => {
           </div>
         )}
       </div>
-      <h1 className="text-sm line-clamp-3 flex-grow ">
-        <Link href={`/read/${post.slug}`}>{post.title}</Link>
-      </h1>
+      <div>
+        <h1 className="text-sm line-clamp-3 flex-grow ">
+          <Link href={`/read/${post.slug}`}>{post.title}</Link>
+        </h1>
+        <p className="text-xs text-muted-foreground">
+          {post.createdAt.toLocaleDateString()}
+        </p>
+      </div>
       <div className="flex flex-col items-center p-2 bg-amber-100 rounded-sm justify-center text-amber-800">
         <span className="font-semibold">{post.viewCount}</span>
         <span className="text-xs">views</span>
