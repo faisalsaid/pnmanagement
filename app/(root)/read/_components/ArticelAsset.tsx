@@ -9,7 +9,7 @@ interface Props {
 
 const ArticelAsset = ({ asset }: Props) => {
   return (
-    <div className=" w-full  overflow-hidden aspect-video">
+    <div className=" w-full overflow-hidden aspect-video rounded-sm">
       <CldImage
         className="w-full h-full object-cover"
         alt={asset.public_id as string}

@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma';
 import ArticelAsset from '../_components/ArticelAsset';
 import { incrementPostView } from '@/actions/postActions';
 import PopularPosts from '../../_components/PopularPosts';
+import Link from 'next/link';
 
 type ParamsProps = { slug: string };
 
@@ -24,6 +25,13 @@ const SiglePostPage = async ({ params }: Props) => {
           role: true,
         },
       },
+      category: {
+        select: {
+          id: true,
+          slug: true,
+          name: true,
+        },
+      },
     },
   });
 
@@ -38,6 +46,17 @@ const SiglePostPage = async ({ params }: Props) => {
       <section className="flex-8/12">
         <article className="space-y-4">
           <h1 className="text-2xl font-semibold">{article?.title}</h1>
+          <div>
+            <Link href={`/category/${article?.category.slug}`}>
+              <span>{article?.category.name}</span>
+            </Link>{' '}
+            -{' '}
+            <span>
+              {article?.publishedAt
+                ? article.publishedAt.toLocaleDateString()
+                : article?.createdAt.toLocaleDateString()}
+            </span>
+          </div>
           {featureImage ? (
             <ArticelAsset asset={featureImage?.mediaAsset} />
           ) : null}
