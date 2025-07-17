@@ -1,5 +1,6 @@
 'use client';
 
+import { getExcerptFromHtml } from '@/lib/helper/excerptAricle';
 import { ArticleCategoryHomeType } from '@/types/article.type';
 import { Eye, Images } from 'lucide-react';
 import { CldImage } from 'next-cloudinary';
@@ -46,6 +47,8 @@ interface HeadCategoryProps {
   article: ArticleCategoryHomeType;
 }
 const HeadCategory = ({ article }: HeadCategoryProps) => {
+  const excerptArticle = getExcerptFromHtml(article.content, 100);
+
   const image = article.media[0];
   return (
     <div className="grid grid-cols-2 gap-4">
@@ -68,7 +71,7 @@ const HeadCategory = ({ article }: HeadCategoryProps) => {
         <h1 className="text-lg line-clamp-2">
           <Link href={`/read/${article.slug}`}>{article.title}</Link>
         </h1>
-        <p className="text-sm line-clamp-4">{article.content}</p>
+        <p className="text-sm line-clamp-4">{excerptArticle}</p>
         <div className="flex items-center gap-2 text-xs ">
           <p className="text-xs text-muted-foreground">
             {article.createdAt.toLocaleDateString()}

@@ -351,9 +351,9 @@ export const getAllHeadlineArticle = async () => {
   try {
     const result: HeadlineArticleType[] = await prisma.article.findMany({
       where: {
-        category: {
-          slug: 'utama',
-        },
+        // category: {
+        //   slug: 'utama',
+        // },
         status: 'PUBLISHED',
       },
       orderBy: {
