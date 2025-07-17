@@ -88,24 +88,21 @@ const ActivitiesChart = () => {
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
-
-    async function fetchData() {
-      startTransition(async () => {
-        const result = await getVisits(filter);
-        // console.log(result);
+    const fetchData = async () => {
+      const result = await getVisits(filter);
+      startTransition(() => {
         setChartData(result.data);
       });
-    }
+    };
 
     fetchData(); // Initial fetch
 
-    intervalId = setInterval(() => {
+    const intervalId = setInterval(() => {
       fetchData();
-    }, 60_000); // 60_000 every 60 seconds
+    }, 60_000); // every 60 seconds
 
     return () => {
-      clearInterval(intervalId); // cleanup on unmount or filter change
+      clearInterval(intervalId); // cleanup
     };
   }, [filter]);
 

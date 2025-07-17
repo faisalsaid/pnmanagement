@@ -6,8 +6,12 @@ import { UAParser } from 'ua-parser-js';
 import prisma from '@/lib/prisma';
 import { WebServiceClient } from '@maxmind/geoip2-node';
 import { auth } from '@/auth';
-import { startOfDay, endOfDay, subDays } from 'date-fns';
-import { Prisma } from '@prisma/client';
+import {
+  startOfDay,
+  endOfDay,
+  // subDays
+} from 'date-fns';
+// import { Prisma } from '@prisma/client';
 import { fromZonedTime, toZonedTime } from 'date-fns-tz';
 import { DateTime, DurationLikeObject } from 'luxon';
 
@@ -151,196 +155,6 @@ export async function getVistorTodayBySessionId() {
 const tz = 'Asia/Jayapura'; // zona target laporan
 const date = new Date();
 
-// export const getHitHourly = async () => {
-//   /* 1️⃣  ambil hanya jam yang ada hits */
-//   const raw = await prisma.$queryRaw<
-//     { hour: string; hits: bigint }[]
-//   >(Prisma.sql`
-//     SELECT to_char(date_trunc('hour', "visitTime" AT TIME ZONE ${tz}), 'HH24') AS hour,
-//            COUNT(*) AS hits
-//     FROM   "PageVisit"
-//     -- WHERE  "visitTime" AT TIME ZONE ${tz} >= ${date}::date
-//     --   AND  "visitTime" AT TIME ZONE ${tz} <  (${date}::date + interval '1 day')
-//     GROUP  BY hour
-//     ORDER  BY hour
-//   `);
-
-//   /* 2️⃣  buat array 24 jam default 0 */
-//   const full = Array.from({ length: 24 }, (_, i) => ({
-//     hour: i.toString().padStart(2, '0'), // '00' … '23'
-//     hits: 0,
-//   }));
-
-//   /* 3️⃣  isi jam yang punya data */
-//   raw.forEach(({ hour, hits }) => {
-//     full[Number(hour)].hits = Number(hits);
-//   });
-
-//   return full; // panjang selalu 24 elemen
-// };
-
-// export async function getHitsTodayUntilNow() {
-//   /* 1) Sekarang dalam UTC */
-//   const nowUtc = new Date();
-
-//   /* 2) Sekarang versi zona target (optional, kalau mau pakai) */
-//   const nowLocal = toZonedTime(nowUtc, tz);
-
-//   /* 3) 00:00 hari ini di zona target */
-//   const startLocal = startOfDay(nowLocal);
-
-//   /* 4) Konversi 00:00 lokal → UTC */
-//   const startUtc = fromZonedTime(startLocal, tz);
-
-//   /* 5) Query semua hit (hanya kolom sessionId) */
-//   const rows = await prisma.pageVisit.findMany({
-//     where: {
-//       visitTime: {
-//         gte: startUtc, // ≥ 00:00 WIT, tapi dalam UTC
-//         lte: nowUtc, // ≤ sekarang
-//       },
-//     },
-//     select: { sessionId: true, visitTime: true },
-//   });
-
-//   return rows; // [{ sessionId: 'abc' }, { sessionId: 'def' }, ...]
-// }
-
-//////////////////////////////////////////////
-
-// export async function getSimpleAnalitic() {
-//   // Tentukan jendela waktu sekali saja supaya konsisten di seluruh query
-//   const now = new Date();
-//   const since24h = subDays(now, 1);
-//   const since30day = subDays(startOfDay(now), 30);
-
-//   const [
-//     // 1. Page views (PV) 24 jam
-//     pageViewsLast24h,
-
-//     // 2. Unique sessions (UV) 24 jam
-//     uniqueSessionsLast24h,
-
-//     // 3. 10 negara dengan kunjungan terbanyak
-//     topCountries,
-
-//     // 4. 10 URL/path terpopuler
-//     topPaths,
-
-//     // 5. Distribusi perangkat
-//     deviceBreakdown,
-
-//     // 6. Tren kunjungan harian 30 hari terakhir
-//     visitsPerDay,
-//   ] = await Promise.all([
-//     prisma.pageVisit.count({
-//       where: { visitTime: { gte: since24h } },
-//     }),
-
-//     prisma.pageVisit
-//       .groupBy({
-//         by: ['sessionId'],
-//         where: { visitTime: { gte: since24h } },
-//         _count: { _all: true }, // atau kosong saja—kita cuma butuh grupnya
-//       })
-//       .then((groups) => groups.length),
-
-//     prisma.pageVisit.groupBy({
-//       by: ['country'],
-//       _count: { _all: true },
-//       orderBy: { _count: { id: 'desc' } },
-//       take: 10,
-//       where: { country: { not: null } }, // filter null biar rapi
-//     }),
-
-//     prisma.pageVisit.groupBy({
-//       by: ['path'],
-//       _count: { _all: true },
-//       orderBy: { _count: { id: 'desc' } },
-//       take: 10,
-//     }),
-
-//     prisma.pageVisit.groupBy({
-//       by: ['deviceType'],
-//       _count: { _all: true },
-//     }),
-
-//     // ―――― Time series harian ――――
-//     prisma.pageVisit
-//       .groupBy({
-//         by: ['visitTime'],
-//         _count: { _all: true },
-//         orderBy: { visitTime: 'asc' },
-//         where: { visitTime: { gte: since30day } },
-//       })
-//       .then((rows) =>
-//         // Normalisasi ke “YYYY‑MM‑DD” + lengkapi hari tanpa data
-//         rows.reduce<Record<string, number>>((acc, { visitTime, _count }) => {
-//           const d = visitTime.toISOString().slice(0, 10);
-//           acc[d] = _count._all;
-//           return acc;
-//         }, {}),
-//       ),
-//   ]);
-
-//   return {
-//     pageViewsLast24h,
-//     uniqueSessionsLast24h,
-//     topCountries,
-//     topPaths,
-//     deviceBreakdown,
-//     visitsPerDay,
-//   };
-// }
-
-// export async function getDeviceType(
-//   tz = 'Asia/Jayapura', // zona lokal WIT
-// ) {
-//   return prisma.$queryRaw<
-//     { date: string; desktop: number; mobile: number }[]
-//   >(Prisma.sql`
-// WITH params AS (
-//   SELECT ${tz}::text AS tz
-// ),
-// -- 1) Buat deret 7 hari (paling lama = hari‑6, paling baru = hari ini – zona lokal)
-// days AS (
-//   SELECT
-//     generate_series(
-//       (now() AT TIME ZONE (SELECT tz FROM params))::date - interval '6 day',
-//       (now() AT TIME ZONE (SELECT tz FROM params))::date,
-//       '1 day'
-//     )::date AS local_day
-// ),
-// -- 2) Hitung kunjungan per device per hari
-// agg AS (
-//   SELECT
-//     date_trunc('day', "visitTime" AT TIME ZONE (SELECT tz FROM params))::date AS local_day,
-//     "deviceType",
-//     COUNT(*) AS cnt
-//   FROM "PageVisit"
-//   WHERE "visitTime" >= (SELECT MIN(local_day) FROM days)  -- hanya 7 hari ke belakang
-//   GROUP BY 1, 2
-// ),
-// -- 3) Pivot desktop / mobile
-// pivot AS (
-//   SELECT
-//     local_day,
-//     SUM(CASE WHEN "deviceType" = 'desktop' THEN cnt ELSE 0 END) AS desktop,
-//     SUM(CASE WHEN "deviceType" = 'mobile'  THEN cnt ELSE 0 END) AS mobile
-//   FROM agg
-//   GROUP BY local_day
-// )
-// -- 4) Gabungkan kerangka tanggal + pivot; isi kosong = 0
-// SELECT
-//   to_char(d.local_day, 'YYYY-MM-DD')        AS date,
-//   COALESCE(p.desktop, 0)::int               AS desktop,
-//   COALESCE(p.mobile , 0)::int               AS mobile
-// FROM days d
-// LEFT JOIN pivot p USING (local_day)
-// ORDER BY d.local_day;
-// `);
-// }
-
 export const getUserActive = async () => {
   const start = getStartOfTodayUtc(); // 2025‑06‑16T15:00:00Z (karena UTC+9)
   const now = new Date();
@@ -362,21 +176,21 @@ export const getUserActive = async () => {
 };
 
 export async function getTodayHits() {
-  // 1) Waktu sekarang (UTC) ➜ konversi ke zona Jayapura (UTC+9)
+  // 1) Current time in UTC ➜ convert to Jayapura time (UTC+9)
   const zonedNow = toZonedTime(new Date(), TZ);
 
-  // 2) Mundur ke 00:00 hari ini (zona Jayapura)
+  // 2) Set time to 00:00 (start of today in Jayapura time)
   const startOfTodayZoned = startOfDay(zonedNow);
 
-  // 3) Konversi kembali ke UTC (karena kolom visitTime disimpan UTC)
+  // 3) Reconvert to UTC (visitTime column uses UTC)
   const startOfTodayUtc = fromZonedTime(startOfTodayZoned, TZ);
 
-  // 4) Hitung TOTAL baris (hits) dari 00:00 lokal sampai sekarang
+  // 4) Count total hits since local time 00:00 until now
   const totalHits = await prisma.pageVisit.count({
     where: {
       visitTime: {
         gte: startOfTodayUtc,
-        lte: new Date(), // sekarang (UTC)
+        lte: new Date(), // current time (UTC)
       },
     },
   });
@@ -385,52 +199,6 @@ export async function getTodayHits() {
 }
 
 ////////////////////////////////////////////////////////////
-
-// GET last 24 activites group by hour
-
-export async function getHourlyVisits24h() {
-  const rows = await prisma.$queryRaw<{ hour_bucket: Date; visits: bigint }[]>`
-    WITH bounds AS (
-      SELECT date_trunc('hour', now()) - INTERVAL '24 hours' AS start_time,
-             date_trunc('hour', now()) + INTERVAL '1 hour'   AS end_time
-    ),
-    hours AS (
-      SELECT generate_series(start_time,
-                             end_time - INTERVAL '1 hour',
-                             INTERVAL '1 hour') AS hour_bucket
-      FROM bounds
-    ),
-    visits AS (
-      SELECT date_trunc('hour', "visitTime") AS hour_bucket,
-             COUNT(*)                        AS visits
-      FROM   "PageVisit", bounds
-      WHERE  "visitTime" >= bounds.start_time
-        AND  "visitTime" <  bounds.end_time
-      GROUP  BY hour_bucket
-    )
-    SELECT h.hour_bucket,
-           COALESCE(v.visits, 0) AS visits
-    FROM   hours h
-    LEFT JOIN visits v USING (hour_bucket)
-    ORDER  BY h.hour_bucket;
-  `;
-
-  const start = rows.at(0)!.hour_bucket;
-  const end = new Date(start.getTime() + 24 * 60 * 60 * 1000); // 24 jam dari start
-
-  return {
-    range: {
-      start: start.toISOString(),
-      end: end.toISOString(),
-    },
-    data: rows.map((r) => ({
-      hour: r.hour_bucket.toISOString(),
-      visits: Number(r.visits),
-    })),
-  };
-}
-
-/////////////////////////////////////
 
 // GET VISIT
 
@@ -625,103 +393,9 @@ export async function getCategoryVisitStats() {
   }));
 }
 
-//////////////////////////////////////////////////////////////////////////////////////
-
-// GET user device
-
-export async function getDeviceVisitPerDay() {
-  const tz = 'Asia/Jakarta';
-
-  /* 1️⃣  Hitung titik waktu penting */
-  const now = DateTime.now().setZone(tz); // detik ini, zona lokal
-  const start = now.startOf('day').minus({ days: 30 }); // 00:00, 30 hari lalu
-  const startUtc = start.toUTC().toJSDate();
-  const endUtc = now.toUTC().toJSDate(); // batas atas ekskl.
-
-  /* 2️⃣  Buat deretan tanggal (seed) agar hari tanpa data tetap ada */
-  const dayCount = Math.floor(now.startOf('day').diff(start, 'days').days) + 1; // biasanya 31
-  const dates = Array.from({ length: dayCount }).map((_, i) => {
-    const date = start.plus({ days: i }).toISODate(); // 'YYYY‑MM‑DD'
-    return { date, desktop: 0, mobile: 0 };
-  });
-  const map = new Map(dates.map((d) => [d.date, d]));
-
-  /* 3️⃣  Query: kelompokkan per tanggal (lokal) + deviceType */
-  const rows = await prisma.$queryRaw<
-    { day: string; deviceType: string; count: bigint }[]
-  >`
-    SELECT
-      TO_CHAR("visitTime" AT TIME ZONE 'Asia/Jakarta', 'YYYY-MM-DD') AS day,
-      "deviceType",
-      COUNT(*) AS count
-    FROM "PageVisit"
-    WHERE "visitTime" >= ${startUtc}
-      AND "visitTime" <  ${endUtc}
-      AND "deviceType" IN ('desktop', 'mobile')
-    GROUP BY day, "deviceType";
-  `;
-
-  /* 4️⃣  Masukkan hasil query ke seed array */
-  for (const row of rows) {
-    const rec = map.get(row.day); // selalu ada karena kita seed semua hari
-    if (rec && (row.deviceType === 'desktop' || row.deviceType === 'mobile')) {
-      rec[row.deviceType] = Number(row.count);
-    }
-  }
-
-  return dates; // terurut kronologis
-}
-
-export async function getDeviceVisitPerDayDinamic(range: GetVisitsTimeRange) {
-  const tz = 'Asia/Jakarta';
-  const now = DateTime.now().setZone(tz);
-
-  const durationMap: Record<GetVisitsTimeRange, DurationLikeObject> = {
-    '24h': { hours: 24 },
-    '7d': { days: 7 },
-    '30d': { days: 30 },
-    '3mo': { months: 3 },
-    '6mo': { months: 6 },
-    '1y': { years: 1 },
-  };
-
-  const start = now.startOf('day').minus(durationMap[range]);
-  const end = now.endOf('day');
-  const startUtc = start.toUTC().toJSDate();
-  const endUtc = end.toUTC().toJSDate();
-
-  const dayCount = Math.floor(end.startOf('day').diff(start, 'days').days) + 1;
-  const dates = Array.from({ length: dayCount }).map((_, i) => {
-    const date = start.plus({ days: i }).toISODate(); // 'YYYY‑MM‑DD'
-    return { date, desktop: 0, mobile: 0 };
-  });
-  const map = new Map(dates.map((d) => [d.date, d]));
-
-  const rows = await prisma.$queryRaw<
-    { day: string; deviceType: string; count: bigint }[]
-  >`
-    SELECT
-      TO_CHAR("visitTime" AT TIME ZONE 'Asia/Jakarta', 'YYYY-MM-DD') AS day,
-      LOWER(COALESCE("deviceType", 'unknown')) AS deviceType,
-      COUNT(*) AS count
-    FROM "PageVisit"
-    WHERE "visitTime" >= ${startUtc}
-      AND "visitTime" <  ${endUtc}
-    GROUP BY day, deviceType;
-  `;
-
-  for (const row of rows) {
-    const rec = map.get(row.day);
-    if (!rec) continue;
-    if (row.deviceType === 'desktop' || row.deviceType === 'mobile') {
-      rec[row.deviceType] = Number(row.count);
-    }
-  }
-
-  return dates;
-}
-
 ///////////////////////////////////
+
+// GET visitor by device
 
 function getRangeStartAndInterval(range: GetVisitsTimeRange): {
   start: Date;
@@ -789,7 +463,7 @@ export async function getVisitDeviceStats(range: GetVisitsTimeRange) {
     interval, // 'hour', 'day', or 'month'
   );
 
-  // Normalisasi hasil ke array of { time, mobile, desktop }
+  // Normalize the output as an array of { time, mobile, desktop } objects
   const grouped: Record<
     string,
     { time: string; mobile: number; desktop: number }

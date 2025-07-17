@@ -56,7 +56,7 @@ const DeviceChart = () => {
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
+    // let intervalId: NodeJS.Timeout;
 
     async function fetchData() {
       startTransition(async () => {
@@ -67,7 +67,7 @@ const DeviceChart = () => {
 
     fetchData(); // Initial fetch
 
-    intervalId = setInterval(() => {
+    const intervalId = setInterval(() => {
       fetchData();
     }, 60_000); // 60_000 every 60 seconds
 

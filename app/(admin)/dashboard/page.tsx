@@ -1,7 +1,7 @@
 import {
   getCategoryVisitStats,
   getCityActivityLast30Days,
-  getDeviceVisitPerDay,
+  // getDeviceVisitPerDay,
   getTodayHits,
   getTopHoursYesterday,
   getUserActive,
@@ -29,7 +29,7 @@ import { FaUserCheck } from 'react-icons/fa';
 const page = async () => {
   const totalVisitorToday = await getVistorTodayBySessionId();
 
-  const dataDevice = await getDeviceVisitPerDay();
+  // const dataDevice = await getDeviceVisitPerDay();
   const userActive = await getUserActive();
   const totalHits = await getTodayHits();
   const { data } = await getPublishPostsToday();
