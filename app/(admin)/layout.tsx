@@ -17,7 +17,7 @@ const layout = async ({
   return (
     <>
       <SidebarProvider defaultOpen={defaultOpen}>
-        <AppSidebar />
+        <AppSidebar data={session} />
         <main className="w-full">
           <Navbar data={session} />
           <PrintBreadcrumbs />

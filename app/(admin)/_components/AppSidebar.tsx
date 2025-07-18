@@ -1,4 +1,4 @@
-import Link from 'next/link';
+'use client';
 
 // import ui components
 import {
@@ -26,27 +26,32 @@ import {
   SidebarMenuSubItem,
   SidebarSeparator,
 } from '@/components/ui/sidebar';
+import { Button } from '@/components/ui/button';
 
 import {
-  Settings,
   User2,
   ChevronUp,
   User,
-  LogOut,
   Plus,
   ChevronDown,
   HelpCircle,
   Info,
   FolderOpenDot,
+  LogOutIcon,
+  HomeIcon,
 } from 'lucide-react';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
-import { adminMenuList } from '@/app/_lib/listSideBar';
 
-const AppSidebar = () => {
+import { adminMenuList } from '@/app/_lib/listSideBar';
+import { signOut } from 'next-auth/react';
+import { Session } from 'next-auth';
+import Link from 'next/link';
+
+const AppSidebar = ({ data }: { data: Session | null }) => {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="py-4">
@@ -216,21 +221,33 @@ const AppSidebar = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton>
-                  <User2 /> Jhon Doe <ChevronUp className="ml-auto" />
+                  <User2 />
+                  {data?.user.name} <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>
-                  <User />
-                  Acount
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Settings />
-                  Setting
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <LogOut />
-                  Sigh out
+                <Link href={'/profile'}>
+                  <DropdownMenuItem className="hover:cursor-pointer">
+                    <User />
+                    Profile
+                  </DropdownMenuItem>
+                </Link>
+                <Link href={'/room'}>
+                  <DropdownMenuItem className="hover:cursor-pointer">
+                    <HomeIcon />
+                    Room
+                  </DropdownMenuItem>
+                </Link>
+
+                <DropdownMenuItem asChild variant="destructive">
+                  <Button
+                    className="w-full hover:cursor-pointer"
+                    onClick={() => signOut({ redirectTo: '/' })}
+                    variant={'outline'}
+                  >
+                    <LogOutIcon className="h-[1.2rem] w-[1.2rem] mr-2" />
+                    Logout
+                  </Button>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
