@@ -62,7 +62,7 @@ export const TaskItemCard = ({
     currentProjectMember.hasCrudAccess ||
     currentProjectMember.id === task.assignedToId;
 
-  console.log(dragable);
+  // console.log(dragable);
 
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: sortingId });
