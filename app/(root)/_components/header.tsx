@@ -76,9 +76,11 @@ const WebHeader = ({ categories, session }: WebFooterProps) => {
           {/* <p>weather</p> */}
         </div>
         <div className="sm:flex items-center justify-center gap-4 py-4">
-          <h1 className="text-lg sm:text-2xl font-bold  text-orange-600">
-            DAILY EXPRESS
-          </h1>
+          <Link href={'/'}>
+            <h1 className="text-lg sm:text-2xl font-bold  text-orange-600">
+              DAILY EXPRESS
+            </h1>
+          </Link>
           <p className=" sm:hidden">{formatIndonesianDate()}</p>
         </div>
         <div className="flex items-center gap-2 justify-end">
