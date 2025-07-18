@@ -10,10 +10,18 @@ const ProjectTab = () => {
     <div>
       <Tabs defaultValue="overview">
         <TabsList className="">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="board">Board</TabsTrigger>
-          <TabsTrigger value="calender">Calender</TabsTrigger>
-          <TabsTrigger value="files">Files</TabsTrigger>
+          <TabsTrigger className="hover:cursor-pointer" value="overview">
+            Overview
+          </TabsTrigger>
+          <TabsTrigger className="hover:cursor-pointer" value="board">
+            Board
+          </TabsTrigger>
+          <TabsTrigger className="hover:cursor-pointer" value="calender">
+            Calender
+          </TabsTrigger>
+          <TabsTrigger className="hover:cursor-pointer" value="files">
+            Files
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="overview">
           <ProjectOverview />
